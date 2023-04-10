@@ -1,0 +1,6 @@
+column,displayName,type,description
+input_type,Input Type,string,"Technical, Financial, Feedstock/Utility/Byproduct, Capital Cost, Fixed Operating Cost, Variable Operating Cost - Other Materials and Byproducts, Variable Operating Costs - Other Variable Operating Costs"
+input_name,Input Name,string,The variable name of this specific type of input
+orig_name,Original Name,string,The original name of the input in the H2A spreadsheet
+label,Label,string,A human-readable label for the input
+description,Description,string,A description of the input

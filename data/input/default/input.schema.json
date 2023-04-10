@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "H2A Inputs",
+  "description": "All inputs that can be provided to the H2A model",
+  "type": "object",
+  "properties": {
+    "capacity_factor": {
+      "type": "number",
+      "title": "Capacity Factor (%)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "plant_design_capacity": {
+      "type": "number",
+      "title": "Plant Design Capacity (kg of H2/day)"
+    },
+    "ref_year": {
+      "type": "number",
+      "title": "Reference Year",
+      "minimum": 1992
+    },
+    "startup_year": {
+      "type": "number"
+    },
+    "BasisYear": {
+      "type": "number",
+      "minimum": 1992
+    },
+    "construct": {
+      "type": "number",
+      "title": "Years of construction"
+    },
+    "percent_cap1": {
+      "type": "number",
+      "title": "Percentage of Capital Spent in 1st Year of Construction (%)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "percent_cap2": {
+      "type": "number",
+      "title": "Percentage of Capital Spent in 2nd Year of Construction (%)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "percent_cap3": {
+      "type": "number",
+      "title": "Percentage of Capital Spent in 3rd Year of Construction (%)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "percent_cap4": {
+      "type": "number",
+      "title": "Percentage of Capital Spent in 4th Year of Construction (%)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "start_time": {
+      "type": "number",
+      "titke": "Start-up time (years)",
+      "minimum": 0
+    },
+    "plant_life": {
+      "type": "number",
+      "title": "Plant life (years)",
+      "minimum": 0
+    },
+    "anal_period": {
+      "type": "number",
+      "title": "Analysis period (years)",
+      "minimum": 0
+    },
+    "depr_length": {
+      "type": "number",
+      "title": "Depreciation Schedule Length (years)",
+      "minimum": 0
+    },
+    "depr_type": {
+      "type": "string",
+      "title": "Depreciation Type",
+      "enum": [
+        "Straight line",
+        "MACRS"
+      ]
+    },
+    "percentage_equity_financing": {
+      "type": "number",
+      "title": "Percentage Equity Financing",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "debt_interest": {
+      "type": "number",
+      "title": "Interest rate on debt, if applicable (%)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "debt_period": {
+      "type": "number",
+      "title": "Debt Period (years)",
+      "minimum": 0
+    },
+    "percnt_fixed": {
+      "type": "number",
+      "title": "Percentage of Fixed Operating Costs During Start-up (%)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "percnt_revs": {
+      "type": "number",
+      "title": "Percentage of Revenue During Start-up (%)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "percnt_var": {
+      "type": "number",
+      "title": "Percentage of Variable Operating Costs During Start-up (%)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "decom_percent": {
+      "type": "number",
+      "title": "Decommissioning costs (% of depreciable capital investment)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "salvage_perct": {
+      "type": "number",
+      "title": "Salvage value (% of total capital investment)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "inflation_rate": {
+      "type": "number",
+      "title": "Inflation rate (%)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "real_irr": {
+      "type": "number",
+      "title": "After-tax Real IRR (%)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "state_tax_rate": {
+      "type": "number",
+      "title": "State Taxes (%)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "fed_tax_rate": {
+      "type": "number",
+      "title": "Federal Taxes (%)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "WorkingCap": {
+      "type": "number",
+      "title": "Working Capital (% of yearly change in operating costs)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "feedstocks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/feedstock"
+      }
+    },
+    "other_materials": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/other_material"
+      }
+    }
+  },
+  "$defs": {
+    "feedstock": {
+      "type": "object",
+      "required": [
+        "name",
+        "usage",
+        "units",
+        "price_table",
+        "lookup_prices"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "usage": {
+          "type": "number"
+        },
+        "units": {
+          "type": "string",
+          "enum": [
+            "kWh/kg H2",
+            "mmBtu/kg H2"
+          ]
+        },
+        "price_table": {
+          "type": "string",
+          "enum": [
+            "AEO_2017_Reference_Case"
+          ]
+        },
+        "lookup_prices": {
+          "type": "boolean"
+        }
+      }
+    },
+    "other_material": {
+      "type": "object",
+      "required": [
+        "name",
+        "usage",
+        "units",
+        "lookup_prices"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "usage": {
+          "type": "number"
+        },
+        "units": {
+          "type": "string",
+          "enum": [
+            "gal/kg H2",
+            "kg/kg H2"
+          ]
+        },
+        "lookup_prices": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

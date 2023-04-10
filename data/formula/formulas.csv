@@ -1,0 +1,14 @@
+name,label,formula,orig_name
+plant_output_kg_per_day,Plant Output (kg/day),plant_design_capacity * capacity_factor,output_kgpday
+plant_output_kg_per_year,Plant Output (kg/year),plant_output_kg_per_day * 365,output_kgyear
+,Hydrogen Gas Lower Heating Value (LHV) (MJ/kg),"get_lhv(""Hydrogen"")",H2_LHV_MJ_p_kg
+output_energy_MMBtu_per_year,Actual Hydrogen Energy Produced (MMBtu(LHV)/yr),"plant_output_kg_per_year * H2_LHV_MJ_p_kg / 1000 / conversion_factor(""mmBTU_to_GJ"")",
+output_energy_MJ_per_year,Actual Hydrogen Energy Produced (MJ(LHV)/yr),plant_output_kg_per_year * H2_LHV_MJ_p_kg,
+,After-Tax Nominal IRR,((1 + real_irr) * (1 + inflation_rate)) - 1,nominal_irr
+percentage_debt_financing,Debt Financing,1 - percentage_equity_financing,
+,INFLATION FACTOR,(1 + inflation_rate) ** (startup_year - ref_year),INFLATION_FACTOR
+target_after_tax_nominal_irr,Target after-tax nominal IRR,(1 + real_irr)*(1 + inflation_rate) - 1,
+full_analysis_period,,construct + anal_period,
+analysis_period_start,,startup_year - construct,
+analysis_period_end,,analysis_period_start + full_analysis_period,
+#,Total Depreciable Capital Costs,=(total_cap - non_dep_cap) * INFLATION_FACTOR,

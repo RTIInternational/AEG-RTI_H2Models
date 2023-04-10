@@ -1,0 +1,44 @@
+fuel_type,fuel,lhv_mj_per_kg,hhv_mj_per_kg
+gas,Natural gas,47.141,52.225
+gas,Hydrogen,120.21,142.18
+gas,Still gas (in refineries),46.898,50.951
+liquid,Crude oil,42.686,45.543
+liquid,Conventional gasoline,43.448,46.536
+liquid,Reformulated or low-sulfur gasoline,42.358,45.433
+liquid,CA reformulated gasoline,42.500,45.577
+liquid,U.S. conventional diesel,42.791,45.766
+liquid,Low-sulfur diesel,42.612,45.575
+liquid,Petroleum naphtha,44.938,48.075
+liquid,NG-based FT naphtha,44.383,47.654
+liquid,Residual oil,39.466,42.210
+liquid,Methanol,20.094,22.884
+liquid,Ethanol,26.952,29.847
+liquid,Butanol,34.366,37.334
+liquid,Acetone,29.589,31.862
+liquid,E-Diesel Additives,43.448,46.536
+liquid,Liquefied petroleum gas (LPG),46.607,50.152
+liquid,Liquefied natural gas (LNG),48.632,55.206
+liquid,Dimethyl ether (DME),28.882,31.681
+liquid,Dimethoxy methane (DMM),23.402,25.670
+liquid,"Methyl ester (biodiesel, BD)",37.528,40.168
+liquid,Fischer-Tropsch diesel (FTD),43.247,45.471
+liquid,Renewable Diesel I (SuperCetane),43.563,46.628
+liquid,Renewable Diesel II (UOP-HDO),43.979,46.817
+liquid,Renewable Gasoline,43.239,46.314
+liquid,Liquid Hydrogen,120.07,141.80
+liquid,Methyl tertiary butyl ether (MTBE),35.108,37.957
+liquid,Ethyl tertiary butyl ether (ETBE),36.315,39.247
+liquid,Tertiary amyl methyl ether (TAME),36.392,39.322
+liquid,Butane,45.277,49.210
+liquid,Isobutane,44.862,49.096
+liquid,Isobutylene,44.824,48.238
+liquid,Propane,46.296,50.235
+solid,Coal (wet basis) [6],22.732,23.968
+solid,Bituminous coal (wet basis) [7],26.122,27.267
+solid,Coking coal (wet basis),28.610,29.865
+solid,Farmed trees (dry basis),19.551,20.589
+solid,Herbaceous biomass (dry basis),17.209,18.123
+solid,Corn stover (dry basis),16.370,17.415
+solid,Forest residue (dry basis),15.402,16.473
+solid,Sugar cane bagasse,15.058,16.355
+solid,Petroleum coke,29.505,31.308

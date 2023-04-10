@@ -1,0 +1,6 @@
+.DS_Store
+~*.xlsm
+.ipynb_checkpoints
+renv/
+*.lock
+*.pdf

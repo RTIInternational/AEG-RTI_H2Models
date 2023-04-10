@@ -1,0 +1,29 @@
+input_type,input_name,label,description,orig_name
+technical,capacity_factor,Operating Capacity Factor (%),,cap_factor
+technical,plant_design_capacity,Plant Design Capacity (kg of H2/day),,design_cap
+financial,,Reference year,,ref_year
+financial,,Assumed start-up year,,startup_year
+financial,,Basis year,,BasisYear
+financial,,Length of Construction Period (years),,construct
+financial,,% of Capital Spent in 1st Year of Construction,,percent_cap1
+financial,,% of Capital Spent in 2nd Year of Construction,,percent_cap2
+financial,,% of Capital Spent in 3rd Year of Construction,,percent_cap3
+financial,,% of Capital Spent in 4th Year of Construction,,percent_cap4
+financial,,Start-up Time (years),,start_time
+financial,,Plant life (years),,plant_life
+financial,,Analysis period (years),,anal_period
+financial,,Depreciation Schedule Length (years),,depr_length
+financial,,Depreciation Type,,depr_type
+financial,percentage_equity_financing,% Equity Financing,,equity
+financial,,"Interest rate on debt, if applicable (%)",,debt_interest
+financial,,Debt period (years),,debt_period
+financial,,% of Fixed Operating Costs During Start-up (%),,percnt_fixed
+financial,,% of Revenues During Start-up (%),,percnt_revs
+financial,,% of Variable Operating Costs During Start-up (%),,percnt_var
+financial,,Decommissioning costs (% of depreciable capital investment),,decom_percent
+financial,,Salvage value (% of total capital investment),,salvage_perct
+financial,,Inflation rate (%),,inflation_rate
+financial,,After-tax Real IRR (%),,real_irr
+financial,,State Taxes (%),,state_tax_rate
+financial,,Federal Taxes (%),,fed_tax_rate
+financial,,WORKING CAPITAL (% of yearly change in operating costs),,WorkingCap

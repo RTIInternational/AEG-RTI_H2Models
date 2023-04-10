@@ -1,0 +1,5 @@
+column,displayName,type,description
+fuel_type,Fuel Type,string,"Solid, liquid, or gaseous"
+fuel,Fuel,string,The specific type of fuel
+lhv_mj_per_kg,Lower Heating Value (LHV),number,The lower heating value in units of MJ/kg
+hhv_mj_per_kg,Higher Heating Value (HHV),number,The higher heating value in units of MJ/kg

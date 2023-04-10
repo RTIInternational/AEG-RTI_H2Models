@@ -1,0 +1,21 @@
+conversion_type,from,to,factor,factor_units,note
+general,miles,km,1.6093,km/mile,
+general,gallons,liters,3.785,L/gal,
+general,MPG,kWh/km,0.018263969,(kWh/km)/MPG,
+general,scf,Nm3,0.026853,Nm3/scf,"60 degrees F, 1 atm"
+general,lb,kg,0.453514739,kg/lb,
+general,ncf,Nm3,0.028317,Nm3/ncf,"0 degrees C (32 F), 1 atm"
+general,MPa,psi,145.038,psi/MPa,
+energy,MJ,kWh,0.277777778,,
+energy,gge,kWh,34.02262529,,gallon of gasoline eq (GGE) -conventional gasoline
+energy,kg_H2_LHV,GGE,0.979331964,,kg H2 (LHV)
+energy,kg_H2_LHV,kWh,33.39212175,,kg H2 (LHV)
+energy,kg_H2_LHV,GJ,0.120211638,,kg H2 (LHV)
+energy,btu ,kWh,0.000293083,,
+energy,mmBTU,GJ,1.055,,
+greenhouse,CO2,,1,,
+greenhouse,CH4,,25,,
+greenhouse,N2O,,298,,
+feedstock,mmBtu,$/GJ,1.055,GJ/mmBtu,
+feedstock,kWh,$/GJ,0.0036,GJ/kWh,=1/MJ_to_kWh/1000
+feedstock,GJ,$/GJ,1,,
