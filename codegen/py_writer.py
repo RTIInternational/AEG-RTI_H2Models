@@ -2,7 +2,7 @@
 
 import os
 import subprocess
-from codegen.lib.read_json_files import (
+from lib.read_json_files import (
     read_functions_json,
     read_globals_json,
     read_inputs_json,
