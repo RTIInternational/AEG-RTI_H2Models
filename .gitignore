@@ -4,3 +4,4 @@
 renv/
 *.lock
 *.pdf
+__pycache__/

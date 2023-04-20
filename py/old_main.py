@@ -28,6 +28,7 @@ class Formula:
 # Get project root directory
 rootDir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
 # Function that reads data/input/default/default-smr-natural-gas-no-cc.json and returns a dictionary {[input_name:str]: input_value}
 def read_default_inputs_json(json_file):
     default_inputs = {}
@@ -146,16 +147,52 @@ def read_non_energy_material_prices():
     return df
 
 
+def read_plant_cost_index():
+    plant_cost_index = {}
+    with open(
+        os.path.join(rootDir, "data/plant-cost-index/plant-cost-index.csv"),
+        newline="",
+    ) as csvfile:
+        reader = csv.reader(csvfile)
+        next(reader)  # skip the first row
+        for row in reader:
+            if row[0].startswith("#"):
+                continue
+            year, value = row
+            plant_cost_index[int(year)] = float(value)
+    return plant_cost_index
+
+
+def read_consumer_price_index():
+    consumer_price_index = {}
+    with open(
+        os.path.join(rootDir, "data/gdp-implicit-price-deflator/deflator-orig.csv"),
+        newline="",
+    ) as csvfile:
+        reader = csv.reader(csvfile)
+        next(reader)  # skip the first row
+        for row in reader:
+            if row[0].startswith("#"):
+                continue
+            year, value = row
+            consumer_price_index[int(year)] = float(value)
+    return consumer_price_index
+
+
 def main():
     inputs = read_inputs()
     default_inputs = read_default_inputs_json("default-smr-natural-gas-no-cc.json")
     formulas = read_formulas()
     lhv, hhv = read_fuel_heating_values()
     conversion_factors = read_conversion_factors()
+    plant_cost_index = read_plant_cost_index()
+    consumer_price_index = read_consumer_price_index()
     lookup_dict = default_inputs.copy()
     funcs = {
         "get_lhv": lambda fuel: lhv[fuel],
         "conversion_factor": lambda from_to: conversion_factors[from_to],
+        "get_plant_cost_index": lambda year: plant_cost_index[year],
+        "get_cpi": lambda year: consumer_price_index[year],
     }
 
     # For each formula, evaluate the formula and add the result to the lookup dictionary
@@ -194,10 +231,14 @@ def main():
             aeo[feedstock["name"]][default_inputs["startup_year"]] * conversion_factor
         )
         return (
-            [
-                get_feedstock_year_price(feedstock, aeo, conversion_factor, year)
-                for year in analysis_range
-            ]
+            list(
+                map(
+                    lambda year: get_feedstock_year_price(
+                        feedstock, aeo, conversion_factor, year
+                    ),
+                    analysis_range,
+                )
+            )
             if feedstock["lookup_prices"]
             else [
                 lookup_dict["INFLATION_FACTOR"]
@@ -207,10 +248,8 @@ def main():
             * len(analysis_range)
         )
 
-    # Table 1: Price per kg H2
-    feedstock_price_df = [
-        get_feedstock_prices(feedstock) for feedstock in default_inputs["feedstocks"]
-    ]
+    # Table 1: Price per kg H2 (CFA: B138, C138)
+    feedstock_price_df = list(map(get_feedstock_prices, default_inputs["feedstocks"]))
 
     def get_operation_range(num_analysis_years, construct):
         # If construction time is 0, year 1 is the first year of operation
@@ -225,15 +264,19 @@ def main():
 
     operation_range = get_operation_range(len(analysis_range), lookup_dict["construct"])
 
+    # CFA E64 Inflation Price Increase Factor
     def get_inflation_price_increase_factors():
-        return [
-            (1 + default_inputs["inflation_rate"])
-            ** (year - default_inputs["startup_year"])
-            for year in analysis_range
-        ]
+        return list(
+            map(
+                lambda year: (1 + default_inputs["inflation_rate"])
+                ** (year - default_inputs["startup_year"]),
+                analysis_range,
+            )
+        )
 
     inflation_price_increase_factors = get_inflation_price_increase_factors()
 
+    # Function for Feedstock Table 2: Total cost per year
     def calculate_feedstock_yearly_cost_for_year(
         operation_year, price, inflation_price_increase_factor
     ):
@@ -276,8 +319,9 @@ def main():
             ret_vals.append(
                 calculate_feedstock_yearly_cost_for_year(
                     operation_year,
-                    feedstock_price_list[i],
-                    inflation_price_increase_factors[i],
+                    i,
+                    feedstock_price_list,
+                    inflation_price_increase_factors,
                 )
             )
         return ret_vals
@@ -300,6 +344,7 @@ def main():
             )
         return ret_vals
 
+    # CFA O64: Feedstock Cost
     total_feedstock_cost_column = get_all_feedstocks_yearly_cost_by_year(
         operation_range, feedstock_price_df, inflation_price_increase_factors
     )
@@ -349,11 +394,85 @@ def main():
                 * price_in_startup_year
             ] * num_analysis_years
 
+    # CFA: P138
     for other_material in default_inputs["other_materials"]:
-        print(
-            other_material["name"],
-            get_other_material_prices(other_material, len(analysis_range)),
+        other_material_prices = get_other_material_prices(
+            other_material, len(analysis_range)
         )
+        # print(other_material["name"], other_material_prices)
+
+    # Helper Function for CFA: R64 Other Variable Operating Costs column
+    def calculate_variable_yearly_cost_for_year(
+        operation_year, price, inflation_price_increase_factor
+    ):
+        # TODO: The sum of some extra variable cost user inputs adjusted for inflation
+        inflated_othervar = 15137.6375678111000
+        if operation_year < 0:
+            return 0
+        elif operation_year == 1 and default_inputs["start_time"] < 1:
+            sum_val = (
+                (price * lookup_dict["plant_output_kg_per_year"] + inflated_othervar)
+                * inflation_price_increase_factor
+                * default_inputs["percnt_var"]
+                * default_inputs["start_time"]
+            ) + (
+                (price * lookup_dict["plant_output_kg_per_year"] + inflated_othervar)
+                * inflation_price_increase_factor
+                * (1 - default_inputs["start_time"])
+            )
+            return (-1) * sum_val
+        elif operation_year <= default_inputs["start_time"]:
+            return (
+                (price * lookup_dict["plant_output_kg_per_year"] + inflated_othervar)
+                * inflation_price_increase_factor
+                * default_inputs["percnt_var"]
+            )
+        else:
+            return (
+                price * lookup_dict["plant_output_kg_per_year"] + inflated_othervar
+            ) * inflation_price_increase_factor
+
+    # CFA: R64 Other Variable Operating Costs column
+    def get_all_variable_yearly_cost_by_year(
+        operation_range, variable_price_df, inflation_price_increase_factors
+    ):
+        ret_vals = []
+        for i, operation_year in enumerate(operation_range):
+            # Sum the prices for each feedstock in the feedstock_price_df for the given year
+            variable_price_list = [
+                variable_price[i] for variable_price in variable_price_df
+            ]
+            variable_price_for_year_per_kg_h2 = sum(variable_price_list)
+            ret_vals.append(
+                calculate_variable_yearly_cost_for_year(
+                    operation_year,
+                    variable_price_for_year_per_kg_h2,
+                    inflation_price_increase_factors[i],
+                )
+            )
+        return ret_vals
+
+    variable_operating_cost_df = [other_material_prices]
+    total_variable_cost_column = get_all_variable_yearly_cost_by_year(
+        operation_range, variable_operating_cost_df, inflation_price_increase_factors
+    )
+    # print(total_variable_cost_column)
+
+    def calculate_capital_investment_cost(capital_investment):
+        return (
+            capital_investment["cost"]
+            * lookup_dict["CEPCIinflator"]
+            * lookup_dict["CPIinflator"]
+            * capital_investment["installation_cost_factor"]
+        )
+
+    capital_investment_costs = map(
+        calculate_capital_investment_cost, default_inputs["capital_investments"]
+    )
+    # `direct_cap` named cell
+    total_capital_investment_cost = sum(capital_investment_costs)
+
+    # Indirect Depreciable Capital Costs (Input Sheet A91)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,12 @@
+{
+  "functions" : [
+    {
+      "name": "site_preparation",
+      "globals": ["CEPCIinflator", "CPIinflator"],
+      "body": "0.159872128446844 * direct_cap / (CEPCIinflator * CPIinflator)",
+      "metadata": {
+        "section": "Indirect Depreciable Capital Costs"
+      }
+    }
+  ]
+}

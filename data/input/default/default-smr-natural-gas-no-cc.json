@@ -5,6 +5,7 @@
    "ref_year": 2016,
    "startup_year": 2015,
    "BasisYear": 2018,
+   "CurrentYear": 2018,
    "construct": 3,
    "percent_cap1": 1,
    "percent_cap2": 0,
@@ -50,6 +51,43 @@
          "usage": 4.343635099,
          "units": "gal/kg H2",
          "lookup_prices": true
+      }
+   ],
+   "capital_investments": [
+      {
+         "name": "Accessory Electric Plant",
+         "cost": 2180000,
+         "installation_cost_factor": 1.93211009174312
+      },
+      {
+         "name": "Cooling Water System",
+         "cost": 5305000,
+         "installation_cost_factor": 1.35852968897267
+      },
+      {
+         "name": "Feedwater & Miscellaneous BOP Systems",
+         "cost": 32610000,
+         "installation_cost_factor": 1.43974241030359
+      },
+      {
+         "name": "Hydrogen Production",
+         "cost": 16135000,
+         "installation_cost_factor": 1.08050821196157
+      },
+      {
+         "name": "Instrumentation & Control",
+         "cost": 8001000,
+         "installation_cost_factor": 1.1387326584177
+      },
+      {
+         "name": "Reformer & Accessories",
+         "cost": 39658000,
+         "installation_cost_factor": 1.49974784406677
+      },
+      {
+         "name": "Syngas Cleanup",
+         "cost": 3646000,
+         "installation_cost_factor": 2.35189248491498
       }
    ]
 }

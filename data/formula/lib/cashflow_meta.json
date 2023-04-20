@@ -1,0 +1,44 @@
+{
+  "functions" : [
+    {
+      "name": "determine_operation_year",
+      "description": "Helper function in generating the list of operation years",
+      "type": "switch",
+      "args": ["i", "construct"],
+      "cases": [
+        {
+          "condition": "i == construct",
+          "body": "1"
+        }, {
+          "condition": "i < construct",
+          "body": "-construct + i"
+        }, {
+          "condition": "TRUE",
+          "body": "i - construct + 1"
+        }
+      ]
+    },
+    {
+      "name": "get_operation_range",
+      "description": "Get the range of plant operation years",
+      "map_function": "determine_operation_year",
+      "map_iterables": ["analysis_year_num_range"],
+      "map_item_names": ["i"],
+      "args": ["analysis_year_num_range", "construct"]
+    },
+    {
+      "name": "determine_inflation_price_increase_factor",
+      "description": "Helper function in generating the list of inflation price increase factors",
+      "args": ["year", "inflation_rate", "startup_year"],
+      "body": "(1 + inflation_rate) ** (year - startup_year)"
+    },
+    {
+      "name": "get_inflation_price_increase_factors",
+      "description": "Get the inflation price increase factors over the analysis range",
+      "map_function": "determine_inflation_price_increase_factor",
+      "map_iterables": ["analysis_range"],
+      "map_item_names": ["year"],
+      "args": ["analysis_range", "inflation_rate", "startup_year"]
+    }
+  ]
+}

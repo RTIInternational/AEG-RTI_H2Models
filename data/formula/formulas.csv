@@ -11,4 +11,6 @@ target_after_tax_nominal_irr,Target after-tax nominal IRR,(1 + real_irr)*(1 + in
 full_analysis_period,,construct + anal_period,
 analysis_period_start,,startup_year - construct,
 analysis_period_end,,analysis_period_start + full_analysis_period,
+,Chemical Engineering Plant Cost Index (CEPCI) Inflator,get_plant_cost_index(CurrentYear) / get_plant_cost_index(BasisYear),CEPCIinflator
+,Consumer Price Inflator (CPI),get_cpi(ref_year) / get_cpi(CurrentYear),CPIinflator
 #,Total Depreciable Capital Costs,=(total_cap - non_dep_cap) * INFLATION_FACTOR,

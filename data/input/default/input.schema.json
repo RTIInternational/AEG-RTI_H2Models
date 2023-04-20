@@ -26,6 +26,11 @@
       "type": "number",
       "minimum": 1992
     },
+    "CurrentYear": {
+      "title": "Current year for capital costs",
+      "type": "number",
+      "minimum": 1992
+    },
     "construct": {
       "type": "number",
       "title": "Years of construction"
@@ -170,6 +175,12 @@
       "items": {
         "$ref": "#/$defs/other_material"
       }
+    },
+    "capital_investments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/capital_investment"
+      }
     }
   },
   "$defs": {
@@ -231,6 +242,26 @@
         },
         "lookup_prices": {
           "type": "boolean"
+        }
+      }
+    },
+    "capital_investment": {
+      "type": "object",
+      "required": [
+        "name",
+        "cost",
+        "installation_cost_factor"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "cost": {
+          "title": "Baseline uninstalled cost in basis year dollars ($)",
+          "type": "number"
+        },
+        "installation_cost_factor": {
+          "type": "number"
         }
       }
     }

@@ -12,6 +12,8 @@ The table is commonly used with 2 years to calculate a ratio, like so:
 
 ref_year / current_year = deflator_table[2016]/deflator_table[2018] = 0.958
 
+The table is referenced from the Capital Costs sheet as "The Consumer Price Inflator (CPI)", "used to deflate all dollars from the current year to the Reference Year."
+
 ## Original H2A Title
 
 TABLE B - GDP Implicit Deflator Price Index

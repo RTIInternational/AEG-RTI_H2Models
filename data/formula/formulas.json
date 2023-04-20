@@ -1,0 +1,76 @@
+{
+  "formulas": [
+    {
+      "name": "",
+      "label": "Hydrogen Gas Lower Heating Value (LHV) (MJ/kg)",
+      "expression": "get_lhv(\"Hydrogen\")",
+      "orig_name": "H2_LHV_MJ_p_kg"
+    },
+    {
+      "name": "output_energy_MMBtu_per_year",
+      "label": "Actual Hydrogen Energy Produced (MMBtu(LHV)/yr)",
+      "expression": "plant_output_kg_per_year * H2_LHV_MJ_p_kg / 1000 / conversion_factor(\"mmBTU_to_GJ\")",
+      "orig_name": ""
+    },
+    {
+      "name": "output_energy_MJ_per_year",
+      "label": "Actual Hydrogen Energy Produced (MJ(LHV)/yr)",
+      "expression": "plant_output_kg_per_year * H2_LHV_MJ_p_kg",
+      "orig_name": ""
+    },
+    {
+      "name": "",
+      "label": "After-Tax Nominal IRR",
+      "expression": "((1 + real_irr) * (1 + inflation_rate)) - 1",
+      "orig_name": "nominal_irr"
+    },
+    {
+      "name": "percentage_debt_financing",
+      "label": "Debt Financing",
+      "expression": "1 - percentage_equity_financing",
+      "orig_name": ""
+    },
+    {
+      "name": "target_after_tax_nominal_irr",
+      "label": "Target after-tax nominal IRR",
+      "expression": "(1 + real_irr)*(1 + inflation_rate) - 1",
+      "orig_name": ""
+    },
+    {
+      "name": "analysis_range",
+      "expression": "range(analysis_period_start, analysis_period_end)"
+    },
+    {
+      "name": "feedstock_price_df",
+      "expression": "get_feedstock_price_df(feedstocks, analysis_range)"
+    },
+    {
+      "name": "operation_range",
+      "expression": "get_operation_range(seq_along(analysis_range), construct)"
+    },
+    {
+      "name": "inflation_price_increase_factors",
+      "expression": "get_inflation_price_increase_factors(analysis_range, inflation_rate, startup_year)"
+    },
+    {
+      "name": "total_feedstock_cost_column",
+      "expression": "get_total_feedstock_costs(operation_range, feedstock_price_df, inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)"
+    },
+    {
+      "name": "other_material_price_df",
+      "expression": "get_other_material_price_df(other_materials, analysis_range, INFLATION_FACTOR, ref_year)"
+    },
+    {
+      "name": "",
+      "label": "H2A Total Direct Capital Cost",
+      "expression": "capital_investment_costs(capital_investments)",
+      "orig_name": "direct_cap"
+    },
+    {
+      "name": "#",
+      "label": "Total Depreciable Capital Costs",
+      "expression": "=(total_cap - non_dep_cap) * INFLATION_FACTOR",
+      "orig_name": ""
+    }
+  ]
+}
