@@ -1,0 +1,27 @@
+{
+  "functions" : [
+    {
+      "name": "calculate_replacement_cost",
+      "args": ["year", "inflation_price_increase_factor", "replace_factor", "depr_cap", "ref_year", "startup_year", "inflation_rate"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "year < 0",
+          "body": "0"
+        },
+        {
+          "condition": "TRUE",
+          "body": "inflation_price_increase_factor * (replace_factor * depr_cap) * ((1 + inflation_rate) ** (startup_year - ref_year))"
+        }
+      ]
+    },
+    {
+      "name": "get_replacement_costs",
+      "description": "Unplanned Yearly Replacement Capital (Depreciable)",
+      "map_function": "calculate_replacement_cost",
+      "map_iterables": ["operation_range", "inflation_price_increase_factors"],
+      "map_item_names": ["year", "inflation_price_increase_factor"],
+      "args": ["operation_range", "inflation_price_increase_factors", "replace_factor", "depr_cap", "ref_year", "startup_year", "inflation_rate"]
+    }
+  ]
+}

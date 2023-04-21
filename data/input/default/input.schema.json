@@ -164,6 +164,12 @@
       "minimum": 0,
       "maximum": 1
     },
+    "replace_factor": {
+      "type": "number",
+      "title": "Total Unplanned Replacement Capital Cost Factor (% of total direct depreciable costs/year)",
+      "minimum": 0,
+      "maximum": 1
+    },
     "feedstocks": {
       "type": "array",
       "items": {

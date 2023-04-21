@@ -38,7 +38,8 @@
     },
     {
       "name": "analysis_range",
-      "expression": "range(analysis_period_start, analysis_period_end)"
+      "expression": "range(analysis_period_start, analysis_period_end)",
+      "sample": "range(2012, 2055)"
     },
     {
       "name": "feedstock_price_df",
@@ -46,7 +47,8 @@
     },
     {
       "name": "operation_range",
-      "expression": "get_operation_range(seq_along(analysis_range), construct)"
+      "expression": "get_operation_range(seq_along(analysis_range), construct)",
+      "sample": "[-3, -2, -1, 1, 2, 3, ..., 40]"
     },
     {
       "name": "inflation_price_increase_factors",
@@ -61,10 +63,58 @@
       "expression": "get_other_material_price_df(other_materials, analysis_range, INFLATION_FACTOR, ref_year)"
     },
     {
-      "name": "",
+      "orig_name": "direct_cap",
       "label": "H2A Total Direct Capital Cost",
-      "expression": "capital_investment_costs(capital_investments)",
-      "orig_name": "direct_cap"
+      "expression": "sum(capital_investment_costs(capital_investments))"
+    },
+    {
+      "orig_name": "CO2_seq",
+      "label": "H2A Carbon Sequestration Total Direct Capital Cost",
+      "expression": "0",
+      "todo": "Update formula"
+    },
+    {
+      "name": "site_preparation_cost",
+      "label": "Site Preparation ($)",
+      "expression": "(0.02 * CO2_seq / (CEPCIinflator * CPIinflator)) + (0.159872128446844 * direct_cap / (CEPCIinflator * CPIinflator))",
+      "excel_loc": "Input_Sheet_Template C92",
+      "translation_note": "The formula is 2 lines in the spreadsheet; the magic numbers are from it",
+      "todo": "These should be user inputs; they vary depending on the workbook default values"
+    },
+    {
+      "name": "engineering_and_design_cost",
+      "label": "Engineering and Design ($)",
+      "expression": "(0.1 * CO2_seq / (CEPCIinflator * CPIinflator)) + (0.11599636520534 * direct_cap / (CEPCIinflator * CPIinflator))"
+    },
+    {
+      "name": "process_contingency_cost",
+      "label": "Process Contingency ($)",
+      "expression": "0"
+    },
+    {
+      "name": "project_contingency_cost",
+      "label": "Project Contingency ($)",
+      "expression": "0.247793627342024 * direct_cap / (CEPCIinflator * CPIinflator)"
+    },
+    {
+      "name": "other_depreciable_capital_cost",
+      "label": "Other (Depreciable) Capital ($)",
+      "expression": "40137000"
+    },
+    {
+      "name": "upfront_permitting_costs",
+      "label": "Upfront Permitting Costs ($)",
+      "expression": "(0.15 * CO2_seq / (CEPCIinflator * CPIinflator)) + (0.11599636520534 * direct_cap / (CEPCIinflator * CPIinflator))"
+    },
+    {
+      "orig_name": "depr_cap",
+      "label": "Total Depreciable Capital Costs",
+      "expression": "direct_cap + CO2_seq + (CEPCIinflator * CPIinflator) * (site_preparation_cost + engineering_and_design_cost + process_contingency_cost + project_contingency_cost + other_depreciable_capital_cost + upfront_permitting_costs)"
+    },
+    {
+      "name": "replacement_costs",
+      "label": "Replacement Costs ($)",
+      "expression": "get_replacement_costs(operation_range, inflation_price_increase_factors, replace_factor, depr_cap, ref_year, startup_year, inflation_rate)"
     },
     {
       "name": "#",

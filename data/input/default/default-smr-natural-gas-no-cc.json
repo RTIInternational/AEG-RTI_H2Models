@@ -29,6 +29,7 @@
    "state_tax_rate": 0.06,
    "fed_tax_rate": 0.21,
    "WorkingCap": 0.15,
+   "replace_factor": 0.005,
    "feedstocks": [
       {
          "name": "Industrial Electricity",

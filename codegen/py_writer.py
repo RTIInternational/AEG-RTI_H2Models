@@ -149,6 +149,9 @@ def functions_to_python():
     return map(lambda x: x[0], all_functions)  # Return the list of function filenames
 
 
+PRINT_FORMULAS = True
+
+
 def formulas_to_python(function_files):
     formulas = read_formulas_json()["formulas"]
     file_str = TOP_LINE_COMMENT
@@ -161,6 +164,9 @@ def formulas_to_python(function_files):
     file_str += "\n"
 
     for formula in formulas:
+        # Skip if name starts with #
+        if "name" in formula and formula["name"].startswith("#"):
+            continue
         name = (
             formula["name"]
             if "name" in formula and formula["name"] != ""
@@ -169,6 +175,8 @@ def formulas_to_python(function_files):
         formula_def_str = f"{name} = "
         formula_def_str += f"{formula['expression']}\n"
         file_str += formula_def_str
+        if PRINT_FORMULAS:
+            file_str += f"print('{name}: ', {name})\n\n"
     with open(os.path.join(py_dir, "formulas.py"), "w") as pyfile:
         pyfile.write(file_str)
 
