@@ -335,6 +335,7 @@ def main():
     input_exports = inputs_to_python(inputs)
 
     global_exports, global_edges = parse_formulas_to_nodes_and_edges(global_formulas)
+    # Globals dependency tree
     imports_for_globals = edges_to_imports(
         global_edges,
         [(REF_TABLES_FILENAME, ref_tables_exports), (INPUTS_FILENAME, input_exports)],
@@ -344,6 +345,7 @@ def main():
 
     new_all_functions = parse_functions_to_nodes_and_edges(all_functions)
     function_filenames = []
+    # Functions dependency tree
     for filename, functions, function_nodes, function_edges in new_all_functions:
         imports_for_functions = edges_to_imports(
             function_edges,
@@ -357,6 +359,8 @@ def main():
         function_filenames.append(filename)
 
     helpers_to_python()
+
+    # Formulas dependency tree
     _, formulas_edges = parse_formulas_to_nodes_and_edges(formulas)
     imports_for_formulas = edges_to_imports(
         formulas_edges,
