@@ -1,0 +1,27 @@
+{
+  "functions": [
+    {
+      "name": "calculate_decom_cost",
+      "args": ["year", "inflation_price_increase_factor", "decom", "plant_life"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "year == plant_life",
+          "body": "inflation_price_increase_factor * decom"
+        },
+        {
+          "condition": "TRUE",
+          "body": "0"
+        }
+      ]
+    },
+    {
+      "name": "get_decom_costs_column",
+      "description": "Decommissioning Costs column",
+      "map_function": "calculate_decom_cost",
+      "map_iterables": ["operation_range", "inflation_price_increase_factors"],
+      "map_item_names": ["year", "inflation_price_increase_factor"],
+      "args": ["operation_range", "inflation_price_increase_factors", "decom", "plant_life"]
+    }
+  ]
+}

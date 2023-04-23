@@ -42,12 +42,17 @@
       "sample": "range(2012, 2055)"
     },
     {
+      "name": "analysis_index_range",
+      "expression": "seq_along(analysis_range)",
+      "sample": "range(0, 43)"
+    },
+    {
       "name": "feedstock_price_df",
-      "expression": "get_feedstock_price_df(feedstocks, analysis_range)"
+      "expression": "get_feedstock_price_df(feedstocks, analysis_range, startup_year)"
     },
     {
       "name": "operation_range",
-      "expression": "get_operation_range(seq_along(analysis_range), construct)",
+      "expression": "get_operation_range(analysis_index_range, construct)",
       "sample": "[-3, -2, -1, 1, 2, 3, ..., 40]"
     },
     {
@@ -113,13 +118,72 @@
     },
     {
       "name": "replacement_costs",
-      "label": "Replacement Costs ($)",
-      "expression": "get_replacement_costs(operation_range, inflation_price_increase_factors, replace_factor, depr_cap, ref_year, startup_year, inflation_rate)"
+      "label": "Yearly Replacement Costs",
+      "expression": "get_replacement_costs(operation_range, inflation_price_increase_factors, replace_factor, depr_cap, ref_year, startup_year, inflation_rate)",
+      "excel_loc": "Cash Flow Analysis I64"
+    },
+    {
+      "name": "land_cost",
+      "label": "Land Cost ($)",
+      "expression": "acres_required * cost_per_acre * CPIinflator"
+    },
+    {
+      "name": "other_non_depreciable_capital_cost",
+      "label": "Other Non-Depreciable Capital ($)",
+      "expression": "0"
+    },
+    {
+      "name": "non_dep_cap",
+      "label": "Non-Depreciable Capital Costs",
+      "expression": "land_cost + other_non_depreciable_capital_cost",
+      "excel_loc": "Input_Sheet_Template E106"
+    },
+    {
+      "name": "total_cap",
+      "label": "Total Capital Costs",
+      "expression": "depr_cap + non_dep_cap",
+      "excel_loc": "Input_Sheet_Template C108"
+    },
+    {
+      "orig_name": "depr_cap_infl",
+      "label": "Total Depreciable Capital Costs",
+      "expression": "(total_cap - non_dep_cap) * INFLATION_FACTOR",
+      "excel_loc": "Cash Flow Analysis B51"
+    },
+    {
+      "orig_name": "non_dep_infl",
+      "label": "Non-Depreciable Capital Costs",
+      "expression": "non_dep_cap * INFLATION_FACTOR",
+      "excel_loc": "Cash Flow Analysis B52"
+    },
+    {
+      "name": "initial_equity_depr_cap",
+      "label": "Initial Equity Depreciable Capital Column",
+      "expression": "get_initial_equity_depr_cap(analysis_index_range, inflation_price_increase_factors, depr_cap_infl, percentage_equity_financing, percent_cap1, percent_cap2, percent_cap3, percent_cap4)",
+      "excel_loc": "Cash Flow Analysis H64"
+    },
+    {
+      "name": "other_non_depreciable_capital_cost_column",
+      "label": "Other Non-Depreciable Capital Column",
+      "expression": "get_other_non_depreciable_capital_cost_column(analysis_index_range, inflation_price_increase_factors, non_dep_infl)",
+      "excel_loc": "Cash Flow Analysis K64"
+    },
+    {
+      "orig_name": "decom",
+      "label": "Decommissioning",
+      "expression": "decom_percent * depr_cap_infl",
+      "excel_loc": "Cash Flow Analysis B54"
+    },
+    {
+      "name": "decom_costs_column",
+      "label": "Decommissioning Costs Column",
+      "expression": "get_decom_costs_column(operation_range, inflation_price_increase_factors, decom, plant_life)",
+      "excel_loc": "Cash Flow Analysis M64"
     },
     {
       "name": "#",
       "label": "Total Depreciable Capital Costs",
-      "expression": "=(total_cap - non_dep_cap) * INFLATION_FACTOR",
+      "expression": "(total_cap - non_dep_cap) * INFLATION_FACTOR",
       "orig_name": ""
     }
   ]

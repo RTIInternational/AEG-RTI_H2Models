@@ -30,6 +30,8 @@
    "fed_tax_rate": 0.21,
    "WorkingCap": 0.15,
    "replace_factor": 0.005,
+   "cost_per_acre": 50000,
+   "acres_required": 100,
    "feedstocks": [
       {
          "name": "Industrial Electricity",

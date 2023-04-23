@@ -1,0 +1,27 @@
+{
+  "functions": [
+    {
+      "name": "calculate_other_non_depr_cap",
+      "args": ["year", "inflation_price_increase_factor", "non_dep_infl"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "year == YEAR_1",
+          "body": "inflation_price_increase_factor * non_dep_infl"
+        },
+        {
+          "condition": "TRUE",
+          "body": "0"
+        }
+      ]
+    },
+    {
+      "name": "get_other_non_depreciable_capital_cost_column",
+      "description": "Other Non-Depreciable Capital Costs",
+      "map_function": "calculate_other_non_depr_cap",
+      "map_iterables": ["analysis_index_range", "inflation_price_increase_factors"],
+      "map_item_names": ["year", "inflation_price_increase_factor"],
+      "args": ["analysis_index_range", "inflation_price_increase_factors", "non_dep_infl"]
+    }
+  ]
+}

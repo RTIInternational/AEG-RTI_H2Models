@@ -1,0 +1,40 @@
+{
+  "functions": [
+    {
+      "name": "calculate_initial_equity_depr_cap",
+      "description": "In this model, the first 1 to 4 years are for construction. This function handles those years. The `year` arg begins at 0 and is incremented by 1 for each year.",
+      "args": ["year", "inflation_price_increase_factor", "depr_cap_infl", "percentage_equity_financing", "percent_cap1", "percent_cap2", "percent_cap3", "percent_cap4"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "year == YEAR_1",
+          "body": "inflation_price_increase_factor * percentage_equity_financing * depr_cap_infl * percent_cap1"
+        },
+        {
+          "condition": "year == YEAR_2",
+          "body": "inflation_price_increase_factor * percentage_equity_financing * depr_cap_infl * percent_cap2"
+        },
+        {
+          "condition": "year == YEAR_3",
+          "body": "inflation_price_increase_factor * percentage_equity_financing * depr_cap_infl * percent_cap3"
+        },
+        {
+          "condition": "year == YEAR_4",
+          "body": "inflation_price_increase_factor * percentage_equity_financing * depr_cap_infl * percent_cap4"
+        },
+        {
+          "condition": "TRUE",
+          "body": "0"
+        }
+      ]
+    },
+    {
+      "name": "get_initial_equity_depr_cap",
+      "description": "Initial Equity Depreciable Capital",
+      "map_function": "calculate_initial_equity_depr_cap",
+      "map_iterables": ["analysis_index_range", "inflation_price_increase_factors"],
+      "map_item_names": ["year", "inflation_price_increase_factor"],
+      "args": ["analysis_index_range", "inflation_price_increase_factors", "depr_cap_infl", "percentage_equity_financing", "percent_cap1", "percent_cap2", "percent_cap3", "percent_cap4"]
+    }
+  ]
+}

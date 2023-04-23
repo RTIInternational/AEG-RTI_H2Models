@@ -52,10 +52,10 @@ def read_aeo():
 all_aeo = read_aeo()
 
 
-def get_aeo(price_table):
-    if price_table != "AEO_2017_Reference_Case":
-        raise Exception(f"Price table '{price_table}' not supported.")
-    return all_aeo[price_table]
+# def get_aeo(price_table):
+#     if price_table != "AEO_2017_Reference_Case":
+#         raise Exception(f"Price table '{price_table}' not supported.")
+#     return all_aeo[price_table]
 
 
 # Function that reads data/chemical-price-index/price-index-orig.csv and returns a dictionary
@@ -129,3 +129,8 @@ get_lhv = lambda fuel: lhv[fuel]
 conversion_factor = lambda from_to: conversion_factors[from_to]
 get_plant_cost_index = lambda year: plant_cost_index[year]
 get_cpi = lambda year: consumer_price_index[year]
+get_aeo = (
+    lambda price_table: all_aeo[price_table]
+    if price_table == "AEO_2017_Reference_Case"
+    else Exception(f"Price table '{price_table}' not supported.")
+)

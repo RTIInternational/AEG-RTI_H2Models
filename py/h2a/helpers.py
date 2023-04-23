@@ -14,3 +14,7 @@ def seq_along(a):
     return range(len(a))
 
 TRUE = True
+YEAR_1 = 0
+YEAR_2 = 1
+YEAR_3 = 2
+YEAR_4 = 3
