@@ -4,13 +4,15 @@ import ast
 import itertools
 import os
 import subprocess
+from lib.write_formulas import formulas_to_code
+from lib.write_inputs import inputs_to_code
 from lib.read_json_files import (
     read_functions_json,
     read_globals_json,
     read_inputs_json,
     read_formulas_json,
 )
-from lib.util import py_dir, py_h2a_dir
+from lib.util import py_dir, py_h2a_dir, r_dir, r_h2a_dir, INPUTS_FILENAME
 from lib.read_ref_table_exports import ref_tables_exports, REF_TABLES_FILENAME
 
 # Get project root directory
@@ -19,19 +21,24 @@ TOP_LINE_COMMENT = """#
 #
 """
 
-INPUTS_FILENAME = "inputs"  # Python file containing the user input variables
+FORMULAS_FILENAME = "formulas"
 GLOBALS_FILENAME = "globals"  # Name of the Python file containing a few global variables that functions use
 HELPERS_FILENAME = "helpers"  # Name of the Python file containing helper functions
+PRINT_FORMULAS = True
 
 
-def globals_to_python(global_formulas, import_statements):
+def formulas_to_python(formulas, import_statements):
     file_str = TOP_LINE_COMMENT
+    file_str += "from h2a.inputs import *\n"
     for import_statement in import_statements:
-        file_str += f"{import_statement}\n"
+        file_str += f"{import_statement['py']}\n"
 
     file_str += "\n"
 
-    for formula in global_formulas:
+    for formula in formulas:
+        # Skip if name starts with #
+        if "name" in formula and formula["name"].startswith("#"):
+            continue
         name = (
             formula["name"]
             if "name" in formula and formula["name"] != ""
@@ -40,25 +47,10 @@ def globals_to_python(global_formulas, import_statements):
         formula_def_str = f"{name} = "
         formula_def_str += f"{formula['expression']}\n"
         file_str += formula_def_str
-    with open(os.path.join(py_h2a_dir, f"{GLOBALS_FILENAME}.py"), "w") as pyfile:
+        if PRINT_FORMULAS:
+            file_str += f"print('{name}: ', {name})\n\n"
+    with open(os.path.join(py_dir, "formulas.py"), "w") as pyfile:
         pyfile.write(file_str)
-
-
-def inputs_to_python(inputs):
-    """Creates a Python file containing the user inputs and returns a list of the names of the variables"""
-    inputs_exports = []
-    file_str = TOP_LINE_COMMENT
-    file_str += "from h2a.read_input import user_input\n\n"
-
-    for key in inputs:
-        if key == "$schema":
-            continue
-        file_str += f"{key} = user_input['{key}']\n"
-        inputs_exports.append(key)
-
-    with open(os.path.join(py_h2a_dir, f"{INPUTS_FILENAME}.py"), "w") as pyfile:
-        pyfile.write(file_str)
-    return inputs_exports
 
 
 HELPERS_EXPORTS = [
@@ -113,7 +105,7 @@ def helpers_to_python():
 def functions_to_python(filename, functions, import_statements):
     file_str = TOP_LINE_COMMENT
     for import_statement in import_statements:
-        file_str += f"{import_statement}\n"
+        file_str += f"{import_statement['py']}\n"
 
     for func in functions:
         func_def_str = f"def {func['name']}("
@@ -173,35 +165,6 @@ def functions_to_python(filename, functions, import_statements):
         file_str += func_def_str
 
     with open(os.path.join(py_h2a_dir, "lib", f"{filename}.py"), "w") as pyfile:
-        pyfile.write(file_str)
-
-
-PRINT_FORMULAS = True
-
-
-def formulas_to_python(formulas, import_statements):
-    file_str = TOP_LINE_COMMENT
-    file_str += "from h2a.inputs import *\n"
-    for import_statement in import_statements:
-        file_str += f"{import_statement}\n"
-
-    file_str += "\n"
-
-    for formula in formulas:
-        # Skip if name starts with #
-        if "name" in formula and formula["name"].startswith("#"):
-            continue
-        name = (
-            formula["name"]
-            if "name" in formula and formula["name"] != ""
-            else formula["orig_name"]
-        )
-        formula_def_str = f"{name} = "
-        formula_def_str += f"{formula['expression']}\n"
-        file_str += formula_def_str
-        if PRINT_FORMULAS:
-            file_str += f"print('{name}: ', {name})\n\n"
-    with open(os.path.join(py_dir, "formulas.py"), "w") as pyfile:
         pyfile.write(file_str)
 
 
@@ -293,14 +256,33 @@ def parse_functions_to_nodes_and_edges(all_functions):
     return new_all_functions
 
 
+def dir_path_to_import_str(dirs, filename, lang):
+    if lang == "py":
+        # py_import_path is "h2a" joined with dirs if any exist, and filename, separated by periods
+        py_import_path = "h2a"
+        if dirs:
+            py_import_path += "." + ".".join(dirs)
+        py_import_path += "." + filename
+        return py_import_path
+    elif lang == "R":
+        # R_import_path is "h2a" joined with dirs if any exist, separated by commas
+        R_import_path = "h2a"
+        if dirs:
+            R_import_path += "," + ",".join(dirs)
+        return R_import_path
+
+
 # For each global_edges[i]["to"], if it is in lib_exports, then add an import statement for it
 def edges_to_imports(edges, lib_exports):
     """Returns a list of import statements given edges (file dependencies) and exports (vars/functions exported by each file)"""
     all_imports = []
     import_statements = []
+    file_dirs = {
+        x[0]: x[2] for x in lib_exports
+    }  # {filename: dirs} where dirs is like ["lib"]
 
     for edge in edges:
-        for filename, exports in lib_exports:
+        for filename, exports, _ in lib_exports:
             found = None
             for export in exports:
                 if edge["to"] == export:
@@ -312,8 +294,13 @@ def edges_to_imports(edges, lib_exports):
     all_imports.sort(key=lambda x: x[0])
     # Iterate over all_imports and group them by filename
     for filename, imports in itertools.groupby(all_imports, key=lambda x: x[0]):
+        dirs = file_dirs[filename]
+        import_list = ", ".join([x[1] for x in imports])
         import_statements.append(
-            f"from h2a.{filename} import {', '.join([x[1] for x in imports])}"
+            {
+                "py": f"from {dir_path_to_import_str(dirs, filename, 'py')} import {import_list}",
+                "R": f'import::from("{filename}.R", {import_list}, .directory = here({dir_path_to_import_str(dirs, _, "R")}))',
+            }
         )
 
     return import_statements
@@ -332,16 +319,19 @@ def main():
     all_functions = read_functions_json()
     formulas = read_formulas_json()["formulas"]
 
-    input_exports = inputs_to_python(inputs)
+    input_exports = inputs_to_code(inputs)
 
     global_exports, global_edges = parse_formulas_to_nodes_and_edges(global_formulas)
     # Globals dependency tree
     imports_for_globals = edges_to_imports(
         global_edges,
-        [(REF_TABLES_FILENAME, ref_tables_exports), (INPUTS_FILENAME, input_exports)],
+        [
+            (REF_TABLES_FILENAME, ref_tables_exports, []),
+            (INPUTS_FILENAME, input_exports, []),
+        ],
     )
 
-    globals_to_python(global_formulas, imports_for_globals)
+    formulas_to_code(GLOBALS_FILENAME, global_formulas, imports_for_globals)
 
     new_all_functions = parse_functions_to_nodes_and_edges(all_functions)
     function_filenames = []
@@ -350,9 +340,9 @@ def main():
         imports_for_functions = edges_to_imports(
             function_edges,
             [
-                (REF_TABLES_FILENAME, ref_tables_exports),
-                (HELPERS_FILENAME, HELPERS_EXPORTS),
-                (GLOBALS_FILENAME, global_exports),
+                (REF_TABLES_FILENAME, ref_tables_exports, []),
+                (HELPERS_FILENAME, HELPERS_EXPORTS, []),
+                (GLOBALS_FILENAME, global_exports, []),
             ],
         )
         functions_to_python(filename, functions, imports_for_functions)
@@ -365,16 +355,16 @@ def main():
     imports_for_formulas = edges_to_imports(
         formulas_edges,
         [
-            (REF_TABLES_FILENAME, ref_tables_exports),
-            (HELPERS_FILENAME, HELPERS_EXPORTS),
-            (GLOBALS_FILENAME, global_exports),
+            (REF_TABLES_FILENAME, ref_tables_exports, []),
+            (HELPERS_FILENAME, HELPERS_EXPORTS, []),
+            (GLOBALS_FILENAME, global_exports, []),
         ]
         + [
-            (f"lib.{filename}", exports)
+            (filename, exports, ["lib"])
             for filename, _, exports, _ in new_all_functions
         ],
     )
-    formulas_to_python(formulas, imports_for_formulas)
+    formulas_to_code(FORMULAS_FILENAME, formulas, imports_for_formulas)
 
     # Use subprocess to run `python formulas.py`
     subprocess.run(["python", "formulas.py"], cwd=os.path.join(py_dir))
