@@ -4,6 +4,8 @@ import ast
 import itertools
 import os
 import subprocess
+from lib.write_functions import functions_to_code
+from lib.write_helpers import helpers_to_code
 from lib.write_formulas import formulas_to_code
 from lib.write_inputs import inputs_to_code
 from lib.read_json_files import (
@@ -12,7 +14,12 @@ from lib.read_json_files import (
     read_inputs_json,
     read_formulas_json,
 )
-from lib.util import py_dir, py_h2a_dir, r_dir, r_h2a_dir, INPUTS_FILENAME
+from lib.util import (
+    py_dir,
+    py_h2a_dir,
+    INPUTS_FILENAME,
+    HELPERS_FILENAME,
+)
 from lib.read_ref_table_exports import ref_tables_exports, REF_TABLES_FILENAME
 
 # Get project root directory
@@ -23,36 +30,9 @@ TOP_LINE_COMMENT = """#
 
 FORMULAS_FILENAME = "formulas"
 GLOBALS_FILENAME = "globals"  # Name of the Python file containing a few global variables that functions use
-HELPERS_FILENAME = "helpers"  # Name of the Python file containing helper functions
-PRINT_FORMULAS = True
 
 
-def formulas_to_python(formulas, import_statements):
-    file_str = TOP_LINE_COMMENT
-    file_str += "from h2a.inputs import *\n"
-    for import_statement in import_statements:
-        file_str += f"{import_statement['py']}\n"
-
-    file_str += "\n"
-
-    for formula in formulas:
-        # Skip if name starts with #
-        if "name" in formula and formula["name"].startswith("#"):
-            continue
-        name = (
-            formula["name"]
-            if "name" in formula and formula["name"] != ""
-            else formula["orig_name"]
-        )
-        formula_def_str = f"{name} = "
-        formula_def_str += f"{formula['expression']}\n"
-        file_str += formula_def_str
-        if PRINT_FORMULAS:
-            file_str += f"print('{name}: ', {name})\n\n"
-    with open(os.path.join(py_dir, "formulas.py"), "w") as pyfile:
-        pyfile.write(file_str)
-
-
+# TODO: refactor for Python vs R
 HELPERS_EXPORTS = [
     "get",
     "concat",
@@ -62,110 +42,8 @@ HELPERS_EXPORTS = [
     "YEAR_2",
     "YEAR_3",
     "YEAR_4",
-    "TRUE",
+    # "TRUE",
 ]
-
-
-def helpers_to_python():
-    file_str = TOP_LINE_COMMENT
-
-    # get() is a helper function to access a dictionary
-    file_str += "def get(obj, key):\n    return obj[key]\n\n"
-
-    # at() is a helper function to access a list using zero-based indexing
-    # file_str += "def at(obj, index):\n    return obj[index]\n\n"
-    # R: at <- function(x, i) x[[i + 1]]
-
-    # concat() is a helper function to concatenate strings
-    file_str += "def concat(a, b):\n    return a + b\n\n"
-
-    # split() is a helper function to split a string
-    file_str += "def split(a, b):\n    return a.split(b)\n\n"
-
-    # seq_along() is a helper function to get a sequence of integers
-    file_str += "def seq_along(a):\n    return range(len(a))\n\n"
-
-    # R note: helper: range <- seq
-    # R note: helper: len <- length
-
-    file_str += "TRUE = True\n"
-
-    # H2A requires years of construction to be 1, 2, 3, or 4
-    # These constants are used to compare against operation_range years
-    # The final year of construction is the first year of operation
-    file_str += "YEAR_1 = 0\n"
-    file_str += "YEAR_2 = 1\n"
-    file_str += "YEAR_3 = 2\n"
-    file_str += "YEAR_4 = 3\n"
-
-    with open(os.path.join(py_h2a_dir, f"{HELPERS_FILENAME}.py"), "w") as pyfile:
-        pyfile.write(file_str)
-
-
-def functions_to_python(filename, functions, import_statements):
-    file_str = TOP_LINE_COMMENT
-    for import_statement in import_statements:
-        file_str += f"{import_statement['py']}\n"
-
-    for func in functions:
-        func_def_str = f"def {func['name']}("
-        if "args" in func:
-            func_def_str += ", ".join(func["args"])
-        if "extra_args" in func:
-            func_def_str += ", "
-            func_def_str += ", ".join(func["extra_args"])
-        func_def_str += "):\n"
-        if "description" in func:
-            func_def_str += f'    """{func["description"]}"""\n'
-        if "body" in func:
-            func_def_str += f"    return {func['body']}\n\n"
-        elif "type" in func:
-            if func["type"] == "switch":
-                cond1 = func["cases"][0]["condition"]
-                body1 = func["cases"][0]["body"]
-                func_def_str += f"    if {cond1}:\n"
-                func_def_str += f"        return {body1}\n"
-                for case in func["cases"][1:]:
-                    cond = case["condition"]
-                    body = case["body"]
-                    func_def_str += f"    elif {cond}:\n"
-                    func_def_str += f"        return {body}\n"
-        elif "map_function" in func:
-            # lambda_args_str is the list of arguments for the lambda function, using the list func["map_item_names"]
-            lambda_args_str = (
-                func["lambda_args_str"]
-                if "lambda_args_str" in func
-                else ", ".join(func["map_item_names"])
-            )
-            map_args_str = (
-                func["map_args_str"]
-                if "map_args_str" in func
-                else ", ".join(func["map_iterables"])
-            )
-            # extra_arg_list is func["args"] without func["map_iterables"]
-            extra_arg_list = [
-                arg for arg in func["args"] if arg not in func["map_iterables"]
-            ]
-            extra_args_str = (
-                f"{', '.join(extra_arg_list)}" if len(extra_arg_list) > 0 else None
-            )
-            # lambda_map_arg_str joins the lambda arguments with the extra arguments, if extra arguments exist
-            lambda_map_arg_str = (
-                func["lambda_map_arg_str"]
-                if "lambda_map_arg_str" in func
-                else (
-                    f"{lambda_args_str}, {extra_args_str}"
-                    if extra_args_str is not None
-                    else lambda_args_str
-                )
-            )
-            # R note: helper: map <- lapply or purrr::map
-            func_def_str += f"    return list(map(lambda {lambda_args_str}: {func['map_function']}({lambda_map_arg_str}), {map_args_str}))\n\n"
-
-        file_str += func_def_str
-
-    with open(os.path.join(py_h2a_dir, "lib", f"{filename}.py"), "w") as pyfile:
-        pyfile.write(file_str)
 
 
 def parse_formulas_to_nodes_and_edges(formulas):
@@ -257,6 +135,7 @@ def parse_functions_to_nodes_and_edges(all_functions):
 
 
 def dir_path_to_import_str(dirs, filename, lang):
+    """Helper function for edges_to_imports. Returns a string that can be used in an import statement in Python or R."""
     if lang == "py":
         # py_import_path is "h2a" joined with dirs if any exist, and filename, separated by periods
         py_import_path = "h2a"
@@ -272,7 +151,6 @@ def dir_path_to_import_str(dirs, filename, lang):
         return R_import_path
 
 
-# For each global_edges[i]["to"], if it is in lib_exports, then add an import statement for it
 def edges_to_imports(edges, lib_exports):
     """Returns a list of import statements given edges (file dependencies) and exports (vars/functions exported by each file)"""
     all_imports = []
@@ -310,9 +188,9 @@ def main():
     """
     1) Read JSON files
     2) Parse JSON files into nodes and edges to create dependency graphs
-    3) Convert nodes and edges into import statements
-    5) Parse JSON into Python code (expressions and functions)
-    6) Write Python code to files
+    3) Convert edges into import statements
+    5) Translate formulas & functions to Python/R code
+    6) Write code to files
     """
     inputs = read_inputs_json()
     global_formulas = read_globals_json()["globals"]
@@ -345,10 +223,10 @@ def main():
                 (GLOBALS_FILENAME, global_exports, []),
             ],
         )
-        functions_to_python(filename, functions, imports_for_functions)
+        functions_to_code(filename, functions, imports_for_functions)
         function_filenames.append(filename)
 
-    helpers_to_python()
+    helpers_to_code()
 
     # Formulas dependency tree
     _, formulas_edges = parse_formulas_to_nodes_and_edges(formulas)

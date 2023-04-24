@@ -1,5 +1,5 @@
 import os
-from .util import R_ENABLED, py_h2a_dir, r_h2a_dir, util_code
+from .util import R_ENABLED, PRINT_FORMULAS, util_code
 
 
 def formulas_to_lang(filename, formulas, import_statements, lang):
@@ -12,7 +12,10 @@ def formulas_to_lang(filename, formulas, import_statements, lang):
             "py": lambda name, expr: f"{name} = {expr}\n",
             "R": lambda name, expr: f"{name} <- {expr}\n",
         },
-        "output_dir": {"py": py_h2a_dir, "R": r_h2a_dir},
+        "print": {
+            "py": lambda name: f"print('{name}: ', {name})\n\n",
+            "R": lambda name: f'print(paste("{name}", {name}, sep = ": "))\n\n',
+        },
     }
     file_str = util_code["top_line_comment"][lang]
 
@@ -34,9 +37,15 @@ def formulas_to_lang(filename, formulas, import_statements, lang):
             else formula["orig_name"]
         )
         file_str += code["assign"][lang](name, formula["expression"])
-    with open(
-        os.path.join(code["output_dir"][lang], f"{filename}.{lang}"), "w"
-    ) as codefile:
+        if PRINT_FORMULAS and filename == "formulas":
+            file_str += code["print"][lang](name)
+
+    # If filename is formulas, then we are writing to the top-level output_dir
+    if filename == "formulas":
+        output_dir = util_code["top_output_dir"][lang]
+    else:
+        output_dir = util_code["output_dir"][lang]
+    with open(os.path.join(output_dir, f"{filename}.{lang}"), "w") as codefile:
         codefile.write(file_str)
 
 

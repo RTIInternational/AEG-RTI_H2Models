@@ -1,6 +1,6 @@
 import os
 
-from .util import R_ENABLED, INPUTS_FILENAME, py_h2a_dir, r_h2a_dir, util_code
+from .util import R_ENABLED, INPUTS_FILENAME, util_code
 
 
 def inputs_to_lang(inputs, lang):
@@ -15,7 +15,6 @@ def inputs_to_lang(inputs, lang):
             "py": lambda key: f"{key} = user_input['{key}']\n",
             "R": lambda key: f'{key} <- user_input[["{key}"]]\n',
         },
-        "output_dir": {"py": py_h2a_dir, "R": r_h2a_dir},
     }
 
     inputs_exports = []
@@ -29,7 +28,7 @@ def inputs_to_lang(inputs, lang):
         inputs_exports.append(key)
 
     with open(
-        os.path.join(code["output_dir"][lang], f"{INPUTS_FILENAME}.{lang}"), "w"
+        os.path.join(util_code["output_dir"][lang], f"{INPUTS_FILENAME}.{lang}"), "w"
     ) as pyfile:
         pyfile.write(file_str)
     return inputs_exports
