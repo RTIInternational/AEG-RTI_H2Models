@@ -4,9 +4,16 @@
 import::from("globals.R", CPIinflator, CEPCIinflator, .directory = here(h2a))
 import::from("helpers.R", get, .directory = here(h2a))
 calculate_capital_investment_cost <- function(capital_investment) {
-    return(get(capital_investment, 'cost') * CEPCIinflator * CPIinflator * get(capital_investment, 'installation_cost_factor'))
+    return(
+        get(capital_investment, "cost") *
+            CEPCIinflator * CPIinflator * get(capital_investment, "installation_cost_factor")
+    )
 }
 capital_investment_costs <- function(capital_investments) {
     #'H2A Total Direct Capital Cost
-    return(lapply(capital_investments, function(capital_investment) calculate_capital_investment_cost(capital_investment)))
+    return(
+        lapply(
+            capital_investments, function(capital_investment) calculate_capital_investment_cost(capital_investment)
+        )
+    )
 }

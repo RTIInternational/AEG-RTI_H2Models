@@ -4,12 +4,15 @@
 calculate_decom_cost <- function(year, inflation_price_increase_factor, decom, plant_life) {
     if (year == plant_life) {
         return(inflation_price_increase_factor * decom)
-    }
-    else {
+    } else {
         return(0)
     }
 }
 get_decom_costs_column <- function(operation_range, inflation_price_increase_factors, decom, plant_life) {
     #'Decommissioning Costs column
-    return(lapply(operation_range, inflation_price_increase_factors, function(year, inflation_price_increase_factor) calculate_decom_cost(year, inflation_price_increase_factor, decom, plant_life)))
+    return(
+        lapply(
+            operation_range, inflation_price_increase_factors, function(year, inflation_price_increase_factor) calculate_decom_cost(year, inflation_price_increase_factor, decom, plant_life)
+        )
+    )
 }

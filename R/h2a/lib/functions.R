@@ -3,5 +3,5 @@
 #
 import::from("globals.R", CPIinflator, CEPCIinflator, .directory = here(h2a))
 site_preparation <- function() {
-    return(0.159872128446844 * direct_cap / (CEPCIinflator * CPIinflator))
+    return(0.159872128446844 * direct_cap/(CEPCIinflator * CPIinflator))
 }
