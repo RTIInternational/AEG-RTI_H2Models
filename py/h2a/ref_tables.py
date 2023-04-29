@@ -119,12 +119,29 @@ def read_consumer_price_index():
     return consumer_price_index
 
 
+def read_labor_index():
+    labor_index = {}
+    with open(
+        os.path.join(root_dir, "data/labor-index/labor-index.csv"),
+        newline="",
+    ) as csvfile:
+        reader = csv.reader(csvfile)
+        next(reader)  # skip the first row
+        for row in reader:
+            if row[0].startswith("#"):
+                continue
+            year, value = row
+            labor_index[int(year)] = float(value)
+    return labor_index
+
+
 lhv, hhv = read_fuel_heating_values()
 conversion_factors = read_conversion_factors()
 plant_cost_index = read_plant_cost_index()
 consumer_price_index = read_consumer_price_index()
 non_energy_material_prices = read_non_energy_material_prices()
 chemical_price_index = read_chemical_price_index()
+labor_index = read_labor_index()
 get_lhv = lambda fuel: lhv[fuel]
 conversion_factor = lambda from_to: conversion_factors[from_to]
 get_plant_cost_index = lambda year: plant_cost_index[year]

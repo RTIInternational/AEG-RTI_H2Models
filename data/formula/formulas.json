@@ -181,6 +181,50 @@
       "excel_loc": "Cash Flow Analysis M64"
     },
     {
+      "name": "FTE_HOURS_PER_YEAR",
+      "expression": "2080"
+    },
+    {
+      "name": "labor_cost_inflator",
+      "expression": "get(labor_index, ref_year) / get(labor_index, BasisYear)"
+    },
+    {
+      "orig_name": "labor_cost",
+      "label": "Labor Cost ($/year)",
+      "expression": "total_plant_staff * (labor_cost_per_hour * labor_cost_inflator) * FTE_HOURS_PER_YEAR",
+      "excel_loc": "Input_Sheet_Template E113"
+    },
+    {
+      "orig_name": "overhead_GA",
+      "label": "G&A ($/year)",
+      "expression": "labor_cost * overhead_rate",
+      "excel_loc": "Input_Sheet_Template E115"
+    },
+    {
+      "orig_name": "tax_insurance",
+      "label": "Property taxes and insurance ($/year)",
+      "expression": "tax_ins_rate * total_cap",
+      "excel_loc": "Input_Sheet_Template E118"
+    },
+    {
+      "name": "total_fixed_cost",
+      "label": "Total Fixed Operating Costs ($/year)",
+      "expression": "labor_cost + overhead_GA + tax_insurance + (CEPCIinflator*CPIinflator) * (licensing + rent + material_cost_maintenance_and_repairs + production_cost_maintenance_and_repairs + other_fees + other_fixed)",
+      "excel_loc": "Input_Sheet_Template E124"
+    },
+    {
+      "orig_name": "inflated_fixed",
+      "label": "Fixed Operating Costs ($/year)",
+      "expression": "total_fixed_cost * INFLATION_FACTOR",
+      "excel_loc": "Cash Flow Analysis B56"
+    },
+    {
+      "name": "fixed_cost_column",
+      "label": "Fixed Operating Cost",
+      "expression": "get_fixed_cost_column(operation_range, inflation_price_increase_factors, inflated_fixed, percnt_fixed, start_time)",
+      "excel_loc": "Cash Flow Analysis N64"
+    },
+    {
       "name": "#",
       "label": "Total Depreciable Capital Costs",
       "expression": "(total_cap - non_dep_cap) * INFLATION_FACTOR",

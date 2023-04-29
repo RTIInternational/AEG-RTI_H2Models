@@ -32,6 +32,18 @@
    "replace_factor": 0.005,
    "cost_per_acre": 50000,
    "acres_required": 100,
+
+   "total_plant_staff": 18,
+   "labor_cost_per_hour": 50,
+   "overhead_rate": 0.2,
+   "licensing": 0,
+   "tax_ins_rate": 0.02,
+   "rent": 0,
+   "material_cost_maintenance_and_repairs": 3050393,
+   "production_cost_maintenance_and_repairs": 2033595,
+   "other_fees": 1056446,
+   "other_fixed": 0,
+
    "feedstocks": [
       {
          "name": "Industrial Electricity",

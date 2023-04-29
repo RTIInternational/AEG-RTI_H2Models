@@ -7,12 +7,13 @@ from h2a.lib.cashflow_meta import get_operation_range, get_inflation_price_incre
 from h2a.lib.decommissioning import get_decom_costs_column
 from h2a.lib.feedstock_costs import get_total_feedstock_costs
 from h2a.lib.feedstock_prices import get_feedstock_price_df
+from h2a.lib.fixed_costs import get_fixed_cost_column
 from h2a.globals import plant_output_kg_per_year, analysis_period_start, analysis_period_end, INFLATION_FACTOR, CEPCIinflator, CPIinflator
-from h2a.helpers import seq_along
+from h2a.helpers import seq_along, get
 from h2a.lib.initial_equity import get_initial_equity_depr_cap
 from h2a.lib.other_materials import get_other_material_price_df
 from h2a.lib.other_non_depreciable_capital_cost import get_other_non_depreciable_capital_cost_column
-from h2a.ref_tables import get_lhv, conversion_factor
+from h2a.ref_tables import get_lhv, conversion_factor, labor_index
 from h2a.lib.replacement_costs import get_replacement_costs
 
 H2_LHV_MJ_p_kg = get_lhv("Hydrogen")
@@ -113,4 +114,28 @@ print('decom: ', decom)
 
 decom_costs_column = get_decom_costs_column(operation_range, inflation_price_increase_factors, decom, plant_life)
 print('decom_costs_column: ', decom_costs_column)
+
+FTE_HOURS_PER_YEAR = 2080
+print('FTE_HOURS_PER_YEAR: ', FTE_HOURS_PER_YEAR)
+
+labor_cost_inflator = get(labor_index, ref_year) / get(labor_index, BasisYear)
+print('labor_cost_inflator: ', labor_cost_inflator)
+
+labor_cost = total_plant_staff * (labor_cost_per_hour * labor_cost_inflator) * FTE_HOURS_PER_YEAR
+print('labor_cost: ', labor_cost)
+
+overhead_GA = labor_cost * overhead_rate
+print('overhead_GA: ', overhead_GA)
+
+tax_insurance = tax_ins_rate * total_cap
+print('tax_insurance: ', tax_insurance)
+
+total_fixed_cost = labor_cost + overhead_GA + tax_insurance + (CEPCIinflator*CPIinflator) * (licensing + rent + material_cost_maintenance_and_repairs + production_cost_maintenance_and_repairs + other_fees + other_fixed)
+print('total_fixed_cost: ', total_fixed_cost)
+
+inflated_fixed = total_fixed_cost * INFLATION_FACTOR
+print('inflated_fixed: ', inflated_fixed)
+
+fixed_cost_column = get_fixed_cost_column(operation_range, inflation_price_increase_factors, inflated_fixed, percnt_fixed, start_time)
+print('fixed_cost_column: ', fixed_cost_column)
 

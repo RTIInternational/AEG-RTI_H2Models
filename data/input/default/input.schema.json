@@ -180,6 +180,58 @@
       "title": "Land Required (acres)",
       "minimum": 0
     },
+    "total_plant_staff": {
+      "type": "number",
+      "title": "Total plant staff (number of FTEs employed by plant)",
+      "minimum": 0
+    },
+    "labor_cost_per_hour": {
+      "type": "number",
+      "title": "Burdened labor cost, including overhead ($/man-hr)",
+      "minimum": 0
+    },
+    "overhead_rate": {
+      "type": "number",
+      "title": "G&A rate (% of labor cost)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "licensing": {
+      "type": "number",
+      "title": "Licensing, Permits and Fees ($/year)",
+      "minimum": 0
+    },
+    "tax_ins_rate": {
+      "type": "number",
+      "title": "Property tax and insurance rate (% of total capital investment per year)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "rent": {
+      "type": "number",
+      "title": "Rent ($/year)",
+      "minimum": 0
+    },
+    "material_cost_maintenance_and_repairs": {
+      "type": "number",
+      "title": "Material costs for maintenance and repairs ($/year)",
+      "minimum": 0
+    },
+    "production_cost_maintenance_and_repairs": {
+      "type": "number",
+      "title": "Production Maintenance and Repairs ($/year)",
+      "minimum": 0
+    },
+    "other_fees": {
+      "type": "number",
+      "title": "Other fees ($/year)",
+      "minimum": 0
+    },
+    "other_fixed": {
+      "type": "number",
+      "title": "Other Fixed O&M Costs ($/year)",
+      "minimum": 0
+    },
     "feedstocks": {
       "type": "array",
       "items": {

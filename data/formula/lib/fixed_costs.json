@@ -1,0 +1,32 @@
+{
+  "functions": [
+    {
+      "name": "calculate_fixed_cost",
+      "args": ["year", "inflation_price_increase_factor", "inflated_fixed", "percnt_fixed", "start_time"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "year < 0",
+          "body": "0"
+        }, {
+          "condition": "year == 1 and start_time < 1",
+          "body": "-(( inflated_fixed * percnt_fixed * start_time) + ( inflated_fixed * (1 - start_time) ))"
+        }, {
+          "condition": "year <= start_time",
+          "body": "-(inflated_fixed * percnt_fixed * inflation_price_increase_factor)"
+        }, {
+          "condition": "TRUE",
+          "body": "-(inflated_fixed * inflation_price_increase_factor)"
+        }
+      ]
+    },
+    {
+      "name": "get_fixed_cost_column",
+      "description": "Fixed Operating Costs column",
+      "map_function": "calculate_fixed_cost",
+      "map_iterables": ["operation_range", "inflation_price_increase_factors"],
+      "map_item_names": ["year", "inflation_price_increase_factor"],
+      "args": ["operation_range", "inflation_price_increase_factors", "inflated_fixed", "percnt_fixed", "start_time"]
+    }
+  ]
+}
