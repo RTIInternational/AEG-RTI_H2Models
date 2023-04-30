@@ -1,0 +1,27 @@
+{
+  "functions": [
+    {
+      "name": "calculate_salvage_value",
+      "args": ["year", "inflation_price_increase_factor", "salvage", "plant_life"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "year == plant_life",
+          "body": "inflation_price_increase_factor * salvage"
+        },
+        {
+          "condition": "TRUE",
+          "body": "0"
+        }
+      ]
+    },
+    {
+      "name": "get_salvage_column",
+      "description": "Salvage Value column",
+      "map_function": "calculate_salvage_value",
+      "map_iterables": ["operation_range", "inflation_price_increase_factors"],
+      "map_item_names": ["year", "inflation_price_increase_factor"],
+      "args": ["operation_range", "inflation_price_increase_factors", "salvage", "plant_life"]
+    }
+  ]
+}

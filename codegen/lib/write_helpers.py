@@ -16,6 +16,14 @@ def helpers_to_lang(lang):
             "py": "def split(a, b):\n    return a.split(b)\n\n",
             "R": "split <- function(a, b) strsplit(a, b)[[1]]\n\n",
         },
+        "npv": {
+            "py": "def npv(r, cfList):\n    sum_pv = 0\n    for i, pmt in enumerate(cfList, start=1):\n        sum_pv += pmt / ((1 + r) ** i)\n    return sum_pv\n\n",
+            "R": "npv <- function(r, cfList) {\n    sum_pv <- 0\n    for (i in seq_along(cfList)) {\n        sum_pv <- sum_pv + cfList[[i]] / ((1 + r) ^ i)\n    }\n    return(sum_pv)\n}\n\n",
+        },
+        "skip": {
+            "py": "def skip(a, b):\n    return a[b:]\n\n",
+            "R": "skip <- function(a, b) a[(b + 1):length(a)]\n\n",
+        },
         "seq_along": {"py": "def seq_along(a):\n    return range(len(a))\n\n", "R": ""},
         "TRUE": {
             "py": "TRUE = True\n",
@@ -40,6 +48,12 @@ def helpers_to_lang(lang):
 
     # split() is a helper function to split a string
     file_str += code["split"][lang]
+
+    # npv() is a helper function to calculate the net present value of a list of cash flows
+    file_str += code["npv"][lang]
+
+    # skip() is a helper function to get all but the first value of a list
+    file_str += code["skip"][lang]
 
     # seq_along() is a helper function to get a sequence of integers
     file_str += code["seq_along"][lang]

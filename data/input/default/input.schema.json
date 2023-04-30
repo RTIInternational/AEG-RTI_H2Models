@@ -101,7 +101,7 @@
     },
     "debt_period": {
       "type": "number",
-      "title": "Debt Period (years)",
+      "title": "Debt Period (years) (0 for constant debt)",
       "minimum": 0
     },
     "percnt_fixed": {

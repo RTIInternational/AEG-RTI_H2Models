@@ -31,6 +31,8 @@ HELPERS_EXPORTS = [
     "get",
     "concat",
     "split",
+    "npv",
+    "skip",
     "seq_along",
     "YEAR_1",
     "YEAR_2",

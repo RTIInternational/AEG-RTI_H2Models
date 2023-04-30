@@ -1,0 +1,120 @@
+{
+  "functions" : [
+    {
+      "name": "calculate_principal_payment_when_constant_debt",
+      "description": "✅ Annual payment for the constant debt case",
+      "args": ["year", "last_year", "initial_capital_financed"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "year == last_year",
+          "body": "initial_capital_financed"
+        },
+        {
+          "condition": "TRUE",
+          "body": "0"
+        }
+      ]
+    },
+    {
+      "name": "calculate_principal_payment_when_paying_debt",
+      "description": "📝 Annual payment for when making payments that decrease the balance",
+      "args": ["annual_payment", "interest_amount"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "BALANCE_EXISTS",
+          "body": "annual_payment - interest_amount"
+        },
+        {
+          "condition": "TRUE",
+          "body": "0"
+        }
+      ]
+    },
+    {
+      "name": "get_principal_payments_constant_debt",
+      "description": "Principal payments for the constant debt case",
+      "map_function": "calculate_principal_payment_when_constant_debt",
+      "map_iterables": ["analysis_range"],
+      "map_item_names": ["year"],
+      "args": ["analysis_range", "last_year", "initial_capital_financed"]
+    },
+    {
+      "name": "determine_principal_payment",
+      "description": "✅ Constant or paying down debt?",
+      "args": ["debt_period", "analysis_range", "last_year", "initial_capital_financed"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "debt_period == 0",
+          "body": "get_principal_payments_constant_debt(analysis_range, last_year, initial_capital_financed)"
+        },
+        {
+          "condition": "TRUE",
+          "body": "calculate_principal_payment_when_paying_debt"
+        }
+      ]
+    },
+    {
+      "name": "calculate_interest_amount",
+      "description": "📝 Interest amount for the current year",
+      "args": ["year", "balance", "debt_interest"],
+      "body": "balance * debt_interest"
+    },
+    {
+      "name": "get_interest_payments_constant_debt",
+      "description": "Interest payments for the constant debt case",
+      "map_function": "calculate_interest_amount",
+      "map_iterables": ["analysis_range"],
+      "map_item_names": ["year"],
+      "args": ["analysis_range", "initial_capital_financed", "debt_interest"]
+    },
+    {
+      "name": "determine_interest_payment",
+      "description": "✅ Constant or paying down debt?",
+      "args": ["debt_period", "analysis_range", "initial_capital_financed", "debt_interest"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "debt_period == 0",
+          "body": "get_interest_payments_constant_debt(analysis_range, initial_capital_financed, debt_interest)"
+        },
+        {
+          "condition": "TRUE",
+          "body": "calculate_principal_payment_when_paying_debt"
+        }
+      ]
+    },
+    {
+      "name": "determine_annual_payment",
+      "args": ["debt_period", "initial_capital_financed", "debt_interest"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "debt_period == 0",
+          "body": "initial_capital_financed * debt_interest"
+        },
+        {
+          "condition": "TRUE",
+          "body": "previous_value"
+        }
+      ]
+    },
+    {
+      "name": "calculate_principal_owed",
+      "args": ["year"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "year == YEAR_1",
+          "body": "initial_capital_financed"
+        },
+        {
+          "condition": "TRUE",
+          "body": "previous_value - principal_paid"
+        }
+      ]
+    }
+  ]
+}

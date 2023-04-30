@@ -157,6 +157,12 @@
       "excel_loc": "Cash Flow Analysis B52"
     },
     {
+      "name": "total_capital_investment",
+      "label": "Total Capital Investment",
+      "expression": "depr_cap_infl + non_dep_infl",
+      "excel_loc": "Cash Flow Analysis B53"
+    },
+    {
       "name": "initial_equity_depr_cap",
       "label": "Initial Equity Depreciable Capital Column",
       "expression": "get_initial_equity_depr_cap(analysis_index_range, inflation_price_increase_factors, depr_cap_infl, percentage_equity_financing, percent_cap1, percent_cap2, percent_cap3, percent_cap4)",
@@ -179,6 +185,18 @@
       "label": "Decommissioning Costs Column",
       "expression": "get_decom_costs_column(operation_range, inflation_price_increase_factors, decom, plant_life)",
       "excel_loc": "Cash Flow Analysis M64"
+    },
+    {
+      "orig_name": "salvage",
+      "label": "Salvage Value",
+      "expression": "salvage_perct * total_capital_investment",
+      "excel_loc": "Cash Flow Analysis B55"
+    },
+    {
+      "name": "salvage_column",
+      "label": "Salvage Value Column",
+      "expression": "get_salvage_column(operation_range, inflation_price_increase_factors, salvage, plant_life)",
+      "excel_loc": "Cash Flow Analysis L64"
     },
     {
       "name": "FTE_HOURS_PER_YEAR",
@@ -223,6 +241,64 @@
       "label": "Fixed Operating Cost",
       "expression": "get_fixed_cost_column(operation_range, inflation_price_increase_factors, inflated_fixed, percnt_fixed, start_time)",
       "excel_loc": "Cash Flow Analysis N64"
+    },
+    {
+      "orig_name": "total_tax_rate",
+      "label": "Total Tax Rate (%)",
+      "expression": "fed_tax_rate + state_tax_rate * (1 - fed_tax_rate)",
+      "excel_loc": "Input_Sheet_Template C55 and Cash Flow Analysis B33"
+    },
+    {
+      "name": "percentage_debt_financing",
+      "label": "Debt Financing (%)",
+      "expression": "1 - percentage_equity_financing",
+      "excel_loc": "Cash Flow Analysis B31"
+    },
+    {
+      "name": "initial_capital_financed",
+      "label": "Portion of Initial Depreciable Capital Investment Financed with Debt",
+      "expression": "depr_cap_infl * percentage_debt_financing * get(inflation_price_increase_factors, YEAR_1)",
+      "excel_loc": "Cash Flow Analysis G65"
+    },
+    {
+      "name": "LAST_ANALYSIS_YEAR",
+      "expression": "anal_period + construct - 1"
+    },
+    {
+      "name": "principal_payments_column",
+      "label": "Principal Payments Column",
+      "expression": "determine_principal_payment(debt_period, analysis_index_range, LAST_ANALYSIS_YEAR, initial_capital_financed)",
+      "excel_loc": "Cash Flow Analysis Z64 and Debt Financing Calculations F13"
+    },
+    {
+      "name": "interest_payments_column",
+      "label": "Interest Payments Column",
+      "expression": "determine_interest_payment(debt_period, analysis_index_range, initial_capital_financed, debt_interest)",
+      "excel_loc": "Cash Flow Analysis S64 and Debt Financing Calculations E13"
+    },
+    {
+      "name": "h2_sales_kg_per_year",
+      "label": "Hydrogen Sales (kg/year)",
+      "expression": "get_h2_sales_kg_per_year(operation_range, plant_output_kg_per_year, percnt_revs, start_time)",
+      "excel_loc": "Cash Flow Analysis AE64"
+    },
+    {
+      "name": "discounted_value_total_h2_sales_kg",
+      "label": "Discounted Value of Total Hydrogen Sales (kg)",
+      "expression": "get(h2_sales_kg_per_year, YEAR_1) + npv(real_irr, skip(h2_sales_kg_per_year, 1))",
+      "excel_loc": "Cash Flow Analysis AE116"
+    },
+    {
+      "name": "LCOE_contribution_h2_sales_kg",
+      "label": "LCOE Contribution from Hydrogen Sales (kg)",
+      "expression": "discounted_value_total_h2_sales_kg * (1 - total_tax_rate)",
+      "excel_loc": "Cash Flow Analysis AC57"
+    },
+    {
+      "name": "discounted_value_total_salvage_value",
+      "label": "Discounted Value of Total Salvage Value",
+      "expression": "get(salvage_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(salvage_column, 1))",
+      "excel_loc": "Cash Flow Analysis L116"
     },
     {
       "name": "#",

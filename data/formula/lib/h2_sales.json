@@ -1,0 +1,32 @@
+{
+  "functions" : [
+    {
+      "name": "calculate_h2_sales_kg_per_year",
+      "args": ["year", "plant_output_kg_per_year", "percnt_revs", "start_time"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "year < 0",
+          "body": "0"
+        }, {
+          "condition": "year == 1 and start_time < 1",
+          "body": "( plant_output_kg_per_year * percnt_revs * start_time) + ( plant_output_kg_per_year * (1 - start_time) )"
+        }, {
+          "condition": "year <= start_time",
+          "body": "plant_output_kg_per_year * percnt_revs"
+        }, {
+          "condition": "TRUE",
+          "body": "plant_output_kg_per_year"
+        }
+      ]
+    },
+    {
+      "name": "get_h2_sales_kg_per_year",
+      "description": "H2 sales (kg/year)",
+      "map_function": "calculate_h2_sales_kg_per_year",
+      "map_iterables": ["operation_range"],
+      "map_item_names": ["year"],
+      "args": ["operation_range", "plant_output_kg_per_year", "percnt_revs", "start_time"]
+    }
+  ]
+}
