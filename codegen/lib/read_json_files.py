@@ -15,7 +15,13 @@ def read_formulas_json():
     with open(
         os.path.join(root_dir, "data/formula/formulas.json"), newline=""
     ) as jsonfile:
-        return json.load(jsonfile)
+        try:
+            loaded_json = json.load(jsonfile)
+            return loaded_json
+        except json.decoder.JSONDecodeError as e:
+            print("invalid json: %s" % e)
+            print(f"File: {jsonfile}")
+            raise
 
 
 def read_globals_json():
@@ -33,7 +39,13 @@ def read_functions_json():
         with open(
             os.path.join(root_dir, "data/formula/lib", filename), newline=""
         ) as jsonfile:
-            file_functions_json = json.load(jsonfile)["functions"]
-            key = filename.split(".")[0]
-            all_functions.append((key, file_functions_json))
+            try:
+                loaded_json = json.load(jsonfile)
+                file_functions_json = loaded_json["functions"]
+                key = filename.split(".")[0]
+                all_functions.append((key, file_functions_json))
+            except json.decoder.JSONDecodeError as e:
+                print("invalid json: %s" % e)
+                print(f"File: {jsonfile}")
+                raise
     return all_functions
