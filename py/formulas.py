@@ -9,15 +9,16 @@ from h2a.lib.decommissioning import get_decom_costs_column
 from h2a.lib.feedstock_costs import get_total_feedstock_costs
 from h2a.lib.feedstock_prices import get_feedstock_price_df
 from h2a.lib.fixed_costs import get_fixed_cost_column
-from h2a.globals import plant_output_kg_per_year, analysis_period_start, analysis_period_end, INFLATION_FACTOR, CEPCIinflator, CPIinflator
+from h2a.globals import plant_output_kg_per_year, analysis_period_start, analysis_period_end, CEPCIinflator, CPIinflator, INFLATION_FACTOR
 from h2a.lib.h2_sales import get_h2_sales_kg_per_year
 from h2a.helpers import seq_along, get, YEAR_1, npv, skip
 from h2a.lib.initial_equity import get_initial_equity_depr_cap
-from h2a.lib.other_materials import get_other_material_price_df
+from h2a.lib.nonenergy_materials import get_nonenergy_material_price_df
 from h2a.lib.other_non_depreciable_capital_cost import get_other_non_depreciable_capital_cost_column
-from h2a.ref_tables import get_lhv, conversion_factor, labor_index
+from h2a.ref_tables import get_lhv, conversion_factor, labor_index, chemical_price_index
 from h2a.lib.replacement_costs import get_replacement_costs
 from h2a.lib.salvage import get_salvage_column
+from h2a.lib.variable_costs import get_variable_cost_column
 
 H2_LHV_MJ_p_kg = get_lhv("Hydrogen")
 print('H2_LHV_MJ_p_kg: ', H2_LHV_MJ_p_kg)
@@ -54,9 +55,6 @@ print('inflation_price_increase_factors: ', inflation_price_increase_factors)
 
 total_feedstock_cost_column = get_total_feedstock_costs(operation_range, feedstock_price_df, inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
 print('total_feedstock_cost_column: ', total_feedstock_cost_column)
-
-other_material_price_df = get_other_material_price_df(other_materials, analysis_range, INFLATION_FACTOR, ref_year)
-print('other_material_price_df: ', other_material_price_df)
 
 direct_cap = sum(capital_investment_costs(capital_investments))
 print('direct_cap: ', direct_cap)
@@ -180,4 +178,25 @@ print('LCOE_contribution_h2_sales_kg: ', LCOE_contribution_h2_sales_kg)
 
 discounted_value_total_salvage_value = get(salvage_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(salvage_column, 1))
 print('discounted_value_total_salvage_value: ', discounted_value_total_salvage_value)
+
+nonenergy_material_price_df = get_nonenergy_material_price_df(nonenergy_materials, analysis_range, INFLATION_FACTOR, ref_year)
+print('nonenergy_material_price_df: ', nonenergy_material_price_df)
+
+var_misc = other_variable_operating_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)
+print('var_misc: ', var_misc)
+
+waste_treat = waste_treatment_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)
+print('waste_treat: ', waste_treat)
+
+solidwaste_treat = solid_waste_disposal_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)
+print('solidwaste_treat: ', solidwaste_treat)
+
+CO2_OandMcost = 0
+print('CO2_OandMcost: ', CO2_OandMcost)
+
+inflated_othervar = INFLATION_FACTOR * (var_misc + royalties + operator_profit + CO2_OandMcost + waste_treat + solidwaste_treat)
+print('inflated_othervar: ', inflated_othervar)
+
+variable_cost_column = get_variable_cost_column(operation_range, analysis_index_range, nonenergy_material_price_df, inflation_price_increase_factors, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar)
+print('variable_cost_column: ', variable_cost_column)
 

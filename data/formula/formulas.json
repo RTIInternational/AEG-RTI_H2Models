@@ -64,10 +64,6 @@
       "expression": "get_total_feedstock_costs(operation_range, feedstock_price_df, inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)"
     },
     {
-      "name": "other_material_price_df",
-      "expression": "get_other_material_price_df(other_materials, analysis_range, INFLATION_FACTOR, ref_year)"
-    },
-    {
       "orig_name": "direct_cap",
       "label": "H2A Total Direct Capital Cost",
       "expression": "sum(capital_investment_costs(capital_investments))"
@@ -299,6 +295,46 @@
       "label": "Discounted Value of Total Salvage Value",
       "expression": "get(salvage_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(salvage_column, 1))",
       "excel_loc": "Cash Flow Analysis L116"
+    },
+    {
+      "name": "nonenergy_material_price_df",
+      "expression": "get_nonenergy_material_price_df(nonenergy_materials, analysis_range, INFLATION_FACTOR, ref_year)"
+    },
+    {
+      "orig_name": "var_misc",
+      "label": "Variable O&M Costs ($/year)",
+      "expression": "other_variable_operating_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)",
+      "excel_loc": "Input_Sheet_Template E148"
+    },
+    {
+      "orig_name": "waste_treat",
+      "label": "Waste treatment costs ($/year)",
+      "expression": "waste_treatment_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)",
+      "excel_loc": "Input_Sheet_Template E150"
+    },
+    {
+      "orig_name": "solidwaste_treat",
+      "label": "Solid waste disposal costs ($/year)",
+      "expression": "solid_waste_disposal_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)",
+      "excel_loc": "Input_Sheet_Template E151"
+    },
+    {
+      "orig_name": "CO2_OandMcost",
+      "label": "CO2 sequestration O&M costs and credits ($/year)",
+      "expression": "0",
+      "excel_loc": "Input_Sheet_Template E156"
+    },
+    {
+      "orig_name": "inflated_othervar",
+      "label": "Other Variable O&M Costs (not including tax credits and incentives)",
+      "expression": "INFLATION_FACTOR * (var_misc + royalties + operator_profit + CO2_OandMcost + waste_treat + solidwaste_treat)",
+      "excel_loc": "Cash Flow Analysis B58"
+    },
+    {
+      "name": "variable_cost_column",
+      "label": "Other Variable Operating Costs",
+      "expression": "get_variable_cost_column(operation_range, analysis_index_range, nonenergy_material_price_df, inflation_price_increase_factors, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar)",
+      "excel_loc": "Cash Flow Analysis R64"
     },
     {
       "name": "#",

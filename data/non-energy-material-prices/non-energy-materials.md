@@ -1,4 +1,4 @@
-# Other Materials and Byproducts
+# Non-Energy Materials and Byproducts
 
 The file `non-energy-material-prices.csv` is sourced from the Non-Energy Material Prices tab of the original H2A workbook. Its original source data is unknown.
 

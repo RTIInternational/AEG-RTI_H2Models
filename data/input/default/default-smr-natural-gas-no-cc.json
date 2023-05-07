@@ -29,7 +29,6 @@
    "state_tax_rate": 0.06,
    "fed_tax_rate": 0.21,
    "WorkingCap": 0.15,
-   "replace_factor": 0.005,
    "cost_per_acre": 50000,
    "acres_required": 100,
 
@@ -43,6 +42,14 @@
    "production_cost_maintenance_and_repairs": 2033595,
    "other_fees": 1056446,
    "other_fixed": 0,
+
+   "other_variable_operating_costs": 0,
+   "other_material_costs": 2914754,
+   "waste_treatment_costs": 16756,
+   "solid_waste_disposal_costs": 0,
+   "replace_factor": 0.005,
+   "royalties": 0,
+   "operator_profit": 0,
 
    "feedstocks": [
       {
@@ -60,7 +67,7 @@
          "lookup_prices": true
       }
    ],
-   "other_materials": [
+   "nonenergy_materials": [
       {
          "name": "Process Water",
          "usage": 4.343635099,

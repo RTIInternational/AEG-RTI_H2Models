@@ -164,12 +164,6 @@
       "minimum": 0,
       "maximum": 1
     },
-    "replace_factor": {
-      "type": "number",
-      "title": "Total Unplanned Replacement Capital Cost Factor (% of total direct depreciable costs/year)",
-      "minimum": 0,
-      "maximum": 1
-    },
     "cost_per_acre": {
       "type": "number",
       "title": "Cost of Land ($/acre)",
@@ -232,16 +226,52 @@
       "title": "Other Fixed O&M Costs ($/year)",
       "minimum": 0
     },
+    "other_variable_operating_costs": {
+      "type": "number",
+      "title": "Other variable operating costs (e.g. environmental surcharges) ($/year)",
+      "minimum": 0
+    },
+    "other_material_costs": {
+      "type": "number",
+      "title": "Other Material Costs ($/year)",
+      "minimum": 0
+    },
+    "waste_treatment_costs": {
+      "type": "number",
+      "title": "Waste Treatment Costs ($/year)",
+      "minimum": 0
+    },
+    "solid_waste_disposal_costs": {
+      "type": "number",
+      "title": "Solid Waste Disposal Costs ($/year)",
+      "minimum": 0
+    },
+    "replace_factor": {
+      "type": "number",
+      "title": "Total Unplanned Replacement Capital Cost Factor (% of total direct depreciable costs/year)",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "royalties": {
+      "type": "number",
+      "title": "Royalties ($/year)",
+      "minimum": 0
+    },
+    "operator_profit": {
+      "type": "number",
+      "title": "Operator Profit ($/year)",
+      "minimum": 0
+    },
     "feedstocks": {
       "type": "array",
       "items": {
         "$ref": "#/$defs/feedstock"
       }
     },
-    "other_materials": {
+    "nonenergy_materials": {
       "type": "array",
       "items": {
-        "$ref": "#/$defs/other_material"
+        "$ref": "#/$defs/nonenergy_material"
       }
     },
     "capital_investments": {
@@ -286,7 +316,7 @@
         }
       }
     },
-    "other_material": {
+    "nonenergy_material": {
       "type": "object",
       "required": [
         "name",

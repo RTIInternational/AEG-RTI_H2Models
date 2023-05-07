@@ -1,0 +1,42 @@
+{
+  "functions": [
+    {
+      "name": "calculate_variable_cost_for_year",
+      "description": "Calculate the variable cost for a given year",
+      "args": ["year", "price", "inflation_price_increase_factor", "plant_output_kg_per_year", "percnt_var", "start_time", "inflated_othervar"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "year < 0",
+          "body": "0"
+        }, {
+          "condition": "year == 1 and start_time < 1",
+          "body": "-(( (price * plant_output_kg_per_year + inflated_othervar) * inflation_price_increase_factor * percnt_var * start_time ) + ( price * plant_output_kg_per_year * inflation_price_increase_factor * (1 - start_time) ))"
+        }, {
+          "condition": "year <= start_time",
+          "body": "(price * plant_output_kg_per_year + inflated_othervar) * inflation_price_increase_factor * percnt_var"
+        }, {
+          "condition": "TRUE",
+          "body": "(price * plant_output_kg_per_year + inflated_othervar) * inflation_price_increase_factor"
+        }
+      ]
+    },
+    {
+      "name": "material_prices_from_df",
+      "description": "For a given year (i), return a list containing the price of each material",
+      "map_function": "get",
+      "map_iterables": ["nonenergy_material_price_df"],
+      "map_item_names": ["material"],
+      "args": ["nonenergy_material_price_df", "i"]
+    },
+    {
+      "name": "get_variable_cost_column",
+      "description": "Other Variable Operating Costs column",
+      "map_function": "calculate_variable_cost_for_year",
+      "map_iterables": ["operation_range", "analysis_index_range", "inflation_price_increase_factors"],
+      "map_item_names": ["year", "i", "inflation_price_increase_factor"],
+      "args": ["operation_range", "analysis_index_range", "nonenergy_material_price_df", "inflation_price_increase_factors", "plant_output_kg_per_year", "percnt_var", "start_time", "inflated_othervar"],
+      "lambda_map_arg_str": "year, sum(material_prices_from_df(nonenergy_material_price_df, i)), inflation_price_increase_factor, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar"
+    }
+  ]
+}
