@@ -337,6 +337,24 @@
       "excel_loc": "Cash Flow Analysis R64"
     },
     {
+      "orig_name": "total_other_raw",
+      "label": "Other Material Costs ($/year)",
+      "expression": "other_material_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)",
+      "excel_loc": "Input_Sheet_Template E149"
+    },
+    {
+      "orig_name": "inflated_otherraw",
+      "label": "Other Raw Material ($/year)",
+      "expression": "total_other_raw * INFLATION_FACTOR",
+      "excel_loc": "Cash Flow Analysis B57"
+    },
+    {
+      "name": "other_raw_material_cost_column",
+      "label": "Other Raw Material Cost Column",
+      "expression": "get_other_raw_material_cost_column(operation_range, inflation_price_increase_factors, inflated_otherraw, percnt_var, start_time)",
+      "excel_loc": "Cash Flow Analysis P64"
+    },
+    {
       "name": "#",
       "label": "Total Depreciable Capital Costs",
       "expression": "(total_cap - non_dep_cap) * INFLATION_FACTOR",

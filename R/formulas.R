@@ -15,6 +15,7 @@ import::from("helpers.R", YEAR_1, get, npv, seq_along, skip, .directory = here(h
 import::from("initial_equity.R", get_initial_equity_depr_cap, .directory = here(h2a,lib))
 import::from("nonenergy_materials.R", get_nonenergy_material_price_df, .directory = here(h2a,lib))
 import::from("other_non_depreciable_capital_cost.R", get_other_non_depreciable_capital_cost_column, .directory = here(h2a,lib))
+import::from("other_raw_material_costs.R", get_other_raw_material_cost_column, .directory = here(h2a,lib))
 import::from("ref_tables.R", chemical_price_index, conversion_factor, get_lhv, labor_index, .directory = here(h2a))
 import::from("replacement_costs.R", get_replacement_costs, .directory = here(h2a,lib))
 import::from("salvage.R", get_salvage_column, .directory = here(h2a,lib))
@@ -199,4 +200,13 @@ print(paste("inflated_othervar", inflated_othervar, sep = ": "))
 
 variable_cost_column <- get_variable_cost_column(operation_range, analysis_index_range, nonenergy_material_price_df, inflation_price_increase_factors, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar)
 print(paste("variable_cost_column", variable_cost_column, sep = ": "))
+
+total_other_raw <- other_material_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)
+print(paste("total_other_raw", total_other_raw, sep = ": "))
+
+inflated_otherraw <- total_other_raw * INFLATION_FACTOR
+print(paste("inflated_otherraw", inflated_otherraw, sep = ": "))
+
+other_raw_material_cost_column <- get_other_raw_material_cost_column(operation_range, inflation_price_increase_factors, inflated_otherraw, percnt_var, start_time)
+print(paste("other_raw_material_cost_column", other_raw_material_cost_column, sep = ": "))
 

@@ -1,0 +1,32 @@
+{
+  "functions": [
+    {
+      "name": "calculate_other_raw_material_cost",
+      "args": ["year", "inflation_price_increase_factor", "inflated_otherraw", "percnt_var", "start_time"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "year < 0",
+          "body": "0"
+        }, {
+          "condition": "year == 1 and start_time < 1",
+          "body": "-(( inflated_otherraw * inflation_price_increase_factor * percnt_var * start_time) + ( inflated_otherraw * inflation_price_increase_factor * (1 - start_time) ))"
+        }, {
+          "condition": "year <= start_time",
+          "body": "-(inflated_otherraw * percnt_var * inflation_price_increase_factor)"
+        }, {
+          "condition": "TRUE",
+          "body": "-(inflated_otherraw * inflation_price_increase_factor)"
+        }
+      ]
+    },
+    {
+      "name": "get_other_raw_material_cost_column",
+      "description": "Other Raw Material Cost",
+      "map_function": "calculate_other_raw_material_cost",
+      "map_iterables": ["operation_range", "inflation_price_increase_factors"],
+      "map_item_names": ["year", "inflation_price_increase_factor"],
+      "args": ["operation_range", "inflation_price_increase_factors", "inflated_otherraw", "percnt_var", "start_time"]
+    }
+  ]
+}

@@ -15,6 +15,7 @@ from h2a.helpers import YEAR_1, get, npv, seq_along, skip
 from h2a.lib.initial_equity import get_initial_equity_depr_cap
 from h2a.lib.nonenergy_materials import get_nonenergy_material_price_df
 from h2a.lib.other_non_depreciable_capital_cost import get_other_non_depreciable_capital_cost_column
+from h2a.lib.other_raw_material_costs import get_other_raw_material_cost_column
 from h2a.ref_tables import chemical_price_index, conversion_factor, get_lhv, labor_index
 from h2a.lib.replacement_costs import get_replacement_costs
 from h2a.lib.salvage import get_salvage_column
@@ -199,4 +200,13 @@ print('inflated_othervar: ', inflated_othervar)
 
 variable_cost_column = get_variable_cost_column(operation_range, analysis_index_range, nonenergy_material_price_df, inflation_price_increase_factors, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar)
 print('variable_cost_column: ', variable_cost_column)
+
+total_other_raw = other_material_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)
+print('total_other_raw: ', total_other_raw)
+
+inflated_otherraw = total_other_raw * INFLATION_FACTOR
+print('inflated_otherraw: ', inflated_otherraw)
+
+other_raw_material_cost_column = get_other_raw_material_cost_column(operation_range, inflation_price_increase_factors, inflated_otherraw, percnt_var, start_time)
+print('other_raw_material_cost_column: ', other_raw_material_cost_column)
 
