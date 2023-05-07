@@ -5,7 +5,7 @@ import itertools
 import os
 import subprocess
 from lib.write_functions import functions_to_code
-from lib.write_helpers import helpers_to_code
+from lib.write_helpers import helpers_to_code, helper_code
 from lib.write_formulas import formulas_to_code
 from lib.write_inputs import inputs_to_code
 from lib.read_json_files import (
@@ -25,21 +25,20 @@ from lib.read_ref_table_exports import ref_tables_exports, REF_TABLES_FILENAME
 FORMULAS_FILENAME = "formulas"
 GLOBALS_FILENAME = "globals"  # Name of the Python file containing a few global variables that functions use
 
+# function names of helper functions
+HELPER_CODE_KEYS = list(helper_code.keys())
 
-# TODO: refactor for Python vs R
-HELPERS_EXPORTS = [
-    "get",
-    "concat",
-    "split",
-    "npv",
-    "skip",
-    "seq_along",
-    "YEAR_1",
-    "YEAR_2",
-    "YEAR_3",
-    "YEAR_4",
-    # "TRUE",
-]
+# Some extra helper constants not defined in helper_code
+HELPER_CODE_EXTRA_KEYS = ["YEAR_1", "YEAR_2", "YEAR_3", "YEAR_4"]
+
+# All helper functions and constants
+HELPERS_EXPORTS = HELPER_CODE_KEYS + HELPER_CODE_EXTRA_KEYS
+
+# Some helper functions are only used in Python, so we need to filter them out
+R_HELPER_EXPORTS = (
+    list(filter(lambda x: helper_code[x]["R"] != "", HELPER_CODE_KEYS))
+    + HELPER_CODE_EXTRA_KEYS
+)
 
 
 def parse_formulas_to_nodes_and_edges(formulas):
@@ -169,13 +168,24 @@ def edges_to_imports(edges, lib_exports):
     # Iterate over all_imports and group them by filename
     for filename, imports in itertools.groupby(all_imports, key=lambda x: x[0]):
         dirs = file_dirs[filename]
-        import_list = [x[1] for x in imports]
+        imports_as_list = list(imports)
+        import_list = [x[1] for x in imports_as_list]
+        # Sort import_list alphabetically
         import_list.sort()
-        import_list_str = ", ".join(import_list)
+        py_import_list_str = ", ".join(import_list)
+
+        # If the file is the helper file, only import the functions that are used
+        if imports_as_list[0][0] == "helpers":
+            r_import_list = list(filter(lambda x: x in R_HELPER_EXPORTS, import_list))
+            r_import_list.sort()
+            r_import_list_str = ", ".join(r_import_list)
+        else:
+            r_import_list_str = py_import_list_str
+
         import_statements.append(
             {
-                "py": f"from {dir_path_to_import_str(dirs, filename, 'py')} import {import_list_str}",
-                "R": f'import::from("{filename}.R", {import_list_str}, .directory = here({dir_path_to_import_str(dirs, _, "R")}))',
+                "py": f"from {dir_path_to_import_str(dirs, filename, 'py')} import {py_import_list_str}",
+                "R": f'import::from("{filename}.R", {r_import_list_str}, .directory = here({dir_path_to_import_str(dirs, _, "R")}))',
             }
         )
 

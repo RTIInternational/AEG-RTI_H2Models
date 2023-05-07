@@ -61,6 +61,7 @@
     },
     {
       "name": "total_feedstock_cost_column",
+      "label": "Feedstock Cost column",
       "expression": "get_total_feedstock_costs(operation_range, feedstock_price_df, inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)"
     },
     {
@@ -353,6 +354,17 @@
       "label": "Other Raw Material Cost Column",
       "expression": "get_other_raw_material_cost_column(operation_range, inflation_price_increase_factors, inflated_otherraw, percnt_var, start_time)",
       "excel_loc": "Cash Flow Analysis P64"
+    },
+    {
+      "name": "working_cap_reserve_rows",
+      "label": "Working Capital Reserve Rows",
+      "expression": "get_working_cap_reserve_rows(slice(operation_range, end = length(operation_range) - 1), slice(analysis_index_range, end = length(analysis_index_range) - 1), WorkingCap, fixed_cost_column, total_feedstock_cost_column, other_raw_material_cost_column, variable_cost_column)"
+    },
+    {
+      "name": "working_cap_reserve_column",
+      "label": "Cash from Working Capital Reserve Column",
+      "expression": "get_working_cap_reserve_column(working_cap_reserve_rows)",
+      "excel_loc": "Cash Flow Analysis J64"
     },
     {
       "name": "#",

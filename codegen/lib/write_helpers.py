@@ -2,38 +2,57 @@ import os
 from .util import R_ENABLED, HELPERS_FILENAME, util_code
 
 
+helper_code = {
+    "get": {
+        "py": "def get(obj, key):\n    return obj[key]\n\n",
+        "R": "get <- function(obj, key) obj[[key]]\n\n",
+    },
+    "concat": {
+        "py": "def concat(a, b):\n    return a + b\n\n",
+        "R": 'concat <- function(a, b) paste(a, b, sep = "")\n\n',
+    },
+    "split": {
+        "py": "def split(a, b):\n    return a.split(b)\n\n",
+        "R": "split <- function(a, b) strsplit(a, b)[[1]]\n\n",
+    },
+    "npv": {
+        "py": "def npv(r, cfList):\n    sum_pv = 0\n    for i, pmt in enumerate(cfList, start=1):\n        sum_pv += pmt / ((1 + r) ** i)\n    return sum_pv\n\n",
+        "R": "npv <- function(r, cfList) {\n    sum_pv <- 0\n    for (i in seq_along(cfList)) {\n        sum_pv <- sum_pv + cfList[[i]] / ((1 + r) ^ i)\n    }\n    return(sum_pv)\n}\n\n",
+    },
+    "skip": {
+        "py": "def skip(a, b):\n    return a[b:]\n\n",
+        "R": "skip <- function(a, b) a[(b + 1):length(a)]\n\n",
+    },
+    "slice": {
+        "py": "def slice(a, start=0, end=None):\n    return a[start:end]\n\n",
+        "R": "slice <- function(a, start=0, end=NULL) a[(start + 1):end]\n\n",
+    },
+    "length": {
+        "py": "def length(a):\n    return len(a)\n\n",
+        "R": "",
+    },
+    "seq_along": {"py": "def seq_along(a):\n    return range(len(a))\n\n", "R": ""},
+    "append": {
+        "py": "def append(a, b):\n    a.append(b)\n    return a\n\n",
+        "R": "",
+    },
+    # "reduce": {
+    #     "py": "import functools\n\ndef reduce(function, iterable, initializer=None):\n    return functools.reduce(function, iterable, initializer)\n\n",
+    #     "R": "reduce <- Reduce\n\n",
+    # },
+    # "TRUE": {
+    #     "py": "TRUE = True\n",
+    #     "R": "",
+    # },
+    "assign_index": {
+        "py": lambda name, val: f"{name} = {val}\n",
+        "R": lambda name, val: f"{name} <- {val + 1}\n",
+    },
+}
+code = helper_code
+
+
 def helpers_to_lang(lang):
-    code = {
-        "get": {
-            "py": "def get(obj, key):\n    return obj[key]\n\n",
-            "R": "get <- function(obj, key) obj[[key]]\n\n",
-        },
-        "concat": {
-            "py": "def concat(a, b):\n    return a + b\n\n",
-            "R": 'concat <- function(a, b) paste(a, b, sep = "")\n\n',
-        },
-        "split": {
-            "py": "def split(a, b):\n    return a.split(b)\n\n",
-            "R": "split <- function(a, b) strsplit(a, b)[[1]]\n\n",
-        },
-        "npv": {
-            "py": "def npv(r, cfList):\n    sum_pv = 0\n    for i, pmt in enumerate(cfList, start=1):\n        sum_pv += pmt / ((1 + r) ** i)\n    return sum_pv\n\n",
-            "R": "npv <- function(r, cfList) {\n    sum_pv <- 0\n    for (i in seq_along(cfList)) {\n        sum_pv <- sum_pv + cfList[[i]] / ((1 + r) ^ i)\n    }\n    return(sum_pv)\n}\n\n",
-        },
-        "skip": {
-            "py": "def skip(a, b):\n    return a[b:]\n\n",
-            "R": "skip <- function(a, b) a[(b + 1):length(a)]\n\n",
-        },
-        "seq_along": {"py": "def seq_along(a):\n    return range(len(a))\n\n", "R": ""},
-        "TRUE": {
-            "py": "TRUE = True\n",
-            "R": "",
-        },
-        "assign_index": {
-            "py": lambda name, val: f"{name} = {val}\n",
-            "R": lambda name, val: f"{name} <- {val + 1}\n",
-        },
-    }
     file_str = util_code["top_line_comment"][lang]
 
     # get() is a helper function to access a dictionary
@@ -55,13 +74,24 @@ def helpers_to_lang(lang):
     # skip() is a helper function to get all but the first value of a list
     file_str += code["skip"][lang]
 
+    # slice() is a helper function to get a slice of a list
+    file_str += code["slice"][lang]
+
+    # length() is a helper function to get the length of a list
+    file_str += code["length"][lang]
+
     # seq_along() is a helper function to get a sequence of integers
     file_str += code["seq_along"][lang]
 
-    # R note: helper: range <- seq
-    # R note: helper: len <- length
+    # append() is a helper function to append a value to a list
+    file_str += code["append"][lang]
 
-    file_str += code["TRUE"][lang]
+    # reduce() is a helper function to reduce a list to a single value
+    # file_str += code["reduce"][lang]
+
+    # R note: helper: range <- seq
+
+    # file_str += code["TRUE"][lang]
 
     # H2A requires years of construction to be 1, 2, 3, or 4
     # These constants are used to compare against operation_range years

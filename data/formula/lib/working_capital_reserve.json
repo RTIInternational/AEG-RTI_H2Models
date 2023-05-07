@@ -1,0 +1,33 @@
+{
+  "functions": [
+    {
+      "name": "calculate_working_cap_reserve_for_year",
+      "description": "Calculate the cash from working capital reserve for a given year",
+      "args": ["year", "i", "WorkingCap", "fixed_cost", "feedstock_cost", "other_raw_material_cost", "variable_cost"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "year < 0",
+          "body": "0"
+        }, {
+          "condition": "TRUE",
+          "body": "WorkingCap * ( (get(fixed_cost, i) + get(feedstock_cost, i) + get(other_raw_material_cost, i) + get(variable_cost, i)) - (get(fixed_cost, i-1) + get(feedstock_cost, i-1) + get(other_raw_material_cost, i-1) + get(variable_cost, i-1)) )"
+        }
+      ]
+    },
+    {
+      "name": "get_working_cap_reserve_rows",
+      "description": "Get the rows for the working capital reserve",
+      "map_function": "calculate_working_cap_reserve_for_year",
+      "map_iterables": ["operation_range", "analysis_index_range"],
+      "map_item_names": ["year", "i"],
+      "args": ["operation_range", "analysis_index_range", "WorkingCap", "fixed_cost_column", "total_feedstock_cost_column", "other_raw_material_cost_column", "variable_cost_column"]
+    },
+    {
+      "name": "get_working_cap_reserve_column",
+      "description": "Get the column for the working capital reserve",
+      "args": ["working_cap_reserve_rows"],
+      "body": "append(working_cap_reserve_rows, -sum(working_cap_reserve_rows))"
+    }
+  ]
+}

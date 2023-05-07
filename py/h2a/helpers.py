@@ -19,10 +19,19 @@ def npv(r, cfList):
 def skip(a, b):
     return a[b:]
 
+def slice(a, start=0, end=None):
+    return a[start:end]
+
+def length(a):
+    return len(a)
+
 def seq_along(a):
     return range(len(a))
 
-TRUE = True
+def append(a, b):
+    a.append(b)
+    return a
+
 YEAR_1 = 0
 YEAR_2 = 1
 YEAR_3 = 2

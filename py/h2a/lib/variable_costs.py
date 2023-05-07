@@ -33,14 +33,15 @@ def calculate_variable_cost_for_year(
         )
     elif year <= start_time:
         return (
-            (price * plant_output_kg_per_year + inflated_othervar)
+            -(price * plant_output_kg_per_year + inflated_othervar)
             * inflation_price_increase_factor
             * percnt_var
         )
     else:
         return (
-            price * plant_output_kg_per_year + inflated_othervar
-        ) * inflation_price_increase_factor
+            -(price * plant_output_kg_per_year + inflated_othervar)
+            * inflation_price_increase_factor
+        )
 
 
 def material_prices_from_df(nonenergy_material_price_df, i):

@@ -32,14 +32,14 @@ def calculate_feedstock_cost_for_year(
             )
         )
     elif year <= start_time:
-        return (
+        return -(
             price
             * plant_output_kg_per_year
             * inflation_price_increase_factor
             * percnt_var
         )
     else:
-        return price * plant_output_kg_per_year * inflation_price_increase_factor
+        return -(price * plant_output_kg_per_year * inflation_price_increase_factor)
 
 
 def get_feedstock_costs(

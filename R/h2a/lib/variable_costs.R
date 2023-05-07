@@ -11,10 +11,10 @@ calculate_variable_cost_for_year <- function(year, price, inflation_price_increa
         return(-(( (price * plant_output_kg_per_year + inflated_othervar) * inflation_price_increase_factor * percnt_var * start_time ) + ( price * plant_output_kg_per_year * inflation_price_increase_factor * (1 - start_time) )))
     }
     else if (year <= start_time) {
-        return((price * plant_output_kg_per_year + inflated_othervar) * inflation_price_increase_factor * percnt_var)
+        return(-(price * plant_output_kg_per_year + inflated_othervar) * inflation_price_increase_factor * percnt_var)
     }
     else {
-        return((price * plant_output_kg_per_year + inflated_othervar) * inflation_price_increase_factor)
+        return(-(price * plant_output_kg_per_year + inflated_othervar) * inflation_price_increase_factor)
     }
 }
 material_prices_from_df <- function(nonenergy_material_price_df, i) {

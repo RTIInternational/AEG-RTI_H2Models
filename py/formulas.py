@@ -11,7 +11,7 @@ from h2a.lib.feedstock_prices import get_feedstock_price_df
 from h2a.lib.fixed_costs import get_fixed_cost_column
 from h2a.globals import CEPCIinflator, CPIinflator, INFLATION_FACTOR, analysis_period_end, analysis_period_start, plant_output_kg_per_year
 from h2a.lib.h2_sales import get_h2_sales_kg_per_year
-from h2a.helpers import YEAR_1, get, npv, seq_along, skip
+from h2a.helpers import YEAR_1, get, length, npv, seq_along, skip, slice
 from h2a.lib.initial_equity import get_initial_equity_depr_cap
 from h2a.lib.nonenergy_materials import get_nonenergy_material_price_df
 from h2a.lib.other_non_depreciable_capital_cost import get_other_non_depreciable_capital_cost_column
@@ -20,6 +20,7 @@ from h2a.ref_tables import chemical_price_index, conversion_factor, get_lhv, lab
 from h2a.lib.replacement_costs import get_replacement_costs
 from h2a.lib.salvage import get_salvage_column
 from h2a.lib.variable_costs import get_variable_cost_column
+from h2a.lib.working_capital_reserve import get_working_cap_reserve_column, get_working_cap_reserve_rows
 
 H2_LHV_MJ_p_kg = get_lhv("Hydrogen")
 print('H2_LHV_MJ_p_kg: ', H2_LHV_MJ_p_kg)
@@ -209,4 +210,10 @@ print('inflated_otherraw: ', inflated_otherraw)
 
 other_raw_material_cost_column = get_other_raw_material_cost_column(operation_range, inflation_price_increase_factors, inflated_otherraw, percnt_var, start_time)
 print('other_raw_material_cost_column: ', other_raw_material_cost_column)
+
+working_cap_reserve_rows = get_working_cap_reserve_rows(slice(operation_range, end = length(operation_range) - 1), slice(analysis_index_range, end = length(analysis_index_range) - 1), WorkingCap, fixed_cost_column, total_feedstock_cost_column, other_raw_material_cost_column, variable_cost_column)
+print('working_cap_reserve_rows: ', working_cap_reserve_rows)
+
+working_cap_reserve_column = get_working_cap_reserve_column(working_cap_reserve_rows)
+print('working_cap_reserve_column: ', working_cap_reserve_column)
 

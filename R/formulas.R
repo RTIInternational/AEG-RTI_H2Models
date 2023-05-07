@@ -11,7 +11,7 @@ import::from("feedstock_prices.R", get_feedstock_price_df, .directory = here(h2a
 import::from("fixed_costs.R", get_fixed_cost_column, .directory = here(h2a,lib))
 import::from("globals.R", CEPCIinflator, CPIinflator, INFLATION_FACTOR, analysis_period_end, analysis_period_start, plant_output_kg_per_year, .directory = here(h2a))
 import::from("h2_sales.R", get_h2_sales_kg_per_year, .directory = here(h2a,lib))
-import::from("helpers.R", YEAR_1, get, npv, seq_along, skip, .directory = here(h2a))
+import::from("helpers.R", YEAR_1, get, npv, skip, slice, .directory = here(h2a))
 import::from("initial_equity.R", get_initial_equity_depr_cap, .directory = here(h2a,lib))
 import::from("nonenergy_materials.R", get_nonenergy_material_price_df, .directory = here(h2a,lib))
 import::from("other_non_depreciable_capital_cost.R", get_other_non_depreciable_capital_cost_column, .directory = here(h2a,lib))
@@ -20,6 +20,7 @@ import::from("ref_tables.R", chemical_price_index, conversion_factor, get_lhv, l
 import::from("replacement_costs.R", get_replacement_costs, .directory = here(h2a,lib))
 import::from("salvage.R", get_salvage_column, .directory = here(h2a,lib))
 import::from("variable_costs.R", get_variable_cost_column, .directory = here(h2a,lib))
+import::from("working_capital_reserve.R", get_working_cap_reserve_column, get_working_cap_reserve_rows, .directory = here(h2a,lib))
 
 H2_LHV_MJ_p_kg <- get_lhv("Hydrogen")
 print(paste("H2_LHV_MJ_p_kg", H2_LHV_MJ_p_kg, sep = ": "))
@@ -209,4 +210,10 @@ print(paste("inflated_otherraw", inflated_otherraw, sep = ": "))
 
 other_raw_material_cost_column <- get_other_raw_material_cost_column(operation_range, inflation_price_increase_factors, inflated_otherraw, percnt_var, start_time)
 print(paste("other_raw_material_cost_column", other_raw_material_cost_column, sep = ": "))
+
+working_cap_reserve_rows <- get_working_cap_reserve_rows(slice(operation_range, end = length(operation_range) - 1), slice(analysis_index_range, end = length(analysis_index_range) - 1), WorkingCap, fixed_cost_column, total_feedstock_cost_column, other_raw_material_cost_column, variable_cost_column)
+print(paste("working_cap_reserve_rows", working_cap_reserve_rows, sep = ": "))
+
+working_cap_reserve_column <- get_working_cap_reserve_column(working_cap_reserve_rows)
+print(paste("working_cap_reserve_column", working_cap_reserve_column, sep = ": "))
 

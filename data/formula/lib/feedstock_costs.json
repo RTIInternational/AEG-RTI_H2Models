@@ -14,10 +14,10 @@
           "body": "-(( price * plant_output_kg_per_year * inflation_price_increase_factor * percnt_var * start_time ) + ( price * plant_output_kg_per_year * inflation_price_increase_factor * (1 - start_time) ))"
         }, {
           "condition": "year <= start_time",
-          "body": "price * plant_output_kg_per_year * inflation_price_increase_factor * percnt_var"
+          "body": "-(price * plant_output_kg_per_year * inflation_price_increase_factor * percnt_var)"
         }, {
           "condition": "TRUE",
-          "body": "price * plant_output_kg_per_year * inflation_price_increase_factor"
+          "body": "-(price * plant_output_kg_per_year * inflation_price_increase_factor)"
         }
       ]
     },
