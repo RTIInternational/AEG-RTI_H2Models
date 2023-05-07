@@ -5,15 +5,12 @@ import::from("helpers.R", YEAR_1, .directory = here(h2a))
 calculate_other_non_depr_cap <- function(year, inflation_price_increase_factor, non_dep_infl) {
     if (year == YEAR_1) {
         return(inflation_price_increase_factor * non_dep_infl)
-    } else {
+    }
+    else {
         return(0)
     }
 }
 get_other_non_depreciable_capital_cost_column <- function(analysis_index_range, inflation_price_increase_factors, non_dep_infl) {
     #'Other Non-Depreciable Capital Costs
-    return(
-        lapply(
-            analysis_index_range, inflation_price_increase_factors, function(year, inflation_price_increase_factor) calculate_other_non_depr_cap(year, inflation_price_increase_factor, non_dep_infl)
-        )
-    )
+    return(lapply(analysis_index_range, inflation_price_increase_factors, function(year, inflation_price_increase_factor) calculate_other_non_depr_cap(year, inflation_price_increase_factor, non_dep_infl)))
 }

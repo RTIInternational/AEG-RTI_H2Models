@@ -3,17 +3,22 @@
 #
 source(here('h2a', 'inputs.R'))
 import::from("capital_investments.R", capital_investment_costs, .directory = here(h2a,lib))
-import::from("cashflow_meta.R", get_operation_range, get_inflation_price_increase_factors, .directory = here(h2a,lib))
+import::from("cashflow_meta.R", get_inflation_price_increase_factors, get_operation_range, .directory = here(h2a,lib))
+import::from("debt_financing.R", determine_interest_payment, determine_principal_payment, .directory = here(h2a,lib))
 import::from("decommissioning.R", get_decom_costs_column, .directory = here(h2a,lib))
 import::from("feedstock_costs.R", get_total_feedstock_costs, .directory = here(h2a,lib))
 import::from("feedstock_prices.R", get_feedstock_price_df, .directory = here(h2a,lib))
-import::from("globals.R", plant_output_kg_per_year, analysis_period_start, analysis_period_end, INFLATION_FACTOR, CEPCIinflator, CPIinflator, .directory = here(h2a))
-import::from("helpers.R", seq_along, .directory = here(h2a))
+import::from("fixed_costs.R", get_fixed_cost_column, .directory = here(h2a,lib))
+import::from("globals.R", CEPCIinflator, CPIinflator, INFLATION_FACTOR, analysis_period_end, analysis_period_start, plant_output_kg_per_year, .directory = here(h2a))
+import::from("h2_sales.R", get_h2_sales_kg_per_year, .directory = here(h2a,lib))
+import::from("helpers.R", YEAR_1, get, npv, seq_along, skip, .directory = here(h2a))
 import::from("initial_equity.R", get_initial_equity_depr_cap, .directory = here(h2a,lib))
-import::from("other_materials.R", get_other_material_price_df, .directory = here(h2a,lib))
+import::from("nonenergy_materials.R", get_nonenergy_material_price_df, .directory = here(h2a,lib))
 import::from("other_non_depreciable_capital_cost.R", get_other_non_depreciable_capital_cost_column, .directory = here(h2a,lib))
-import::from("ref_tables.R", get_lhv, conversion_factor, .directory = here(h2a))
+import::from("ref_tables.R", chemical_price_index, conversion_factor, get_lhv, labor_index, .directory = here(h2a))
 import::from("replacement_costs.R", get_replacement_costs, .directory = here(h2a,lib))
+import::from("salvage.R", get_salvage_column, .directory = here(h2a,lib))
+import::from("variable_costs.R", get_variable_cost_column, .directory = here(h2a,lib))
 
 H2_LHV_MJ_p_kg <- get_lhv("Hydrogen")
 print(paste("H2_LHV_MJ_p_kg", H2_LHV_MJ_p_kg, sep = ": "))
@@ -50,9 +55,6 @@ print(paste("inflation_price_increase_factors", inflation_price_increase_factors
 
 total_feedstock_cost_column <- get_total_feedstock_costs(operation_range, feedstock_price_df, inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
 print(paste("total_feedstock_cost_column", total_feedstock_cost_column, sep = ": "))
-
-other_material_price_df <- get_other_material_price_df(other_materials, analysis_range, INFLATION_FACTOR, ref_year)
-print(paste("other_material_price_df", other_material_price_df, sep = ": "))
 
 direct_cap <- sum(capital_investment_costs(capital_investments))
 print(paste("direct_cap", direct_cap, sep = ": "))
@@ -102,6 +104,9 @@ print(paste("depr_cap_infl", depr_cap_infl, sep = ": "))
 non_dep_infl <- non_dep_cap * INFLATION_FACTOR
 print(paste("non_dep_infl", non_dep_infl, sep = ": "))
 
+total_capital_investment <- depr_cap_infl + non_dep_infl
+print(paste("total_capital_investment", total_capital_investment, sep = ": "))
+
 initial_equity_depr_cap <- get_initial_equity_depr_cap(analysis_index_range, inflation_price_increase_factors, depr_cap_infl, percentage_equity_financing, percent_cap1, percent_cap2, percent_cap3, percent_cap4)
 print(paste("initial_equity_depr_cap", initial_equity_depr_cap, sep = ": "))
 
@@ -113,4 +118,85 @@ print(paste("decom", decom, sep = ": "))
 
 decom_costs_column <- get_decom_costs_column(operation_range, inflation_price_increase_factors, decom, plant_life)
 print(paste("decom_costs_column", decom_costs_column, sep = ": "))
+
+salvage <- salvage_perct * total_capital_investment
+print(paste("salvage", salvage, sep = ": "))
+
+salvage_column <- get_salvage_column(operation_range, inflation_price_increase_factors, salvage, plant_life)
+print(paste("salvage_column", salvage_column, sep = ": "))
+
+FTE_HOURS_PER_YEAR <- 2080
+print(paste("FTE_HOURS_PER_YEAR", FTE_HOURS_PER_YEAR, sep = ": "))
+
+labor_cost_inflator <- get(labor_index, ref_year) / get(labor_index, BasisYear)
+print(paste("labor_cost_inflator", labor_cost_inflator, sep = ": "))
+
+labor_cost <- total_plant_staff * (labor_cost_per_hour * labor_cost_inflator) * FTE_HOURS_PER_YEAR
+print(paste("labor_cost", labor_cost, sep = ": "))
+
+overhead_GA <- labor_cost * overhead_rate
+print(paste("overhead_GA", overhead_GA, sep = ": "))
+
+tax_insurance <- tax_ins_rate * total_cap
+print(paste("tax_insurance", tax_insurance, sep = ": "))
+
+total_fixed_cost <- labor_cost + overhead_GA + tax_insurance + (CEPCIinflator*CPIinflator) * (licensing + rent + material_cost_maintenance_and_repairs + production_cost_maintenance_and_repairs + other_fees + other_fixed)
+print(paste("total_fixed_cost", total_fixed_cost, sep = ": "))
+
+inflated_fixed <- total_fixed_cost * INFLATION_FACTOR
+print(paste("inflated_fixed", inflated_fixed, sep = ": "))
+
+fixed_cost_column <- get_fixed_cost_column(operation_range, inflation_price_increase_factors, inflated_fixed, percnt_fixed, start_time)
+print(paste("fixed_cost_column", fixed_cost_column, sep = ": "))
+
+total_tax_rate <- fed_tax_rate + state_tax_rate * (1 - fed_tax_rate)
+print(paste("total_tax_rate", total_tax_rate, sep = ": "))
+
+percentage_debt_financing <- 1 - percentage_equity_financing
+print(paste("percentage_debt_financing", percentage_debt_financing, sep = ": "))
+
+initial_capital_financed <- depr_cap_infl * percentage_debt_financing * get(inflation_price_increase_factors, YEAR_1)
+print(paste("initial_capital_financed", initial_capital_financed, sep = ": "))
+
+LAST_ANALYSIS_YEAR <- anal_period + construct - 1
+print(paste("LAST_ANALYSIS_YEAR", LAST_ANALYSIS_YEAR, sep = ": "))
+
+principal_payments_column <- determine_principal_payment(debt_period, analysis_index_range, LAST_ANALYSIS_YEAR, initial_capital_financed)
+print(paste("principal_payments_column", principal_payments_column, sep = ": "))
+
+interest_payments_column <- determine_interest_payment(debt_period, analysis_index_range, initial_capital_financed, debt_interest)
+print(paste("interest_payments_column", interest_payments_column, sep = ": "))
+
+h2_sales_kg_per_year <- get_h2_sales_kg_per_year(operation_range, plant_output_kg_per_year, percnt_revs, start_time)
+print(paste("h2_sales_kg_per_year", h2_sales_kg_per_year, sep = ": "))
+
+discounted_value_total_h2_sales_kg <- get(h2_sales_kg_per_year, YEAR_1) + npv(real_irr, skip(h2_sales_kg_per_year, 1))
+print(paste("discounted_value_total_h2_sales_kg", discounted_value_total_h2_sales_kg, sep = ": "))
+
+LCOE_contribution_h2_sales_kg <- discounted_value_total_h2_sales_kg * (1 - total_tax_rate)
+print(paste("LCOE_contribution_h2_sales_kg", LCOE_contribution_h2_sales_kg, sep = ": "))
+
+discounted_value_total_salvage_value <- get(salvage_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(salvage_column, 1))
+print(paste("discounted_value_total_salvage_value", discounted_value_total_salvage_value, sep = ": "))
+
+nonenergy_material_price_df <- get_nonenergy_material_price_df(nonenergy_materials, analysis_range, INFLATION_FACTOR, ref_year)
+print(paste("nonenergy_material_price_df", nonenergy_material_price_df, sep = ": "))
+
+var_misc <- other_variable_operating_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)
+print(paste("var_misc", var_misc, sep = ": "))
+
+waste_treat <- waste_treatment_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)
+print(paste("waste_treat", waste_treat, sep = ": "))
+
+solidwaste_treat <- solid_waste_disposal_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)
+print(paste("solidwaste_treat", solidwaste_treat, sep = ": "))
+
+CO2_OandMcost <- 0
+print(paste("CO2_OandMcost", CO2_OandMcost, sep = ": "))
+
+inflated_othervar <- INFLATION_FACTOR * (var_misc + royalties + operator_profit + CO2_OandMcost + waste_treat + solidwaste_treat)
+print(paste("inflated_othervar", inflated_othervar, sep = ": "))
+
+variable_cost_column <- get_variable_cost_column(operation_range, analysis_index_range, nonenergy_material_price_df, inflation_price_increase_factors, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar)
+print(paste("variable_cost_column", variable_cost_column, sep = ": "))
 

@@ -5,27 +5,23 @@ determine_operation_year <- function(i, construct) {
     #'Helper function in generating the list of operation years
     if (i == construct) {
         return(1)
-    } else if (i < construct) {
+    }
+    else if (i < construct) {
         return(-construct + i)
-    } else {
+    }
+    else {
         return(i - construct + 1)
     }
 }
 get_operation_range <- function(analysis_year_num_range, construct) {
     #'Get the range of plant operation years
-    return(
-        lapply(analysis_year_num_range, function(i) determine_operation_year(i, construct))
-    )
+    return(lapply(analysis_year_num_range, function(i) determine_operation_year(i, construct)))
 }
 determine_inflation_price_increase_factor <- function(year, inflation_rate, startup_year) {
     #'Helper function in generating the list of inflation price increase factors
-    return((1 + inflation_rate)^(year - startup_year))
+    return((1 + inflation_rate) ** (year - startup_year))
 }
 get_inflation_price_increase_factors <- function(analysis_range, inflation_rate, startup_year) {
     #'Get the inflation price increase factors over the analysis range
-    return(
-        lapply(
-            analysis_range, function(year) determine_inflation_price_increase_factor(year, inflation_rate, startup_year)
-        )
-    )
+    return(lapply(analysis_range, function(year) determine_inflation_price_increase_factor(year, inflation_rate, startup_year)))
 }

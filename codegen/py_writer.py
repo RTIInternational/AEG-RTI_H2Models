@@ -169,11 +169,13 @@ def edges_to_imports(edges, lib_exports):
     # Iterate over all_imports and group them by filename
     for filename, imports in itertools.groupby(all_imports, key=lambda x: x[0]):
         dirs = file_dirs[filename]
-        import_list = ", ".join([x[1] for x in imports])
+        import_list = [x[1] for x in imports]
+        import_list.sort()
+        import_list_str = ", ".join(import_list)
         import_statements.append(
             {
-                "py": f"from {dir_path_to_import_str(dirs, filename, 'py')} import {import_list}",
-                "R": f'import::from("{filename}.R", {import_list}, .directory = here({dir_path_to_import_str(dirs, _, "R")}))',
+                "py": f"from {dir_path_to_import_str(dirs, filename, 'py')} import {import_list_str}",
+                "R": f'import::from("{filename}.R", {import_list_str}, .directory = here({dir_path_to_import_str(dirs, _, "R")}))',
             }
         )
 

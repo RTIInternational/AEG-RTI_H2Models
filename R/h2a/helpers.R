@@ -7,6 +7,16 @@ concat <- function(a, b) paste(a, b, sep = "")
 
 split <- function(a, b) strsplit(a, b)[[1]]
 
+npv <- function(r, cfList) {
+    sum_pv <- 0
+    for (i in seq_along(cfList)) {
+        sum_pv <- sum_pv + cfList[[i]] / ((1 + r) ^ i)
+    }
+    return(sum_pv)
+}
+
+skip <- function(a, b) a[(b + 1):length(a)]
+
 YEAR_1 <- 1
 YEAR_2 <- 2
 YEAR_3 <- 3
