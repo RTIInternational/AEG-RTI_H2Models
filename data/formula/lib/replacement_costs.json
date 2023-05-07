@@ -11,7 +11,7 @@
         },
         {
           "condition": "TRUE",
-          "body": "inflation_price_increase_factor * (replace_factor * depr_cap) * ((1 + inflation_rate) ** (startup_year - ref_year))"
+          "body": "-inflation_price_increase_factor * (replace_factor * depr_cap) * ((1 + inflation_rate) ** (startup_year - ref_year))"
         }
       ]
     },

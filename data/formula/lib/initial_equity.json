@@ -8,19 +8,19 @@
       "cases": [
         {
           "condition": "year == YEAR_1",
-          "body": "inflation_price_increase_factor * percentage_equity_financing * depr_cap_infl * percent_cap1"
+          "body": "-inflation_price_increase_factor * percentage_equity_financing * depr_cap_infl * percent_cap1"
         },
         {
           "condition": "year == YEAR_2",
-          "body": "inflation_price_increase_factor * percentage_equity_financing * depr_cap_infl * percent_cap2"
+          "body": "-inflation_price_increase_factor * percentage_equity_financing * depr_cap_infl * percent_cap2"
         },
         {
           "condition": "year == YEAR_3",
-          "body": "inflation_price_increase_factor * percentage_equity_financing * depr_cap_infl * percent_cap3"
+          "body": "-inflation_price_increase_factor * percentage_equity_financing * depr_cap_infl * percent_cap3"
         },
         {
           "condition": "year == YEAR_4",
-          "body": "inflation_price_increase_factor * percentage_equity_financing * depr_cap_infl * percent_cap4"
+          "body": "-inflation_price_increase_factor * percentage_equity_financing * depr_cap_infl * percent_cap4"
         },
         {
           "condition": "TRUE",

@@ -14,7 +14,7 @@ def calculate_replacement_cost(
         return 0
     else:
         return (
-            inflation_price_increase_factor
+            -inflation_price_increase_factor
             * (replace_factor * depr_cap)
             * ((1 + inflation_rate) ** (startup_year - ref_year))
         )

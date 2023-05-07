@@ -88,6 +88,9 @@ print('depr_cap: ', depr_cap)
 replacement_costs = get_replacement_costs(operation_range, inflation_price_increase_factors, replace_factor, depr_cap, ref_year, startup_year, inflation_rate)
 print('replacement_costs: ', replacement_costs)
 
+discounted_value_replacement_costs = get(replacement_costs, YEAR_1) + npv(nominal_irr, skip(replacement_costs, 1))
+print('discounted_value_replacement_costs: ', discounted_value_replacement_costs)
+
 land_cost = acres_required * cost_per_acre * CPIinflator
 print('land_cost: ', land_cost)
 
@@ -112,8 +115,14 @@ print('total_capital_investment: ', total_capital_investment)
 initial_equity_depr_cap = get_initial_equity_depr_cap(analysis_index_range, inflation_price_increase_factors, depr_cap_infl, percentage_equity_financing, percent_cap1, percent_cap2, percent_cap3, percent_cap4)
 print('initial_equity_depr_cap: ', initial_equity_depr_cap)
 
+discounted_value_initial_equity_depr_cap = get(initial_equity_depr_cap, YEAR_1) + npv(nominal_irr, skip(initial_equity_depr_cap, 1))
+print('discounted_value_initial_equity_depr_cap: ', discounted_value_initial_equity_depr_cap)
+
 other_non_depreciable_capital_cost_column = get_other_non_depreciable_capital_cost_column(analysis_index_range, inflation_price_increase_factors, non_dep_infl)
 print('other_non_depreciable_capital_cost_column: ', other_non_depreciable_capital_cost_column)
+
+discounted_value_other_non_depreciable_capital_cost = get(other_non_depreciable_capital_cost_column, YEAR_1) + npv(nominal_irr, skip(other_non_depreciable_capital_cost_column, 1))
+print('discounted_value_other_non_depreciable_capital_cost: ', discounted_value_other_non_depreciable_capital_cost)
 
 decom = decom_percent * depr_cap_infl
 print('decom: ', decom)
@@ -216,4 +225,10 @@ print('working_cap_reserve_rows: ', working_cap_reserve_rows)
 
 working_cap_reserve_column = get_working_cap_reserve_column(working_cap_reserve_rows)
 print('working_cap_reserve_column: ', working_cap_reserve_column)
+
+discounted_value_working_cap_reserve = get(working_cap_reserve_column, YEAR_1) + npv(nominal_irr, skip(working_cap_reserve_column, 1))
+print('discounted_value_working_cap_reserve: ', discounted_value_working_cap_reserve)
+
+LCOE_contribution_capital_costs = -(discounted_value_initial_equity_depr_cap + discounted_value_replacement_costs + discounted_value_working_cap_reserve + discounted_value_other_non_depreciable_capital_cost)
+print('LCOE_contribution_capital_costs: ', LCOE_contribution_capital_costs)
 

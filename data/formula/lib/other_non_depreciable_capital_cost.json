@@ -7,7 +7,7 @@
       "cases": [
         {
           "condition": "year == YEAR_1",
-          "body": "inflation_price_increase_factor * non_dep_infl"
+          "body": "-inflation_price_increase_factor * non_dep_infl"
         },
         {
           "condition": "TRUE",

@@ -4,7 +4,7 @@
 import::from("helpers.R", YEAR_1, .directory = here(h2a))
 calculate_other_non_depr_cap <- function(year, inflation_price_increase_factor, non_dep_infl) {
     if (year == YEAR_1) {
-        return(inflation_price_increase_factor * non_dep_infl)
+        return(-inflation_price_increase_factor * non_dep_infl)
     }
     else {
         return(0)

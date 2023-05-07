@@ -6,7 +6,7 @@ from h2a.helpers import YEAR_1
 
 def calculate_other_non_depr_cap(year, inflation_price_increase_factor, non_dep_infl):
     if year == YEAR_1:
-        return inflation_price_increase_factor * non_dep_infl
+        return -inflation_price_increase_factor * non_dep_infl
     else:
         return 0
 

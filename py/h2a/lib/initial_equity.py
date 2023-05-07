@@ -17,28 +17,28 @@ def calculate_initial_equity_depr_cap(
     """In this model, the first 1 to 4 years are for construction. This function handles those years. The `year` arg begins at 0 and is incremented by 1 for each year."""
     if year == YEAR_1:
         return (
-            inflation_price_increase_factor
+            -inflation_price_increase_factor
             * percentage_equity_financing
             * depr_cap_infl
             * percent_cap1
         )
     elif year == YEAR_2:
         return (
-            inflation_price_increase_factor
+            -inflation_price_increase_factor
             * percentage_equity_financing
             * depr_cap_infl
             * percent_cap2
         )
     elif year == YEAR_3:
         return (
-            inflation_price_increase_factor
+            -inflation_price_increase_factor
             * percentage_equity_financing
             * depr_cap_infl
             * percent_cap3
         )
     elif year == YEAR_4:
         return (
-            inflation_price_increase_factor
+            -inflation_price_increase_factor
             * percentage_equity_financing
             * depr_cap_infl
             * percent_cap4

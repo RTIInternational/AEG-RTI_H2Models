@@ -115,9 +115,15 @@
     },
     {
       "name": "replacement_costs",
-      "label": "Yearly Replacement Costs",
+      "label": "Yearly Replacement Costs Column",
       "expression": "get_replacement_costs(operation_range, inflation_price_increase_factors, replace_factor, depr_cap, ref_year, startup_year, inflation_rate)",
       "excel_loc": "Cash Flow Analysis I64"
+    },
+    {
+      "name": "discounted_value_replacement_costs",
+      "label": "Discounted Value of Yearly Replacement Costs",
+      "expression": "get(replacement_costs, YEAR_1) + npv(nominal_irr, skip(replacement_costs, 1))",
+      "excel_loc": "Cash Flow Analysis I116"
     },
     {
       "name": "land_cost",
@@ -166,10 +172,22 @@
       "excel_loc": "Cash Flow Analysis H64"
     },
     {
+      "name": "discounted_value_initial_equity_depr_cap",
+      "label": "Discounted Value of Initial Equity Depreciable Capital",
+      "expression": "get(initial_equity_depr_cap, YEAR_1) + npv(nominal_irr, skip(initial_equity_depr_cap, 1))",
+      "excel_loc": "Cash Flow Analysis H116"
+    },
+    {
       "name": "other_non_depreciable_capital_cost_column",
-      "label": "Other Non-Depreciable Capital Column",
+      "label": "Other Non-Depreciable Capital Costs Column",
       "expression": "get_other_non_depreciable_capital_cost_column(analysis_index_range, inflation_price_increase_factors, non_dep_infl)",
       "excel_loc": "Cash Flow Analysis K64"
+    },
+    {
+      "name": "discounted_value_other_non_depreciable_capital_cost",
+      "label": "Discounted Value of Other Non-Depreciable Capital Costs",
+      "expression": "get(other_non_depreciable_capital_cost_column, YEAR_1) + npv(nominal_irr, skip(other_non_depreciable_capital_cost_column, 1))",
+      "excel_loc": "Cash Flow Analysis K116"
     },
     {
       "orig_name": "decom",
@@ -365,6 +383,18 @@
       "label": "Cash from Working Capital Reserve Column",
       "expression": "get_working_cap_reserve_column(working_cap_reserve_rows)",
       "excel_loc": "Cash Flow Analysis J64"
+    },
+    {
+      "name": "discounted_value_working_cap_reserve",
+      "label": "Discounted Value of Cash from Working Capital Reserve",
+      "expression": "get(working_cap_reserve_column, YEAR_1) + npv(nominal_irr, skip(working_cap_reserve_column, 1))",
+      "excel_loc": "Cash Flow Analysis J116"
+    },
+    {
+      "name": "LCOE_contribution_capital_costs",
+      "label": "LCOE Contribution from Capital Costs",
+      "expression": "-(discounted_value_initial_equity_depr_cap + discounted_value_replacement_costs + discounted_value_working_cap_reserve + discounted_value_other_non_depreciable_capital_cost)",
+      "excel_loc": "Cash Flow Analysis W57"
     },
     {
       "name": "#",
