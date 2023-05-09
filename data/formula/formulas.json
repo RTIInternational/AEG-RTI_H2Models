@@ -272,7 +272,7 @@
     {
       "name": "initial_capital_financed",
       "label": "Portion of Initial Depreciable Capital Investment Financed with Debt",
-      "expression": "depr_cap_infl * percentage_debt_financing * get(inflation_price_increase_factors, YEAR_1)",
+      "expression": "-depr_cap_infl * percentage_debt_financing * get(inflation_price_increase_factors, YEAR_1)",
       "excel_loc": "Cash Flow Analysis G65"
     },
     {
@@ -394,6 +394,72 @@
       "name": "LCOE_contribution_capital_costs",
       "label": "LCOE Contribution from Capital Costs",
       "expression": "-(discounted_value_initial_equity_depr_cap + discounted_value_replacement_costs + discounted_value_working_cap_reserve + discounted_value_other_non_depreciable_capital_cost)",
+      "excel_loc": "Cash Flow Analysis W57"
+    },
+    {
+      "name": "total_initial_depreciable_capital",
+      "label": "Total Initial Depreciable Capital",
+      "expression": "-(initial_capital_financed + sum(initial_equity_depr_cap))",
+      "excel_loc": "Depreciation B44"
+    },
+    {
+      "name": "annual_depreciable_capital",
+      "label": "Annual Depreciable Capital",
+      "expression": "get_annual_depreciable_capital(operation_range, replacement_costs, total_initial_depreciable_capital)",
+      "excel_loc": "Depreciation B49"
+    },
+    {
+      "name": "recovery_range",
+      "label": "Recovery Range",
+      "expression": "range(1, 22)",
+      "excel_loc": "Depreciation C48-W48"
+    },
+    {
+      "name": "depreciation_calculation_table",
+      "label": "Depreciation Calculation Table",
+      "expression": "get_depreciation_calculation_table(recovery_range, operation_range, depr_type, depr_length, annual_depreciable_capital)",
+      "excel_loc": "Depreciation C49"
+    },
+    {
+      "name": "recovery_index_range",
+      "expression": "seq_along(recovery_range)"
+    },
+    {
+      "name": "depreciation_charges",
+      "label": "Depreciation Charges",
+      "expression": "get_depreciation_charges(analysis_index_range, recovery_index_range, depreciation_calculation_table)",
+      "excel_loc": "Depreciation B97"
+    },
+    {
+      "name": "remaining_depreciation_range",
+      "expression": "range(anal_period+construct, anal_period+construct+depr_length+1)"
+    },
+    {
+      "name": "remaining_depreciation_charges",
+      "label": "Remaining Depreciation Charges",
+      "expression": "get_depreciation_charges(remaining_depreciation_range, recovery_index_range, depreciation_calculation_table)",
+      "excel_loc": "Depreciation B140, B146-B165"
+    },
+    {
+      "name": "total_remaining_depreciation_charges",
+      "expression": "sum(remaining_depreciation_charges)"
+    },
+    {
+      "name": "depreciation_charges_column",
+      "label": "Depreciation Charges Column",
+      "expression": "get_depreciation_charges_column(depreciation_charges, analysis_index_range, total_remaining_depreciation_charges, anal_period, construct)",
+      "excel_loc": "Cash Flow Analysis U64"
+    },
+    {
+      "name": "discounted_value_depreciation_charges",
+      "label": "Discounted Value of Depreciation Charges",
+      "expression": "get(depreciation_charges_column, YEAR_1) + npv(nominal_irr, skip(depreciation_charges_column, 1))",
+      "excel_loc": "Cash Flow Analysis U116"
+    },
+    {
+      "name": "LCOE_contribution_depreciation",
+      "label": "LCOE Contribution from Depreciation",
+      "expression": "discounted_value_depreciation_charges * total_tax_rate",
       "excel_loc": "Cash Flow Analysis W57"
     },
     {

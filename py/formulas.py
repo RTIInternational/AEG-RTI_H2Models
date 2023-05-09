@@ -6,6 +6,9 @@ from h2a.lib.capital_investments import capital_investment_costs
 from h2a.lib.cashflow_meta import get_inflation_price_increase_factors, get_operation_range
 from h2a.lib.debt_financing import determine_interest_payment, determine_principal_payment
 from h2a.lib.decommissioning import get_decom_costs_column
+from h2a.lib.depreciable_capital import get_annual_depreciable_capital
+from h2a.lib.depreciation_calculation import get_depreciation_calculation_table
+from h2a.lib.depreciation_charges import get_depreciation_charges, get_depreciation_charges_column
 from h2a.lib.feedstock_costs import get_total_feedstock_costs
 from h2a.lib.feedstock_prices import get_feedstock_price_df
 from h2a.lib.fixed_costs import get_fixed_cost_column
@@ -166,7 +169,7 @@ print('total_tax_rate: ', total_tax_rate)
 percentage_debt_financing = 1 - percentage_equity_financing
 print('percentage_debt_financing: ', percentage_debt_financing)
 
-initial_capital_financed = depr_cap_infl * percentage_debt_financing * get(inflation_price_increase_factors, YEAR_1)
+initial_capital_financed = -depr_cap_infl * percentage_debt_financing * get(inflation_price_increase_factors, YEAR_1)
 print('initial_capital_financed: ', initial_capital_financed)
 
 LAST_ANALYSIS_YEAR = anal_period + construct - 1
@@ -231,4 +234,40 @@ print('discounted_value_working_cap_reserve: ', discounted_value_working_cap_res
 
 LCOE_contribution_capital_costs = -(discounted_value_initial_equity_depr_cap + discounted_value_replacement_costs + discounted_value_working_cap_reserve + discounted_value_other_non_depreciable_capital_cost)
 print('LCOE_contribution_capital_costs: ', LCOE_contribution_capital_costs)
+
+total_initial_depreciable_capital = -(initial_capital_financed + sum(initial_equity_depr_cap))
+print('total_initial_depreciable_capital: ', total_initial_depreciable_capital)
+
+annual_depreciable_capital = get_annual_depreciable_capital(operation_range, replacement_costs, total_initial_depreciable_capital)
+print('annual_depreciable_capital: ', annual_depreciable_capital)
+
+recovery_range = range(1, 22)
+print('recovery_range: ', recovery_range)
+
+depreciation_calculation_table = get_depreciation_calculation_table(recovery_range, operation_range, depr_type, depr_length, annual_depreciable_capital)
+print('depreciation_calculation_table: ', depreciation_calculation_table)
+
+recovery_index_range = seq_along(recovery_range)
+print('recovery_index_range: ', recovery_index_range)
+
+depreciation_charges = get_depreciation_charges(analysis_index_range, recovery_index_range, depreciation_calculation_table)
+print('depreciation_charges: ', depreciation_charges)
+
+remaining_depreciation_range = range(anal_period+construct, anal_period+construct+depr_length+1)
+print('remaining_depreciation_range: ', remaining_depreciation_range)
+
+remaining_depreciation_charges = get_depreciation_charges(remaining_depreciation_range, recovery_index_range, depreciation_calculation_table)
+print('remaining_depreciation_charges: ', remaining_depreciation_charges)
+
+total_remaining_depreciation_charges = sum(remaining_depreciation_charges)
+print('total_remaining_depreciation_charges: ', total_remaining_depreciation_charges)
+
+depreciation_charges_column = get_depreciation_charges_column(depreciation_charges, analysis_index_range, total_remaining_depreciation_charges, anal_period, construct)
+print('depreciation_charges_column: ', depreciation_charges_column)
+
+discounted_value_depreciation_charges = get(depreciation_charges_column, YEAR_1) + npv(nominal_irr, skip(depreciation_charges_column, 1))
+print('discounted_value_depreciation_charges: ', discounted_value_depreciation_charges)
+
+LCOE_contribution_depreciation = discounted_value_depreciation_charges * total_tax_rate
+print('LCOE_contribution_depreciation: ', LCOE_contribution_depreciation)
 

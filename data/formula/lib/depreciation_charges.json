@@ -1,0 +1,66 @@
+{
+  "functions": [
+    {
+      "name": "access",
+      "description": "Safely access a value in a table",
+      "args": ["i", "table", "row"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "row - i >= YEAR_1 and row - i < length(get(table, i))",
+          "body": "get(get(table, i), row - i)"
+        },
+        {
+          "condition": "TRUE",
+          "body": "0"
+        }
+      ]
+    },
+    {
+      "name": "diagonal",
+      "description": "Get the diagonal cells of a table given a row, e.g. diagonal(table, 2, 3) returns [table[0,2], table[1,1], table[2,0]]",
+      "args": ["table", "row", "recovery_index_range"],
+      "map_function": "access",
+      "map_iterables": ["recovery_index_range"],
+      "map_item_names": ["i"]
+    },
+    {
+      "name": "calculate_depreciation_charge",
+      "description": "Calculate the depreciation charge for a given year by summing the diagonal",
+      "args": ["year", "recovery_index_range", "depreciation_calculation_table"],
+      "body": "sum(diagonal(depreciation_calculation_table, year, recovery_index_range))"
+    },
+    {
+      "name": "get_depreciation_charges",
+      "description": "Get the depreciation charges",
+      "map_function": "calculate_depreciation_charge",
+      "map_iterables": ["analysis_index_range"],
+      "map_item_names": ["year"],
+      "args": ["analysis_index_range", "recovery_index_range", "depreciation_calculation_table"]
+    },
+    {
+      "name": "get_depr_charge",
+      "description": "Get the depreciation charge",
+      "args": ["charge", "i", "total_remaining_depreciation_charges", "anal_period", "construct"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "i == anal_period + construct - 1",
+          "body": "-charge - total_remaining_depreciation_charges"
+        },
+        {
+          "condition": "TRUE",
+          "body": "-charge"
+        }
+      ]
+    },
+    {
+      "name": "get_depreciation_charges_column",
+      "description": "Get the depreciation charges column for the Cash Flow Analysis",
+      "map_function": "get_depr_charge",
+      "map_iterables": ["depreciation_charges", "analysis_index_range"],
+      "map_item_names": ["charge", "i"],
+      "args": ["depreciation_charges", "analysis_index_range", "total_remaining_depreciation_charges", "anal_period", "construct"]
+    }
+  ]
+}

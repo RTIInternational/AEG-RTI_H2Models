@@ -135,6 +135,13 @@ def read_labor_index():
     return labor_index
 
 
+def read_macrs_depreciation_table():
+    # Read the column headers as integers
+    csv_path = os.path.join(root_dir, "data/macrs/macrs-depreciation-table.csv")
+    df = pd.read_csv(csv_path, index_col=0, names=[3, 5, 7, 10, 15, 20])
+    return df
+
+
 lhv, hhv = read_fuel_heating_values()
 conversion_factors = read_conversion_factors()
 plant_cost_index = read_plant_cost_index()
@@ -151,3 +158,5 @@ get_aeo = (
     if price_table == "AEO_2017_Reference_Case"
     else Exception(f"Price table '{price_table}' not supported.")
 )
+macrs_depreciation_table = read_macrs_depreciation_table()
+# print(macrs_depreciation_table["3"])

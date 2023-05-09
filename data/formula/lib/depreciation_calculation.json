@@ -1,0 +1,38 @@
+{
+  "functions": [
+    {
+      "name": "calculate_depreciation",
+      "description": "Calculate the depreciation for a given recovery year and operation year",
+      "args": ["op_year", "depreciable_capital", "recovery_year", "depr_type", "depr_length"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "depr_type == 'Straight Line' and recovery_year <= depr_length",
+          "body": "depreciable_capital / depr_length"
+        }, {
+          "condition": "depr_type == 'MACRS' and recovery_year <= depr_length + 1",
+          "body": "depreciable_capital * get(get(macrs_depreciation_table, depr_length), recovery_year) / 100"
+        }, {
+          "condition": "TRUE",
+          "body": "0"
+        }
+      ]
+    },
+    {
+      "name": "calculate_depreciation_column",
+      "description": "Calculate the depreciation for a given recovery year and operation range",
+      "map_function": "calculate_depreciation",
+      "map_iterables": ["operation_range", "annual_depreciable_capital"],
+      "map_item_names": ["op_year", "depreciable_capital"],
+      "args": ["recovery_year", "operation_range", "depr_type", "depr_length", "annual_depreciable_capital"]
+    },
+    {
+      "name": "get_depreciation_calculation_table",
+      "description": "Get the 2D table of depreciation calculations (recovery_range by operation_range)",
+      "map_function": "calculate_depreciation_column",
+      "map_iterables": ["recovery_range"],
+      "map_item_names": ["recovery_year"],
+      "args": ["recovery_range", "operation_range", "depr_type", "depr_length", "annual_depreciable_capital"]
+    }
+  ]
+}

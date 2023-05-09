@@ -1,0 +1,30 @@
+{
+  "functions": [
+    {
+      "name": "calculate_annual_depreciable_capital",
+      "description": "Calculate the annual depreciable capital for a given year",
+      "args": ["year", "replacement_cost_for_year", "total_initial_depreciable_capital"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "year < 0",
+          "body": "0"
+        }, {
+          "condition": "year == 1",
+          "body": "total_initial_depreciable_capital - replacement_cost_for_year"
+        }, {
+          "condition": "TRUE",
+          "body": "-replacement_cost_for_year"
+        }
+      ]
+    },
+    {
+      "name": "get_annual_depreciable_capital",
+      "description": "Get the annual depreciable capital column of the depreciation calculation table",
+      "map_function": "calculate_annual_depreciable_capital",
+      "map_iterables": ["operation_range", "replacement_costs"],
+      "map_item_names": ["year", "replacement_cost_for_year"],
+      "args": ["operation_range", "replacement_costs", "total_initial_depreciable_capital"]
+    }
+  ]
+}

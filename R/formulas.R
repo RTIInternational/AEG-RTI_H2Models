@@ -6,6 +6,9 @@ import::from("capital_investments.R", capital_investment_costs, .directory = her
 import::from("cashflow_meta.R", get_inflation_price_increase_factors, get_operation_range, .directory = here(h2a,lib))
 import::from("debt_financing.R", determine_interest_payment, determine_principal_payment, .directory = here(h2a,lib))
 import::from("decommissioning.R", get_decom_costs_column, .directory = here(h2a,lib))
+import::from("depreciable_capital.R", get_annual_depreciable_capital, .directory = here(h2a,lib))
+import::from("depreciation_calculation.R", get_depreciation_calculation_table, .directory = here(h2a,lib))
+import::from("depreciation_charges.R", get_depreciation_charges, get_depreciation_charges_column, .directory = here(h2a,lib))
 import::from("feedstock_costs.R", get_total_feedstock_costs, .directory = here(h2a,lib))
 import::from("feedstock_prices.R", get_feedstock_price_df, .directory = here(h2a,lib))
 import::from("fixed_costs.R", get_fixed_cost_column, .directory = here(h2a,lib))
@@ -166,7 +169,7 @@ print(paste("total_tax_rate", total_tax_rate, sep = ": "))
 percentage_debt_financing <- 1 - percentage_equity_financing
 print(paste("percentage_debt_financing", percentage_debt_financing, sep = ": "))
 
-initial_capital_financed <- depr_cap_infl * percentage_debt_financing * get(inflation_price_increase_factors, YEAR_1)
+initial_capital_financed <- -depr_cap_infl * percentage_debt_financing * get(inflation_price_increase_factors, YEAR_1)
 print(paste("initial_capital_financed", initial_capital_financed, sep = ": "))
 
 LAST_ANALYSIS_YEAR <- anal_period + construct - 1
@@ -231,4 +234,40 @@ print(paste("discounted_value_working_cap_reserve", discounted_value_working_cap
 
 LCOE_contribution_capital_costs <- -(discounted_value_initial_equity_depr_cap + discounted_value_replacement_costs + discounted_value_working_cap_reserve + discounted_value_other_non_depreciable_capital_cost)
 print(paste("LCOE_contribution_capital_costs", LCOE_contribution_capital_costs, sep = ": "))
+
+total_initial_depreciable_capital <- -(initial_capital_financed + sum(initial_equity_depr_cap))
+print(paste("total_initial_depreciable_capital", total_initial_depreciable_capital, sep = ": "))
+
+annual_depreciable_capital <- get_annual_depreciable_capital(operation_range, replacement_costs, total_initial_depreciable_capital)
+print(paste("annual_depreciable_capital", annual_depreciable_capital, sep = ": "))
+
+recovery_range <- range(1, 22)
+print(paste("recovery_range", recovery_range, sep = ": "))
+
+depreciation_calculation_table <- get_depreciation_calculation_table(recovery_range, operation_range, depr_type, depr_length, annual_depreciable_capital)
+print(paste("depreciation_calculation_table", depreciation_calculation_table, sep = ": "))
+
+recovery_index_range <- seq_along(recovery_range)
+print(paste("recovery_index_range", recovery_index_range, sep = ": "))
+
+depreciation_charges <- get_depreciation_charges(analysis_index_range, recovery_index_range, depreciation_calculation_table)
+print(paste("depreciation_charges", depreciation_charges, sep = ": "))
+
+remaining_depreciation_range <- range(anal_period+construct, anal_period+construct+depr_length+1)
+print(paste("remaining_depreciation_range", remaining_depreciation_range, sep = ": "))
+
+remaining_depreciation_charges <- get_depreciation_charges(remaining_depreciation_range, recovery_index_range, depreciation_calculation_table)
+print(paste("remaining_depreciation_charges", remaining_depreciation_charges, sep = ": "))
+
+total_remaining_depreciation_charges <- sum(remaining_depreciation_charges)
+print(paste("total_remaining_depreciation_charges", total_remaining_depreciation_charges, sep = ": "))
+
+depreciation_charges_column <- get_depreciation_charges_column(depreciation_charges, analysis_index_range, total_remaining_depreciation_charges, anal_period, construct)
+print(paste("depreciation_charges_column", depreciation_charges_column, sep = ": "))
+
+discounted_value_depreciation_charges <- get(depreciation_charges_column, YEAR_1) + npv(nominal_irr, skip(depreciation_charges_column, 1))
+print(paste("discounted_value_depreciation_charges", discounted_value_depreciation_charges, sep = ": "))
+
+LCOE_contribution_depreciation <- discounted_value_depreciation_charges * total_tax_rate
+print(paste("LCOE_contribution_depreciation", LCOE_contribution_depreciation, sep = ": "))
 
