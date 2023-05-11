@@ -524,6 +524,12 @@
       "excel_loc": "Cash Flow Analysis E16"
     },
     {
+      "name": "revenue_h2_sales",
+      "label": "Revenue from Hydrogen Sales Column",
+      "expression": "get_revenue_h2_sales_column(operation_range, inflation_price_increase_factors, H2_price_nominal, plant_output_kg_per_year, percnt_revs, start_time)",
+      "excel_loc": "Cash Flow Analysis F64"
+    },
+    {
       "name": "#",
       "label": "Total Depreciable Capital Costs",
       "expression": "(total_cap - non_dep_cap) * INFLATION_FACTOR",

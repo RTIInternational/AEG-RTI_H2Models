@@ -1,0 +1,34 @@
+{
+  "functions": [
+    {
+      "name": "calculate_revenue",
+      "description": "For a given year, calculate revenue from H2 sales",
+      "type": "switch",
+      "args": ["year", "inflation_price_increase_factor", "H2_price_nominal", "plant_output_kg_per_year", "start_time", "percnt_revs"],
+      "cases": [
+        {
+          "condition": "year < 0",
+          "body": "0"
+        },
+        {
+          "condition": "year == 1 and start_time < 1",
+          "body": "inflation_price_increase_factor * (( H2_price_nominal * plant_output_kg_per_year * percnt_revs * start_time ) + (H2_price_nominal * plant_output_kg_per_year * (1 - start_time)) )"
+        }, {
+          "condition": "year <= start_time",
+          "body": "-(H2_price_nominal * plant_output_kg_per_year * inflation_price_increase_factor * percnt_revs)"
+        }, {
+          "condition": "TRUE",
+          "body": "H2_price_nominal * plant_output_kg_per_year * inflation_price_increase_factor"
+        }
+      ]
+    },
+    {
+      "name": "get_revenue_h2_sales_column",
+      "description": "Revenue from Hydrogen Sales column",
+      "map_function": "calculate_revenue",
+      "map_iterables": ["operation_range", "inflation_price_increase_factors"],
+      "map_item_names": ["year", "inflation_price_increase_factor"],
+      "args": ["operation_range", "inflation_price_increase_factors", "H2_price_nominal", "plant_output_kg_per_year", "percnt_revs", "start_time"]
+    }
+  ]
+}

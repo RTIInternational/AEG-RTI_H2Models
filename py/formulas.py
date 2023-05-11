@@ -21,6 +21,7 @@ from h2a.lib.other_non_depreciable_capital_cost import get_other_non_depreciable
 from h2a.lib.other_raw_material_costs import get_other_raw_material_cost_column
 from h2a.ref_tables import chemical_price_index, conversion_factor, get_lhv, labor_index
 from h2a.lib.replacement_costs import get_replacement_costs
+from h2a.lib.revenue_h2_sales import get_revenue_h2_sales_column
 from h2a.lib.salvage import get_salvage_column
 from h2a.lib.variable_costs import get_variable_cost_column
 from h2a.lib.working_capital_reserve import get_working_cap_reserve_column, get_working_cap_reserve_rows
@@ -300,4 +301,7 @@ print('H2_price_nominal: ', H2_price_nominal)
 
 H2_price_real = H2_price_nominal / INFLATION_FACTOR
 print('H2_price_real: ', H2_price_real)
+
+revenue_h2_sales = get_revenue_h2_sales_column(operation_range, inflation_price_increase_factors, H2_price_nominal, plant_output_kg_per_year, percnt_revs, start_time)
+print('revenue_h2_sales: ', revenue_h2_sales)
 

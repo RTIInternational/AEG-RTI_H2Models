@@ -21,6 +21,7 @@ import::from("other_non_depreciable_capital_cost.R", get_other_non_depreciable_c
 import::from("other_raw_material_costs.R", get_other_raw_material_cost_column, .directory = here(h2a,lib))
 import::from("ref_tables.R", chemical_price_index, conversion_factor, get_lhv, labor_index, .directory = here(h2a))
 import::from("replacement_costs.R", get_replacement_costs, .directory = here(h2a,lib))
+import::from("revenue_h2_sales.R", get_revenue_h2_sales_column, .directory = here(h2a,lib))
 import::from("salvage.R", get_salvage_column, .directory = here(h2a,lib))
 import::from("variable_costs.R", get_variable_cost_column, .directory = here(h2a,lib))
 import::from("working_capital_reserve.R", get_working_cap_reserve_column, get_working_cap_reserve_rows, .directory = here(h2a,lib))
@@ -300,4 +301,7 @@ print(paste("H2_price_nominal", H2_price_nominal, sep = ": "))
 
 H2_price_real <- H2_price_nominal / INFLATION_FACTOR
 print(paste("H2_price_real", H2_price_real, sep = ": "))
+
+revenue_h2_sales <- get_revenue_h2_sales_column(operation_range, inflation_price_increase_factors, H2_price_nominal, plant_output_kg_per_year, percnt_revs, start_time)
+print(paste("revenue_h2_sales", revenue_h2_sales, sep = ": "))
 
