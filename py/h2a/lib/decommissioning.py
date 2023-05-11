@@ -3,7 +3,7 @@
 #
 def calculate_decom_cost(year, inflation_price_increase_factor, decom, plant_life):
     if year == plant_life:
-        return inflation_price_increase_factor * decom
+        return -inflation_price_increase_factor * decom
     else:
         return 0
 

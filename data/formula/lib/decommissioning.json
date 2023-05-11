@@ -7,7 +7,7 @@
       "cases": [
         {
           "condition": "year == plant_life",
-          "body": "inflation_price_increase_factor * decom"
+          "body": "-inflation_price_increase_factor * decom"
         },
         {
           "condition": "TRUE",

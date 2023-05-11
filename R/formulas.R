@@ -61,6 +61,9 @@ print(paste("inflation_price_increase_factors", inflation_price_increase_factors
 total_feedstock_cost_column <- get_total_feedstock_costs(operation_range, feedstock_price_df, inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
 print(paste("total_feedstock_cost_column", total_feedstock_cost_column, sep = ": "))
 
+discounted_value_feedstock_cost <- get(total_feedstock_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(total_feedstock_cost_column, 1))
+print(paste("discounted_value_feedstock_cost", discounted_value_feedstock_cost, sep = ": "))
+
 direct_cap <- sum(capital_investment_costs(capital_investments))
 print(paste("direct_cap", direct_cap, sep = ": "))
 
@@ -133,6 +136,9 @@ print(paste("decom", decom, sep = ": "))
 decom_costs_column <- get_decom_costs_column(operation_range, inflation_price_increase_factors, decom, plant_life)
 print(paste("decom_costs_column", decom_costs_column, sep = ": "))
 
+discounted_value_decom_costs <- get(decom_costs_column, YEAR_1) + npv(nominal_irr, skip(decom_costs_column, 1))
+print(paste("discounted_value_decom_costs", discounted_value_decom_costs, sep = ": "))
+
 salvage <- salvage_perct * total_capital_investment
 print(paste("salvage", salvage, sep = ": "))
 
@@ -163,6 +169,9 @@ print(paste("inflated_fixed", inflated_fixed, sep = ": "))
 fixed_cost_column <- get_fixed_cost_column(operation_range, inflation_price_increase_factors, inflated_fixed, percnt_fixed, start_time)
 print(paste("fixed_cost_column", fixed_cost_column, sep = ": "))
 
+discounted_value_fixed_cost <- get(fixed_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(fixed_cost_column, 1))
+print(paste("discounted_value_fixed_cost", discounted_value_fixed_cost, sep = ": "))
+
 total_tax_rate <- fed_tax_rate + state_tax_rate * (1 - fed_tax_rate)
 print(paste("total_tax_rate", total_tax_rate, sep = ": "))
 
@@ -180,6 +189,9 @@ print(paste("principal_payments_column", principal_payments_column, sep = ": "))
 
 interest_payments_column <- determine_interest_payment(debt_period, analysis_index_range, initial_capital_financed, debt_interest)
 print(paste("interest_payments_column", interest_payments_column, sep = ": "))
+
+discounted_value_interest_payments <- get(interest_payments_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(interest_payments_column, 1))
+print(paste("discounted_value_interest_payments", discounted_value_interest_payments, sep = ": "))
 
 h2_sales_kg_per_year <- get_h2_sales_kg_per_year(operation_range, plant_output_kg_per_year, percnt_revs, start_time)
 print(paste("h2_sales_kg_per_year", h2_sales_kg_per_year, sep = ": "))
@@ -214,6 +226,9 @@ print(paste("inflated_othervar", inflated_othervar, sep = ": "))
 variable_cost_column <- get_variable_cost_column(operation_range, analysis_index_range, nonenergy_material_price_df, inflation_price_increase_factors, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar)
 print(paste("variable_cost_column", variable_cost_column, sep = ": "))
 
+discounted_value_variable_cost <- get(variable_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(variable_cost_column, 1))
+print(paste("discounted_value_variable_cost", discounted_value_variable_cost, sep = ": "))
+
 total_other_raw <- other_material_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)
 print(paste("total_other_raw", total_other_raw, sep = ": "))
 
@@ -222,6 +237,9 @@ print(paste("inflated_otherraw", inflated_otherraw, sep = ": "))
 
 other_raw_material_cost_column <- get_other_raw_material_cost_column(operation_range, inflation_price_increase_factors, inflated_otherraw, percnt_var, start_time)
 print(paste("other_raw_material_cost_column", other_raw_material_cost_column, sep = ": "))
+
+discounted_value_other_raw_material_cost <- get(other_raw_material_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(other_raw_material_cost_column, 1))
+print(paste("discounted_value_other_raw_material_cost", discounted_value_other_raw_material_cost, sep = ": "))
 
 working_cap_reserve_rows <- get_working_cap_reserve_rows(slice(operation_range, end = length(operation_range) - 1), slice(analysis_index_range, end = length(analysis_index_range) - 1), WorkingCap, fixed_cost_column, total_feedstock_cost_column, other_raw_material_cost_column, variable_cost_column)
 print(paste("working_cap_reserve_rows", working_cap_reserve_rows, sep = ": "))
@@ -270,4 +288,16 @@ print(paste("discounted_value_depreciation_charges", discounted_value_depreciati
 
 LCOE_contribution_depreciation <- discounted_value_depreciation_charges * total_tax_rate
 print(paste("LCOE_contribution_depreciation", LCOE_contribution_depreciation, sep = ": "))
+
+LCOE_contribution_principal_payments <- -(get(principal_payments_column, YEAR_1) + npv(nominal_irr, skip(principal_payments_column, 1)))
+print(paste("LCOE_contribution_principal_payments", LCOE_contribution_principal_payments, sep = ": "))
+
+LCOE_contribution_operation_costs <- -(discounted_value_total_salvage_value + discounted_value_decom_costs + discounted_value_fixed_cost + discounted_value_feedstock_cost + discounted_value_other_raw_material_cost + discounted_value_variable_cost + discounted_value_interest_payments) * (1-total_tax_rate)
+print(paste("LCOE_contribution_operation_costs", LCOE_contribution_operation_costs, sep = ": "))
+
+H2_price_nominal <- ((LCOE_contribution_capital_costs + LCOE_contribution_depreciation + LCOE_contribution_principal_payments + LCOE_contribution_operation_costs) / LCOE_contribution_h2_sales_kg) * (1 + inflation_rate) ** construct
+print(paste("H2_price_nominal", H2_price_nominal, sep = ": "))
+
+H2_price_real <- H2_price_nominal / INFLATION_FACTOR
+print(paste("H2_price_real", H2_price_real, sep = ": "))
 

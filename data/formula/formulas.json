@@ -62,7 +62,14 @@
     {
       "name": "total_feedstock_cost_column",
       "label": "Feedstock Cost column",
-      "expression": "get_total_feedstock_costs(operation_range, feedstock_price_df, inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)"
+      "expression": "get_total_feedstock_costs(operation_range, feedstock_price_df, inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)",
+      "excel_loc": "Cash Flow Analysis O64"
+    },
+    {
+      "name": "discounted_value_feedstock_cost",
+      "label": "Discounted Value of Feedstock Cost",
+      "expression": "get(total_feedstock_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(total_feedstock_cost_column, 1))",
+      "excel_loc": "Cash Flow Analysis O116"
     },
     {
       "orig_name": "direct_cap",
@@ -202,6 +209,12 @@
       "excel_loc": "Cash Flow Analysis M64"
     },
     {
+      "name": "discounted_value_decom_costs",
+      "label": "Discounted Value of Decommissioning Costs",
+      "expression": "get(decom_costs_column, YEAR_1) + npv(nominal_irr, skip(decom_costs_column, 1))",
+      "excel_loc": "Cash Flow Analysis M116"
+    },
+    {
       "orig_name": "salvage",
       "label": "Salvage Value",
       "expression": "salvage_perct * total_capital_investment",
@@ -258,6 +271,12 @@
       "excel_loc": "Cash Flow Analysis N64"
     },
     {
+      "name": "discounted_value_fixed_cost",
+      "label": "Discounted Value of Fixed Operating Cost",
+      "expression": "get(fixed_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(fixed_cost_column, 1))",
+      "excel_loc": "Cash Flow Analysis N116"
+    },
+    {
       "orig_name": "total_tax_rate",
       "label": "Total Tax Rate (%)",
       "expression": "fed_tax_rate + state_tax_rate * (1 - fed_tax_rate)",
@@ -290,6 +309,12 @@
       "label": "Interest Payments Column",
       "expression": "determine_interest_payment(debt_period, analysis_index_range, initial_capital_financed, debt_interest)",
       "excel_loc": "Cash Flow Analysis S64 and Debt Financing Calculations E13"
+    },
+    {
+      "name": "discounted_value_interest_payments",
+      "label": "Discounted Value of Fixed Operating Cost",
+      "expression": "get(interest_payments_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(interest_payments_column, 1))",
+      "excel_loc": "Cash Flow Analysis S116"
     },
     {
       "name": "h2_sales_kg_per_year",
@@ -356,6 +381,12 @@
       "excel_loc": "Cash Flow Analysis R64"
     },
     {
+      "name": "discounted_value_variable_cost",
+      "label": "Discounted Value of Variable Operating Cost",
+      "expression": "get(variable_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(variable_cost_column, 1))",
+      "excel_loc": "Cash Flow Analysis R116"
+    },
+    {
       "orig_name": "total_other_raw",
       "label": "Other Material Costs ($/year)",
       "expression": "other_material_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)",
@@ -372,6 +403,12 @@
       "label": "Other Raw Material Cost Column",
       "expression": "get_other_raw_material_cost_column(operation_range, inflation_price_increase_factors, inflated_otherraw, percnt_var, start_time)",
       "excel_loc": "Cash Flow Analysis P64"
+    },
+    {
+      "name": "discounted_value_other_raw_material_cost",
+      "label": "Discounted Value of Other Raw Material Cost",
+      "expression": "get(other_raw_material_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(other_raw_material_cost_column, 1))",
+      "excel_loc": "Cash Flow Analysis P116"
     },
     {
       "name": "working_cap_reserve_rows",
@@ -461,6 +498,30 @@
       "label": "LCOE Contribution from Depreciation",
       "expression": "discounted_value_depreciation_charges * total_tax_rate",
       "excel_loc": "Cash Flow Analysis W57"
+    },
+    {
+      "name": "LCOE_contribution_principal_payments",
+      "label": "Discounted Value of Depreciation Charges",
+      "expression": "-(get(principal_payments_column, YEAR_1) + npv(nominal_irr, skip(principal_payments_column, 1)))",
+      "excel_loc": "Cash Flow Analysis Z116"
+    },
+    {
+      "name": "LCOE_contribution_operation_costs",
+      "label": "LCOE Contribution from Operation Costs",
+      "expression": "-(discounted_value_total_salvage_value + discounted_value_decom_costs + discounted_value_fixed_cost + discounted_value_feedstock_cost + discounted_value_other_raw_material_cost + discounted_value_variable_cost + discounted_value_interest_payments) * (1-total_tax_rate)",
+      "excel_loc": "Cash Flow Analysis AA57"
+    },
+    {
+      "orig_name": "H2_price_nominal",
+      "label": "Hydrogen Cost (Start-up Year Nominal $/kg)",
+      "expression": "((LCOE_contribution_capital_costs + LCOE_contribution_depreciation + LCOE_contribution_principal_payments + LCOE_contribution_operation_costs) / LCOE_contribution_h2_sales_kg) * (1 + inflation_rate) ** construct",
+      "excel_loc": "Cash Flow Analysis E17"
+    },
+    {
+      "orig_name": "H2_price_real",
+      "label": "Hydrogen Cost (Ref Year Dollars per kg)",
+      "expression": "H2_price_nominal / INFLATION_FACTOR",
+      "excel_loc": "Cash Flow Analysis E16"
     },
     {
       "name": "#",
