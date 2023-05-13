@@ -4,4 +4,5 @@
   "[r]": {
     "editor.defaultFormatter": "REditorSupport.r"
   },
+  "editor.tabSize": 2,
 }

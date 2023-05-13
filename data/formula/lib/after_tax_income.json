@@ -1,0 +1,12 @@
+{
+  "functions": [
+    {
+      "name": "get_after_tax_income_column",
+      "description": "Get the after tax income column (Column Y)",
+      "map_function": "sum_args",
+      "map_iterables": ["predepreciation_income_column", "total_taxes_column"],
+      "map_item_names": ["predepreciation_income", "total_taxes"],
+      "args": ["predepreciation_income_column", "total_taxes_column"]
+    }
+  ]
+}

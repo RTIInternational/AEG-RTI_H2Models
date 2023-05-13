@@ -50,6 +50,7 @@
    "replace_factor": 0.005,
    "royalties": 0,
    "operator_profit": 0,
+   "tax_credit_per_year": 0,
 
    "feedstocks": [
       {

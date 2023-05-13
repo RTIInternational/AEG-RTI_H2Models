@@ -1,0 +1,12 @@
+{
+  "functions": [
+    {
+      "name": "get_predepreciation_income_column",
+      "description": "Get the Pre-Depreciation Income (Column T)",
+      "map_function": "sum_args",
+      "map_iterables": ["revenue_h2_sales", "salvage_column", "decom_costs_column", "fixed_cost_column", "feedstock_cost_column", "other_raw_material_cost_column", "variable_cost_column", "interest_payments_column"],
+      "map_item_names": ["revenue", "salvage", "decom_costs", "fixed_cost", "feedstock_cost", "other_raw_material_cost", "variable_cost", "interest_payments"],
+      "args": ["revenue_h2_sales", "salvage_column", "decom_costs_column", "fixed_cost_column", "feedstock_cost_column", "other_raw_material_cost_column", "variable_cost_column", "interest_payments_column"]
+    }
+  ]
+}

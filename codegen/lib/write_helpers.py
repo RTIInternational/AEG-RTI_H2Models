@@ -31,6 +31,10 @@ helper_code = {
         "py": "def length(a):\n    return len(a)\n\n",
         "R": "",
     },
+    "sum_args": {
+        "py": "def sum_args(*args):\n    return sum(args)\n\n",
+        "R": "sum_args <- function(...) sum(...)\n\n",
+    },
     "seq_along": {"py": "def seq_along(a):\n    return range(len(a))\n\n", "R": ""},
     "append": {
         "py": "def append(a, b):\n    a.append(b)\n    return a\n\n",
@@ -79,6 +83,9 @@ def helpers_to_lang(lang):
 
     # length() is a helper function to get the length of a list
     file_str += code["length"][lang]
+
+    # sum_args() is a helper function to sum a list of arguments
+    file_str += code["sum_args"][lang]
 
     # seq_along() is a helper function to get a sequence of integers
     file_str += code["seq_along"][lang]

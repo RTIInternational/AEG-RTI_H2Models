@@ -262,6 +262,11 @@
       "title": "Operator Profit ($/year)",
       "minimum": 0
     },
+    "tax_credit_per_year": {
+      "type": "number",
+      "title": "Subsidies, Tax Incentives ($/year)",
+      "minimum": 0
+    },
     "feedstocks": {
       "type": "array",
       "items": {

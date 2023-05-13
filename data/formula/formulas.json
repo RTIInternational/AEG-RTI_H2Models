@@ -530,6 +530,48 @@
       "excel_loc": "Cash Flow Analysis F64"
     },
     {
+      "name": "predepreciation_income_column",
+      "label": "Pre-Depreciation Income",
+      "expression": "get_predepreciation_income_column(revenue_h2_sales, salvage_column, decom_costs_column, fixed_cost_column, total_feedstock_cost_column, other_raw_material_cost_column, variable_cost_column, interest_payments_column)",
+      "excel_loc": "Cash Flow Analysis T64"
+    },
+    {
+      "name": "taxable_income_column",
+      "label": "Taxable Income Column",
+      "expression": "get_taxable_income_column(predepreciation_income_column, depreciation_charges_column)",
+      "excel_loc": "Cash Flow Analysis V64"
+    },
+    {
+      "orig_name": "tax_credit",
+      "label": "Subsidies, Tax Incentives ($/year)",
+      "expression": "tax_credit_per_year * CPIinflator",
+      "excel_loc": "Input_Sheet_Template E155"
+    },
+    {
+      "orig_name": "Upstream_CO2_taxpYear",
+      "label": "Upstream Carbon Tax ($/year)",
+      "expression": "0",
+      "excel_loc": "Input_Sheet_Template E159"
+    },
+    {
+      "name": "Proc_CO2_taxpYear",
+      "label": "Process Carbon Tax ($/year)",
+      "expression": "0",
+      "excel_loc": "Input_Sheet_Template E158"
+    },
+    {
+      "name": "total_taxes_column",
+      "label": "Total Taxes Column",
+      "expression": "get_total_taxes_column(taxable_income_column, total_tax_rate, tax_credit, Upstream_CO2_taxpYear, Proc_CO2_taxpYear)",
+      "excel_loc": "Cash Flow Analysis X64"
+    },
+    {
+      "name": "after_tax_income_column",
+      "label": "After-Tax Income Column",
+      "expression": "get_after_tax_income_column(predepreciation_income_column, total_taxes_column)",
+      "excel_loc": "Cash Flow Analysis Y64"
+    },
+    {
       "name": "#",
       "label": "Total Depreciable Capital Costs",
       "expression": "(total_cap - non_dep_cap) * INFLATION_FACTOR",

@@ -25,6 +25,9 @@ def slice(a, start=0, end=None):
 def length(a):
     return len(a)
 
+def sum_args(*args):
+    return sum(args)
+
 def seq_along(a):
     return range(len(a))
 

@@ -1,0 +1,12 @@
+{
+  "functions": [
+    {
+      "name": "get_taxable_income_column",
+      "description": "Get the Taxable Income (Column V)",
+      "map_function": "sum_args",
+      "map_iterables": ["predepreciation_income_column", "depreciation_charges_column"],
+      "map_item_names": ["predepreciation_income", "depreciation_charges"],
+      "args": ["predepreciation_income_column", "depreciation_charges_column"]
+    }
+  ]
+}

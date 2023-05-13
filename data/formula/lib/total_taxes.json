@@ -1,0 +1,18 @@
+{
+  "functions": [
+    {
+      "name": "calculate_total_taxes",
+      "description": "Calculate the total taxes for a given taxable income",
+      "args": ["taxable_income", "total_tax_rate", "tax_credit", "Upstream_CO2_taxpYear", "Proc_CO2_taxpYear"],
+      "body": "tax_credit - (taxable_income * total_tax_rate + Upstream_CO2_taxpYear + Proc_CO2_taxpYear)"
+    },
+    {
+      "name": "get_total_taxes_column",
+      "description": "Get the total taxes column (Column X)",
+      "map_function": "calculate_total_taxes",
+      "map_iterables": ["taxable_income_column"],
+      "map_item_names": ["taxable_income"],
+      "args": ["taxable_income_column", "total_tax_rate", "tax_credit", "Upstream_CO2_taxpYear", "Proc_CO2_taxpYear"]
+    }
+  ]
+}
