@@ -10,7 +10,7 @@ calculate_revenue <- function(year, inflation_price_increase_factor, H2_price_no
         return(inflation_price_increase_factor * (( H2_price_nominal * plant_output_kg_per_year * percnt_revs * start_time ) + (H2_price_nominal * plant_output_kg_per_year * (1 - start_time)) ))
     }
     else if (year <= start_time) {
-        return(-(H2_price_nominal * plant_output_kg_per_year * inflation_price_increase_factor * percnt_revs))
+        return(H2_price_nominal * plant_output_kg_per_year * inflation_price_increase_factor * percnt_revs)
     }
     else {
         return(H2_price_nominal * plant_output_kg_per_year * inflation_price_increase_factor)

@@ -18,7 +18,7 @@ def calculate_revenue(
             + (H2_price_nominal * plant_output_kg_per_year * (1 - start_time))
         )
     elif year <= start_time:
-        return -(
+        return (
             H2_price_nominal
             * plant_output_kg_per_year
             * inflation_price_increase_factor

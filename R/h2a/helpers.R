@@ -21,6 +21,8 @@ slice <- function(a, start=0, end=NULL) a[(start + 1):end]
 
 sum_args <- function(...) sum(...)
 
+reduce <- Reduce
+
 YEAR_1 <- 1
 YEAR_2 <- 2
 YEAR_3 <- 3

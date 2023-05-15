@@ -4,6 +4,7 @@
 from h2a.inputs import *
 from h2a.lib.after_tax_income import get_after_tax_income_column
 from h2a.lib.capital_investments import capital_investment_costs
+from h2a.lib.cashflow import get_aftertax_post_depreciation_cashflow, get_cumulative_cashflow_column, get_pretax_cashflow_column
 from h2a.lib.cashflow_meta import get_inflation_price_increase_factors, get_operation_range
 from h2a.lib.debt_financing import determine_interest_payment, determine_principal_payment
 from h2a.lib.decommissioning import get_decom_costs_column
@@ -329,4 +330,13 @@ print('total_taxes_column: ', total_taxes_column)
 
 after_tax_income_column = get_after_tax_income_column(predepreciation_income_column, total_taxes_column)
 print('after_tax_income_column: ', after_tax_income_column)
+
+aftertax_post_depreciation_cashflow_column = get_aftertax_post_depreciation_cashflow(initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, total_taxes_column, principal_payments_column)
+print('aftertax_post_depreciation_cashflow_column: ', aftertax_post_depreciation_cashflow_column)
+
+cumulative_cashflow_column = get_cumulative_cashflow_column(aftertax_post_depreciation_cashflow_column, analysis_index_range)
+print('cumulative_cashflow_column: ', cumulative_cashflow_column)
+
+pretax_cashflow = get_pretax_cashflow_column(initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, principal_payments_column)
+print('pretax_cashflow: ', pretax_cashflow)
 

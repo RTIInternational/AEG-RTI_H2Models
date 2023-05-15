@@ -124,6 +124,10 @@ def parse_functions_to_nodes_and_edges(all_functions):
                 if "lambda_map_arg_str" in func:
                     lambda_map_arg_str_tree = ast.parse(func["lambda_map_arg_str"])
                     parse_tree(lambda_map_arg_str_tree, node, edges)
+            elif "reduce_function" in func:
+                reduce_function_tree = ast.parse(func["reduce_function"])
+                parse_tree(reduce_function_tree, node, edges)
+                edges.append({"from": "", "to": "reduce"})
         new_all_functions.append((filename, functions, nodes, edges))
 
     return new_all_functions

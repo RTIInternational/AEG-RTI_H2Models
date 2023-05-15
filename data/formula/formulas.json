@@ -306,7 +306,7 @@
     },
     {
       "name": "interest_payments_column",
-      "label": "Interest Payments Column",
+      "label": "Debt Interest / Interest Payments Column",
       "expression": "determine_interest_payment(debt_period, analysis_index_range, initial_capital_financed, debt_interest)",
       "excel_loc": "Cash Flow Analysis S64 and Debt Financing Calculations E13"
     },
@@ -570,6 +570,24 @@
       "label": "After-Tax Income Column",
       "expression": "get_after_tax_income_column(predepreciation_income_column, total_taxes_column)",
       "excel_loc": "Cash Flow Analysis Y64"
+    },
+    {
+      "name": "aftertax_post_depreciation_cashflow_column",
+      "label": "After-Tax Post-Depreciation Cash Flow Column",
+      "expression": "get_aftertax_post_depreciation_cashflow(initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, total_taxes_column, principal_payments_column)",
+      "excel_loc": "Cash Flow Analysis AA64"
+    },
+    {
+      "name": "cumulative_cashflow_column",
+      "label": "Cumulative Cash Flow Column",
+      "expression": "get_cumulative_cashflow_column(aftertax_post_depreciation_cashflow_column, analysis_index_range)",
+      "excel_loc": "Cash Flow Analysis AB64"
+    },
+    {
+      "name": "pretax_cashflow",
+      "label": "Pretax Cash Flow",
+      "expression": "get_pretax_cashflow_column(initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, principal_payments_column)",
+      "excel_loc": "Cash Flow Analysis AC64"
     },
     {
       "name": "#",

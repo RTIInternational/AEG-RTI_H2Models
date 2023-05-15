@@ -43,6 +43,12 @@ def functions_to_lang(filename, functions, import_statements, lang):
             "R": lambda lambda_args_str, func, lambda_map_arg_str, map_args_str: f"    return(lapply({map_args_str}, function({lambda_args_str}) {func}({lambda_map_arg_str})))\n"
             + "}\n",
         },
+        # Reduce codegen uses the helper function `reduce`
+        "reduce": {
+            "py": lambda func, iterable, initial: f"    return reduce({func}, {iterable}, {initial})\n\n",
+            "R": lambda func, iterable, initial: f"    return(reduce({func}, {iterable}, init = {initial}))\n"
+            + "}\n",
+        },
     }
     file_str = util_code["top_line_comment"][lang]
     for import_statement in import_statements:
@@ -68,6 +74,13 @@ def functions_to_lang(filename, functions, import_statements, lang):
                 # Add the last case
                 bodyn = func["cases"][-1]["body"]
                 func_def_str += code["else"][lang](bodyn)
+
+        elif "reduce_function" in func:
+            func_def_str += code["reduce"][lang](
+                func["reduce_function"],
+                func["reduce_iterable"],
+                func["reduce_initial"],
+            )
 
         elif "map_function" in func:
             # lambda_args_str is the list of arguments for the lambda function, using the list func["map_item_names"]

@@ -35,6 +35,11 @@ def append(a, b):
     a.append(b)
     return a
 
+import functools
+
+def reduce(function, iterable, initializer=None):
+    return functools.reduce(function, iterable, initializer)
+
 YEAR_1 = 0
 YEAR_2 = 1
 YEAR_3 = 2

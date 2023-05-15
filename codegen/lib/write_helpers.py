@@ -40,10 +40,10 @@ helper_code = {
         "py": "def append(a, b):\n    a.append(b)\n    return a\n\n",
         "R": "",
     },
-    # "reduce": {
-    #     "py": "import functools\n\ndef reduce(function, iterable, initializer=None):\n    return functools.reduce(function, iterable, initializer)\n\n",
-    #     "R": "reduce <- Reduce\n\n",
-    # },
+    "reduce": {
+        "py": "import functools\n\ndef reduce(function, iterable, initializer=None):\n    return functools.reduce(function, iterable, initializer)\n\n",
+        "R": "reduce <- Reduce\n\n",
+    },
     # "TRUE": {
     #     "py": "TRUE = True\n",
     #     "R": "",
@@ -94,7 +94,7 @@ def helpers_to_lang(lang):
     file_str += code["append"][lang]
 
     # reduce() is a helper function to reduce a list to a single value
-    # file_str += code["reduce"][lang]
+    file_str += code["reduce"][lang]
 
     # R note: helper: range <- seq
 

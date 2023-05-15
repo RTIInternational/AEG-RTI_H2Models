@@ -4,6 +4,7 @@
 source(here('h2a', 'inputs.R'))
 import::from("after_tax_income.R", get_after_tax_income_column, .directory = here(h2a,lib))
 import::from("capital_investments.R", capital_investment_costs, .directory = here(h2a,lib))
+import::from("cashflow.R", get_aftertax_post_depreciation_cashflow, get_cumulative_cashflow_column, get_pretax_cashflow_column, .directory = here(h2a,lib))
 import::from("cashflow_meta.R", get_inflation_price_increase_factors, get_operation_range, .directory = here(h2a,lib))
 import::from("debt_financing.R", determine_interest_payment, determine_principal_payment, .directory = here(h2a,lib))
 import::from("decommissioning.R", get_decom_costs_column, .directory = here(h2a,lib))
@@ -329,4 +330,13 @@ print(paste("total_taxes_column", total_taxes_column, sep = ": "))
 
 after_tax_income_column <- get_after_tax_income_column(predepreciation_income_column, total_taxes_column)
 print(paste("after_tax_income_column", after_tax_income_column, sep = ": "))
+
+aftertax_post_depreciation_cashflow_column <- get_aftertax_post_depreciation_cashflow(initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, total_taxes_column, principal_payments_column)
+print(paste("aftertax_post_depreciation_cashflow_column", aftertax_post_depreciation_cashflow_column, sep = ": "))
+
+cumulative_cashflow_column <- get_cumulative_cashflow_column(aftertax_post_depreciation_cashflow_column, analysis_index_range)
+print(paste("cumulative_cashflow_column", cumulative_cashflow_column, sep = ": "))
+
+pretax_cashflow <- get_pretax_cashflow_column(initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, principal_payments_column)
+print(paste("pretax_cashflow", pretax_cashflow, sep = ": "))
 
