@@ -590,6 +590,18 @@
       "excel_loc": "Cash Flow Analysis AC64"
     },
     {
+      "orig_name": "after_tax_nominal_IRR",
+      "label": "After-Tax Nominal IRR",
+      "expression": "irr(aftertax_post_depreciation_cashflow_column)",
+      "excel_loc": "Cash Flow Analysis E20"
+    },
+    {
+      "orig_name": "pre_tax_nominal_IRR",
+      "label": "Pre-Tax Nominal IRR",
+      "expression": "irr(pretax_cashflow)",
+      "excel_loc": "Cash Flow Analysis E21"
+    },
+    {
       "name": "#",
       "label": "Total Depreciable Capital Costs",
       "expression": "(total_cap - non_dep_cap) * INFLATION_FACTOR",

@@ -3,6 +3,14 @@ from .util import R_ENABLED, HELPERS_FILENAME, util_code
 
 
 helper_code = {
+    "irr": {
+        "py": "from .helper_irr import IRR\n\ndef irr(cfList):\n    return IRR(cfList)\n\n",
+        "R": "library(FinancialMath)\n\nirr <- function(cfList) {\n    return(IRR(cfList))\n}\n\n",
+    },
+    "npv": {
+        "py": "def npv(r, cfList):\n    sum_pv = 0\n    for i, pmt in enumerate(cfList, start=1):\n        sum_pv += pmt / ((1 + r) ** i)\n    return sum_pv\n\n",
+        "R": "npv <- function(r, cfList) {\n    sum_pv <- 0\n    for (i in seq_along(cfList)) {\n        sum_pv <- sum_pv + cfList[[i]] / ((1 + r) ^ i)\n    }\n    return(sum_pv)\n}\n\n",
+    },
     "get": {
         "py": "def get(obj, key):\n    return obj[key]\n\n",
         "R": "get <- function(obj, key) obj[[key]]\n\n",
@@ -14,10 +22,6 @@ helper_code = {
     "split": {
         "py": "def split(a, b):\n    return a.split(b)\n\n",
         "R": "split <- function(a, b) strsplit(a, b)[[1]]\n\n",
-    },
-    "npv": {
-        "py": "def npv(r, cfList):\n    sum_pv = 0\n    for i, pmt in enumerate(cfList, start=1):\n        sum_pv += pmt / ((1 + r) ** i)\n    return sum_pv\n\n",
-        "R": "npv <- function(r, cfList) {\n    sum_pv <- 0\n    for (i in seq_along(cfList)) {\n        sum_pv <- sum_pv + cfList[[i]] / ((1 + r) ^ i)\n    }\n    return(sum_pv)\n}\n\n",
     },
     "skip": {
         "py": "def skip(a, b):\n    return a[b:]\n\n",
@@ -40,10 +44,10 @@ helper_code = {
         "py": "def append(a, b):\n    a.append(b)\n    return a\n\n",
         "R": "",
     },
-    "reduce": {
-        "py": "import functools\n\ndef reduce(function, iterable, initializer=None):\n    return functools.reduce(function, iterable, initializer)\n\n",
-        "R": "reduce <- Reduce\n\n",
-    },
+    # "reduce": {
+    #     "py": "import functools\n\ndef reduce(function, iterable, initializer=None):\n    return functools.reduce(function, iterable, initializer)\n\n",
+    #     "R": "reduce <- Reduce\n\n",
+    # },
     # "TRUE": {
     #     "py": "TRUE = True\n",
     #     "R": "",
@@ -59,6 +63,12 @@ code = helper_code
 def helpers_to_lang(lang):
     file_str = util_code["top_line_comment"][lang]
 
+    # irr() is a helper function to calculate the internal rate of return of a list of cash flows
+    file_str += code["irr"][lang]
+
+    # npv() is a helper function to calculate the net present value of a list of cash flows
+    file_str += code["npv"][lang]
+
     # get() is a helper function to access a dictionary
     file_str += code["get"][lang]
 
@@ -71,9 +81,6 @@ def helpers_to_lang(lang):
 
     # split() is a helper function to split a string
     file_str += code["split"][lang]
-
-    # npv() is a helper function to calculate the net present value of a list of cash flows
-    file_str += code["npv"][lang]
 
     # skip() is a helper function to get all but the first value of a list
     file_str += code["skip"][lang]
@@ -94,7 +101,7 @@ def helpers_to_lang(lang):
     file_str += code["append"][lang]
 
     # reduce() is a helper function to reduce a list to a single value
-    file_str += code["reduce"][lang]
+    # file_str += code["reduce"][lang]
 
     # R note: helper: range <- seq
 

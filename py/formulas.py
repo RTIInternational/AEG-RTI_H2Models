@@ -16,7 +16,7 @@ from h2a.lib.feedstock_prices import get_feedstock_price_df
 from h2a.lib.fixed_costs import get_fixed_cost_column
 from h2a.globals import CEPCIinflator, CPIinflator, INFLATION_FACTOR, analysis_period_end, analysis_period_start, plant_output_kg_per_year
 from h2a.lib.h2_sales import get_h2_sales_kg_per_year
-from h2a.helpers import YEAR_1, get, length, npv, seq_along, skip, slice
+from h2a.helpers import YEAR_1, get, irr, length, npv, seq_along, skip, slice
 from h2a.lib.initial_equity import get_initial_equity_depr_cap
 from h2a.lib.nonenergy_materials import get_nonenergy_material_price_df
 from h2a.lib.other_non_depreciable_capital_cost import get_other_non_depreciable_capital_cost_column
@@ -339,4 +339,10 @@ print('cumulative_cashflow_column: ', cumulative_cashflow_column)
 
 pretax_cashflow = get_pretax_cashflow_column(initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, principal_payments_column)
 print('pretax_cashflow: ', pretax_cashflow)
+
+after_tax_nominal_IRR = irr(aftertax_post_depreciation_cashflow_column)
+print('after_tax_nominal_IRR: ', after_tax_nominal_IRR)
+
+pre_tax_nominal_IRR = irr(pretax_cashflow)
+print('pre_tax_nominal_IRR: ', pre_tax_nominal_IRR)
 

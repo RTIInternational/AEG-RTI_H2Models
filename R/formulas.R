@@ -16,7 +16,7 @@ import::from("feedstock_prices.R", get_feedstock_price_df, .directory = here(h2a
 import::from("fixed_costs.R", get_fixed_cost_column, .directory = here(h2a,lib))
 import::from("globals.R", CEPCIinflator, CPIinflator, INFLATION_FACTOR, analysis_period_end, analysis_period_start, plant_output_kg_per_year, .directory = here(h2a))
 import::from("h2_sales.R", get_h2_sales_kg_per_year, .directory = here(h2a,lib))
-import::from("helpers.R", YEAR_1, get, npv, skip, slice, .directory = here(h2a))
+import::from("helpers.R", YEAR_1, get, irr, npv, skip, slice, .directory = here(h2a))
 import::from("initial_equity.R", get_initial_equity_depr_cap, .directory = here(h2a,lib))
 import::from("nonenergy_materials.R", get_nonenergy_material_price_df, .directory = here(h2a,lib))
 import::from("other_non_depreciable_capital_cost.R", get_other_non_depreciable_capital_cost_column, .directory = here(h2a,lib))
@@ -339,4 +339,10 @@ print(paste("cumulative_cashflow_column", cumulative_cashflow_column, sep = ": "
 
 pretax_cashflow <- get_pretax_cashflow_column(initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, principal_payments_column)
 print(paste("pretax_cashflow", pretax_cashflow, sep = ": "))
+
+after_tax_nominal_IRR <- irr(aftertax_post_depreciation_cashflow_column)
+print(paste("after_tax_nominal_IRR", after_tax_nominal_IRR, sep = ": "))
+
+pre_tax_nominal_IRR <- irr(pretax_cashflow)
+print(paste("pre_tax_nominal_IRR", pre_tax_nominal_IRR, sep = ": "))
 
