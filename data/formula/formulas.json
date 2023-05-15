@@ -602,6 +602,30 @@
       "excel_loc": "Cash Flow Analysis E21"
     },
     {
+      "name": "aftertax_real_capital_recovery_factor",
+      "label": "After Tax Real Capital Recovery Factor",
+      "expression": "(real_irr * (1 + real_irr) ** anal_period) / (((1 + real_irr) ** anal_period) - 1)",
+      "excel_loc": "Cash Flow Analysis E22"
+    },
+    {
+      "name": "aftertax_nominal_capital_recovery_factor",
+      "label": "After Tax Nominal Capital Recovery Factor",
+      "expression": "(nominal_irr * (1 + nominal_irr) ** anal_period) / (((1 + nominal_irr) ** anal_period) - 1)",
+      "excel_loc": "Cash Flow Analysis E23"
+    },
+    {
+      "name": "total_real_fixed_charge_rate",
+      "label": "Total Real Fixed Charge Rate",
+      "expression": "(aftertax_real_capital_recovery_factor * (1 - total_tax_rate * npv(real_irr, get(macrs_depreciation_table, depr_length))) ) / (1 - total_tax_rate)",
+      "excel_loc": "Cash Flow Analysis E24"
+    },
+    {
+      "name": "total_nominal_fixed_charge_rate",
+      "label": "Total Nominal Fixed Charge Rate",
+      "expression": "(aftertax_nominal_capital_recovery_factor * (1 - total_tax_rate * npv(nominal_irr, get(macrs_depreciation_table, depr_length))) ) / (1 - total_tax_rate)",
+      "excel_loc": "Cash Flow Analysis E25"
+    },
+    {
       "name": "#",
       "label": "Total Depreciable Capital Costs",
       "expression": "(total_cap - non_dep_cap) * INFLATION_FACTOR",

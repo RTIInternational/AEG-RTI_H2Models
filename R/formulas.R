@@ -22,7 +22,7 @@ import::from("nonenergy_materials.R", get_nonenergy_material_price_df, .director
 import::from("other_non_depreciable_capital_cost.R", get_other_non_depreciable_capital_cost_column, .directory = here(h2a,lib))
 import::from("other_raw_material_costs.R", get_other_raw_material_cost_column, .directory = here(h2a,lib))
 import::from("predepreciation_income.R", get_predepreciation_income_column, .directory = here(h2a,lib))
-import::from("ref_tables.R", chemical_price_index, conversion_factor, get_lhv, labor_index, .directory = here(h2a))
+import::from("ref_tables.R", chemical_price_index, conversion_factor, get_lhv, labor_index, macrs_depreciation_table, .directory = here(h2a))
 import::from("replacement_costs.R", get_replacement_costs, .directory = here(h2a,lib))
 import::from("revenue_h2_sales.R", get_revenue_h2_sales_column, .directory = here(h2a,lib))
 import::from("salvage.R", get_salvage_column, .directory = here(h2a,lib))
@@ -345,4 +345,16 @@ print(paste("after_tax_nominal_IRR", after_tax_nominal_IRR, sep = ": "))
 
 pre_tax_nominal_IRR <- irr(pretax_cashflow)
 print(paste("pre_tax_nominal_IRR", pre_tax_nominal_IRR, sep = ": "))
+
+aftertax_real_capital_recovery_factor <- (real_irr * (1 + real_irr) ** anal_period) / (((1 + real_irr) ** anal_period) - 1)
+print(paste("aftertax_real_capital_recovery_factor", aftertax_real_capital_recovery_factor, sep = ": "))
+
+aftertax_nominal_capital_recovery_factor <- (nominal_irr * (1 + nominal_irr) ** anal_period) / (((1 + nominal_irr) ** anal_period) - 1)
+print(paste("aftertax_nominal_capital_recovery_factor", aftertax_nominal_capital_recovery_factor, sep = ": "))
+
+total_real_fixed_charge_rate <- (aftertax_real_capital_recovery_factor * (1 - total_tax_rate * npv(real_irr, get(macrs_depreciation_table, depr_length))) ) / (1 - total_tax_rate)
+print(paste("total_real_fixed_charge_rate", total_real_fixed_charge_rate, sep = ": "))
+
+total_nominal_fixed_charge_rate <- (aftertax_nominal_capital_recovery_factor * (1 - total_tax_rate * npv(nominal_irr, get(macrs_depreciation_table, depr_length))) ) / (1 - total_tax_rate)
+print(paste("total_nominal_fixed_charge_rate", total_nominal_fixed_charge_rate, sep = ": "))
 

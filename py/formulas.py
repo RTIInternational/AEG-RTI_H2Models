@@ -22,7 +22,7 @@ from h2a.lib.nonenergy_materials import get_nonenergy_material_price_df
 from h2a.lib.other_non_depreciable_capital_cost import get_other_non_depreciable_capital_cost_column
 from h2a.lib.other_raw_material_costs import get_other_raw_material_cost_column
 from h2a.lib.predepreciation_income import get_predepreciation_income_column
-from h2a.ref_tables import chemical_price_index, conversion_factor, get_lhv, labor_index
+from h2a.ref_tables import chemical_price_index, conversion_factor, get_lhv, labor_index, macrs_depreciation_table
 from h2a.lib.replacement_costs import get_replacement_costs
 from h2a.lib.revenue_h2_sales import get_revenue_h2_sales_column
 from h2a.lib.salvage import get_salvage_column
@@ -345,4 +345,16 @@ print('after_tax_nominal_IRR: ', after_tax_nominal_IRR)
 
 pre_tax_nominal_IRR = irr(pretax_cashflow)
 print('pre_tax_nominal_IRR: ', pre_tax_nominal_IRR)
+
+aftertax_real_capital_recovery_factor = (real_irr * (1 + real_irr) ** anal_period) / (((1 + real_irr) ** anal_period) - 1)
+print('aftertax_real_capital_recovery_factor: ', aftertax_real_capital_recovery_factor)
+
+aftertax_nominal_capital_recovery_factor = (nominal_irr * (1 + nominal_irr) ** anal_period) / (((1 + nominal_irr) ** anal_period) - 1)
+print('aftertax_nominal_capital_recovery_factor: ', aftertax_nominal_capital_recovery_factor)
+
+total_real_fixed_charge_rate = (aftertax_real_capital_recovery_factor * (1 - total_tax_rate * npv(real_irr, get(macrs_depreciation_table, depr_length))) ) / (1 - total_tax_rate)
+print('total_real_fixed_charge_rate: ', total_real_fixed_charge_rate)
+
+total_nominal_fixed_charge_rate = (aftertax_nominal_capital_recovery_factor * (1 - total_tax_rate * npv(nominal_irr, get(macrs_depreciation_table, depr_length))) ) / (1 - total_tax_rate)
+print('total_nominal_fixed_charge_rate: ', total_nominal_fixed_charge_rate)
 

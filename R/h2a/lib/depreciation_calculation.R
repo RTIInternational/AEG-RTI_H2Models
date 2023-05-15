@@ -9,7 +9,7 @@ calculate_depreciation <- function(op_year, depreciable_capital, recovery_year, 
         return(depreciable_capital / depr_length)
     }
     else if (depr_type == 'MACRS' && recovery_year <= depr_length + 1) {
-        return(depreciable_capital * get(get(macrs_depreciation_table, depr_length), recovery_year) / 100)
+        return(depreciable_capital * get(get(macrs_depreciation_table, depr_length), recovery_year))
     }
     else {
         return(0)

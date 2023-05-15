@@ -138,7 +138,7 @@ def read_labor_index():
 def read_macrs_depreciation_table():
     # Read the column headers as integers
     csv_path = os.path.join(root_dir, "data/macrs/macrs-depreciation-table.csv")
-    df = pd.read_csv(csv_path, index_col=0, names=[3, 5, 7, 10, 15, 20])
+    df = pd.read_csv(csv_path, index_col=0, header=0, names=[3, 5, 7, 10, 15, 20], dtype={3:float, 5:float, 7:float, 10:float, 15:float, 20:float})
     return df
 
 

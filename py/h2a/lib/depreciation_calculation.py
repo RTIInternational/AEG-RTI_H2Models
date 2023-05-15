@@ -12,10 +12,8 @@ def calculate_depreciation(
     if depr_type == "Straight Line" and recovery_year <= depr_length:
         return depreciable_capital / depr_length
     elif depr_type == "MACRS" and recovery_year <= depr_length + 1:
-        return (
-            depreciable_capital
-            * get(get(macrs_depreciation_table, depr_length), recovery_year)
-            / 100
+        return depreciable_capital * get(
+            get(macrs_depreciation_table, depr_length), recovery_year
         )
     else:
         return 0
