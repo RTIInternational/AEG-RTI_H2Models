@@ -16,7 +16,7 @@ from h2a.lib.feedstock_prices import get_feedstock_price_df
 from h2a.lib.fixed_costs import get_fixed_cost_column
 from h2a.globals import CEPCIinflator, CPIinflator, INFLATION_FACTOR, analysis_period_end, analysis_period_start, plant_output_kg_per_year
 from h2a.lib.h2_sales import get_h2_sales_kg_per_year
-from h2a.helpers import YEAR_1, get, irr, length, npv, seq_along, skip, slice
+from h2a.helpers import YEAR_1, get, irr, length, npv, seq_along, skip, slice, sum_args
 from h2a.lib.initial_equity import get_initial_equity_depr_cap
 from h2a.lib.nonenergy_materials import get_nonenergy_material_price_df
 from h2a.lib.other_non_depreciable_capital_cost import get_other_non_depreciable_capital_cost_column
@@ -103,6 +103,9 @@ print('replacement_costs: ', replacement_costs)
 discounted_value_replacement_costs = get(replacement_costs, YEAR_1) + npv(nominal_irr, skip(replacement_costs, 1))
 print('discounted_value_replacement_costs: ', discounted_value_replacement_costs)
 
+pv_of_cashflow_replacement_costs = npv(nominal_irr, replacement_costs)
+print('pv_of_cashflow_replacement_costs: ', pv_of_cashflow_replacement_costs)
+
 land_cost = acres_required * cost_per_acre * CPIinflator
 print('land_cost: ', land_cost)
 
@@ -130,11 +133,17 @@ print('initial_equity_depr_cap: ', initial_equity_depr_cap)
 discounted_value_initial_equity_depr_cap = get(initial_equity_depr_cap, YEAR_1) + npv(nominal_irr, skip(initial_equity_depr_cap, 1))
 print('discounted_value_initial_equity_depr_cap: ', discounted_value_initial_equity_depr_cap)
 
+pv_of_cashflow_initial_equity_depr_cap = npv(nominal_irr, initial_equity_depr_cap)
+print('pv_of_cashflow_initial_equity_depr_cap: ', pv_of_cashflow_initial_equity_depr_cap)
+
 other_non_depreciable_capital_cost_column = get_other_non_depreciable_capital_cost_column(analysis_index_range, inflation_price_increase_factors, non_dep_infl)
 print('other_non_depreciable_capital_cost_column: ', other_non_depreciable_capital_cost_column)
 
 discounted_value_other_non_depreciable_capital_cost = get(other_non_depreciable_capital_cost_column, YEAR_1) + npv(nominal_irr, skip(other_non_depreciable_capital_cost_column, 1))
 print('discounted_value_other_non_depreciable_capital_cost: ', discounted_value_other_non_depreciable_capital_cost)
+
+pv_of_cashflow_other_non_depreciable_capital_cost = npv(nominal_irr, other_non_depreciable_capital_cost_column)
+print('pv_of_cashflow_other_non_depreciable_capital_cost: ', pv_of_cashflow_other_non_depreciable_capital_cost)
 
 decom = decom_percent * depr_cap_infl
 print('decom: ', decom)
@@ -199,6 +208,9 @@ print('interest_payments_column: ', interest_payments_column)
 discounted_value_interest_payments = get(interest_payments_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(interest_payments_column, 1))
 print('discounted_value_interest_payments: ', discounted_value_interest_payments)
 
+pv_of_cashflow_interest_payments = npv(nominal_irr, interest_payments_column)
+print('pv_of_cashflow_interest_payments: ', pv_of_cashflow_interest_payments)
+
 h2_sales_kg_per_year = get_h2_sales_kg_per_year(operation_range, plant_output_kg_per_year, percnt_revs, start_time)
 print('h2_sales_kg_per_year: ', h2_sales_kg_per_year)
 
@@ -210,6 +222,9 @@ print('LCOE_contribution_h2_sales_kg: ', LCOE_contribution_h2_sales_kg)
 
 discounted_value_total_salvage_value = get(salvage_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(salvage_column, 1))
 print('discounted_value_total_salvage_value: ', discounted_value_total_salvage_value)
+
+pv_of_cashflow_total_salvage_value = npv(nominal_irr, salvage_column)
+print('pv_of_cashflow_total_salvage_value: ', pv_of_cashflow_total_salvage_value)
 
 nonenergy_material_price_df = get_nonenergy_material_price_df(nonenergy_materials, analysis_range, INFLATION_FACTOR, ref_year)
 print('nonenergy_material_price_df: ', nonenergy_material_price_df)
@@ -256,6 +271,9 @@ print('working_cap_reserve_column: ', working_cap_reserve_column)
 discounted_value_working_cap_reserve = get(working_cap_reserve_column, YEAR_1) + npv(nominal_irr, skip(working_cap_reserve_column, 1))
 print('discounted_value_working_cap_reserve: ', discounted_value_working_cap_reserve)
 
+pv_of_cashflow_working_cap_reserve = npv(nominal_irr, working_cap_reserve_column)
+print('pv_of_cashflow_working_cap_reserve: ', pv_of_cashflow_working_cap_reserve)
+
 LCOE_contribution_capital_costs = -(discounted_value_initial_equity_depr_cap + discounted_value_replacement_costs + discounted_value_working_cap_reserve + discounted_value_other_non_depreciable_capital_cost)
 print('LCOE_contribution_capital_costs: ', LCOE_contribution_capital_costs)
 
@@ -292,11 +310,17 @@ print('depreciation_charges_column: ', depreciation_charges_column)
 discounted_value_depreciation_charges = get(depreciation_charges_column, YEAR_1) + npv(nominal_irr, skip(depreciation_charges_column, 1))
 print('discounted_value_depreciation_charges: ', discounted_value_depreciation_charges)
 
+pv_of_cashflow_depreciation_charges = npv(nominal_irr, depreciation_charges_column)
+print('pv_of_cashflow_depreciation_charges: ', pv_of_cashflow_depreciation_charges)
+
 LCOE_contribution_depreciation = discounted_value_depreciation_charges * total_tax_rate
 print('LCOE_contribution_depreciation: ', LCOE_contribution_depreciation)
 
 LCOE_contribution_principal_payments = -(get(principal_payments_column, YEAR_1) + npv(nominal_irr, skip(principal_payments_column, 1)))
 print('LCOE_contribution_principal_payments: ', LCOE_contribution_principal_payments)
+
+pv_of_cashflow_principal_payments = npv(nominal_irr, principal_payments_column)
+print('pv_of_cashflow_principal_payments: ', pv_of_cashflow_principal_payments)
 
 LCOE_contribution_operation_costs = -(discounted_value_total_salvage_value + discounted_value_decom_costs + discounted_value_fixed_cost + discounted_value_feedstock_cost + discounted_value_other_raw_material_cost + discounted_value_variable_cost + discounted_value_interest_payments) * (1-total_tax_rate)
 print('LCOE_contribution_operation_costs: ', LCOE_contribution_operation_costs)
@@ -357,4 +381,70 @@ print('total_real_fixed_charge_rate: ', total_real_fixed_charge_rate)
 
 total_nominal_fixed_charge_rate = (aftertax_nominal_capital_recovery_factor * (1 - total_tax_rate * npv(nominal_irr, get(macrs_depreciation_table, depr_length))) ) / (1 - total_tax_rate)
 print('total_nominal_fixed_charge_rate: ', total_nominal_fixed_charge_rate)
+
+after_tax_present_value_capital_related_costs = (pv_of_cashflow_initial_equity_depr_cap + pv_of_cashflow_replacement_costs + pv_of_cashflow_working_cap_reserve + pv_of_cashflow_other_non_depreciable_capital_cost + (pv_of_cashflow_total_salvage_value * (1 - total_tax_rate)) + (pv_of_cashflow_interest_payments * (1 - total_tax_rate)) + (pv_of_cashflow_depreciation_charges * (-total_tax_rate)) + pv_of_cashflow_principal_payments) / (1 - total_tax_rate)
+print('after_tax_present_value_capital_related_costs: ', after_tax_present_value_capital_related_costs)
+
+after_tax_present_value_decommissioning_costs = npv(nominal_irr, decom_costs_column)
+print('after_tax_present_value_decommissioning_costs: ', after_tax_present_value_decommissioning_costs)
+
+after_tax_present_value_fixed_cost = npv(nominal_irr, fixed_cost_column)
+print('after_tax_present_value_fixed_cost: ', after_tax_present_value_fixed_cost)
+
+after_tax_present_value_total_feedstock_cost = npv(nominal_irr, total_feedstock_cost_column)
+print('after_tax_present_value_total_feedstock_cost: ', after_tax_present_value_total_feedstock_cost)
+
+after_tax_present_value_other_raw_material_cost = npv(nominal_irr, other_raw_material_cost_column)
+print('after_tax_present_value_other_raw_material_cost: ', after_tax_present_value_other_raw_material_cost)
+
+after_tax_present_value_byproduct_credits = 0
+print('after_tax_present_value_byproduct_credits: ', after_tax_present_value_byproduct_credits)
+
+after_tax_present_value_variable_cost = npv(nominal_irr, variable_cost_column)
+print('after_tax_present_value_variable_cost: ', after_tax_present_value_variable_cost)
+
+summed_cost_components = sum_args(after_tax_present_value_capital_related_costs, after_tax_present_value_decommissioning_costs, after_tax_present_value_fixed_cost, after_tax_present_value_total_feedstock_cost, after_tax_present_value_other_raw_material_cost, after_tax_present_value_byproduct_credits, after_tax_present_value_variable_cost)
+print('summed_cost_components: ', summed_cost_components)
+
+percentage_of_cost_capital_related_costs = after_tax_present_value_capital_related_costs / summed_cost_components
+print('percentage_of_cost_capital_related_costs: ', percentage_of_cost_capital_related_costs)
+
+percentage_of_cost_decommissioning_costs = after_tax_present_value_decommissioning_costs / summed_cost_components
+print('percentage_of_cost_decommissioning_costs: ', percentage_of_cost_decommissioning_costs)
+
+percentage_of_cost_fixed_cost = after_tax_present_value_fixed_cost / summed_cost_components
+print('percentage_of_cost_fixed_cost: ', percentage_of_cost_fixed_cost)
+
+percentage_of_cost_total_feedstock_cost = after_tax_present_value_total_feedstock_cost / summed_cost_components
+print('percentage_of_cost_total_feedstock_cost: ', percentage_of_cost_total_feedstock_cost)
+
+percentage_of_cost_other_raw_material_cost = after_tax_present_value_other_raw_material_cost / summed_cost_components
+print('percentage_of_cost_other_raw_material_cost: ', percentage_of_cost_other_raw_material_cost)
+
+percentage_of_cost_byproduct_credits = after_tax_present_value_byproduct_credits / summed_cost_components
+print('percentage_of_cost_byproduct_credits: ', percentage_of_cost_byproduct_credits)
+
+percentage_of_cost_variable_cost = after_tax_present_value_variable_cost / summed_cost_components
+print('percentage_of_cost_variable_cost: ', percentage_of_cost_variable_cost)
+
+dollars_per_kg_h2_capital_related_costs = H2_price_real * percentage_of_cost_capital_related_costs
+print('dollars_per_kg_h2_capital_related_costs: ', dollars_per_kg_h2_capital_related_costs)
+
+dollars_per_kg_h2_decommissioning_costs = H2_price_real * percentage_of_cost_decommissioning_costs
+print('dollars_per_kg_h2_decommissioning_costs: ', dollars_per_kg_h2_decommissioning_costs)
+
+dollars_per_kg_h2_fixed_cost = H2_price_real * percentage_of_cost_fixed_cost
+print('dollars_per_kg_h2_fixed_cost: ', dollars_per_kg_h2_fixed_cost)
+
+dollars_per_kg_h2_total_feedstock_cost = H2_price_real * percentage_of_cost_total_feedstock_cost
+print('dollars_per_kg_h2_total_feedstock_cost: ', dollars_per_kg_h2_total_feedstock_cost)
+
+dollars_per_kg_h2_other_raw_material_cost = H2_price_real * percentage_of_cost_other_raw_material_cost
+print('dollars_per_kg_h2_other_raw_material_cost: ', dollars_per_kg_h2_other_raw_material_cost)
+
+dollars_per_kg_h2_byproduct_credits = H2_price_real * percentage_of_cost_byproduct_credits
+print('dollars_per_kg_h2_byproduct_credits: ', dollars_per_kg_h2_byproduct_credits)
+
+dollars_per_kg_h2_variable_cost = H2_price_real * percentage_of_cost_variable_cost
+print('dollars_per_kg_h2_variable_cost: ', dollars_per_kg_h2_variable_cost)
 
