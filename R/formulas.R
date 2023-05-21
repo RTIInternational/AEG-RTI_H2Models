@@ -11,23 +11,25 @@ import::from("decommissioning.R", get_decom_costs_column, .directory = here(h2a,
 import::from("depreciable_capital.R", get_annual_depreciable_capital, .directory = here(h2a,lib))
 import::from("depreciation_calculation.R", get_depreciation_calculation_table, .directory = here(h2a,lib))
 import::from("depreciation_charges.R", get_depreciation_charges, get_depreciation_charges_column, .directory = here(h2a,lib))
+import::from("energy.R", get_energy_input_for_feedstocks, get_upstream_energy_usage_for_feedstocks, .directory = here(h2a,lib))
 import::from("feedstock_costs.R", get_total_feedstock_costs, .directory = here(h2a,lib))
 import::from("feedstock_prices.R", get_feedstock_price_df, .directory = here(h2a,lib))
 import::from("fixed_costs.R", get_fixed_cost_column, .directory = here(h2a,lib))
 import::from("globals.R", CEPCIinflator, CPIinflator, INFLATION_FACTOR, analysis_period_end, analysis_period_start, plant_output_kg_per_year, .directory = here(h2a))
 import::from("h2_sales.R", get_h2_sales_kg_per_year, .directory = here(h2a,lib))
-import::from("helpers.R", YEAR_1, get, irr, npv, skip, slice, sum_args, .directory = here(h2a))
+import::from("helpers.R", YEAR_1, args_to_list, get, irr, npv, skip, slice, sum_args, .directory = here(h2a))
 import::from("initial_equity.R", get_initial_equity_depr_cap, .directory = here(h2a,lib))
 import::from("nonenergy_materials.R", get_nonenergy_material_price_df, .directory = here(h2a,lib))
 import::from("other_non_depreciable_capital_cost.R", get_other_non_depreciable_capital_cost_column, .directory = here(h2a,lib))
 import::from("other_raw_material_costs.R", get_other_raw_material_cost_column, .directory = here(h2a,lib))
 import::from("predepreciation_income.R", get_predepreciation_income_column, .directory = here(h2a,lib))
-import::from("ref_tables.R", chemical_price_index, conversion_factor, get_lhv, labor_index, macrs_depreciation_table, .directory = here(h2a))
+import::from("ref_tables.R", chemical_price_index, conversion_factor, conversion_factors, get_lhv, labor_index, macrs_depreciation_table, .directory = here(h2a))
 import::from("replacement_costs.R", get_replacement_costs, .directory = here(h2a,lib))
 import::from("revenue_h2_sales.R", get_revenue_h2_sales_column, .directory = here(h2a,lib))
 import::from("salvage.R", get_salvage_column, .directory = here(h2a,lib))
 import::from("taxable_income.R", get_taxable_income_column, .directory = here(h2a,lib))
 import::from("total_taxes.R", get_total_taxes_column, .directory = here(h2a,lib))
+import::from("upstream_ghg_emissions.R", get_upstream_ghg_emissions_for_feedstocks, get_upstream_total_ghg_emissions_for_feedstocks, .directory = here(h2a,lib))
 import::from("variable_costs.R", get_variable_cost_column, .directory = here(h2a,lib))
 import::from("working_capital_reserve.R", get_working_cap_reserve_column, get_working_cap_reserve_rows, .directory = here(h2a,lib))
 
@@ -447,4 +449,25 @@ print(paste("dollars_per_kg_h2_byproduct_credits", dollars_per_kg_h2_byproduct_c
 
 dollars_per_kg_h2_variable_cost <- H2_price_real * percentage_of_cost_variable_cost
 print(paste("dollars_per_kg_h2_variable_cost", dollars_per_kg_h2_variable_cost, sep = ": "))
+
+energy_input_GJ_per_kg_h2 <- get_energy_input_for_feedstocks(feedstocks)
+print(paste("energy_input_GJ_per_kg_h2", energy_input_GJ_per_kg_h2, sep = ": "))
+
+production_process_energy_efficiency <- get(conversion_factors, 'kg_H2_LHV_to_GJ') / sum(energy_input_GJ_per_kg_h2)
+print(paste("production_process_energy_efficiency", production_process_energy_efficiency, sep = ": "))
+
+upstream_energy_usage_column_names <- args_to_list('Total Energy', 'Fossil Fuels', 'Petroleum')
+print(paste("upstream_energy_usage_column_names", upstream_energy_usage_column_names, sep = ": "))
+
+upstream_energy_usage_GJ_per_kg_h2 <- get_upstream_energy_usage_for_feedstocks(feedstocks, energy_input_GJ_per_kg_h2, upstream_energy_usage_column_names)
+print(paste("upstream_energy_usage_GJ_per_kg_h2", upstream_energy_usage_GJ_per_kg_h2, sep = ": "))
+
+greenhouse_gas_column_names <- args_to_list('CO2', 'CH4', 'N2O')
+print(paste("greenhouse_gas_column_names", greenhouse_gas_column_names, sep = ": "))
+
+upstream_ghg_emissions_kg_per_kg_h2 <- get_upstream_ghg_emissions_for_feedstocks(feedstocks, energy_input_GJ_per_kg_h2, greenhouse_gas_column_names)
+print(paste("upstream_ghg_emissions_kg_per_kg_h2", upstream_ghg_emissions_kg_per_kg_h2, sep = ": "))
+
+upstream_ghg_emissions_kg_per_kg_h2_total <- get_upstream_total_ghg_emissions_for_feedstocks(upstream_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
+print(paste("upstream_ghg_emissions_kg_per_kg_h2_total", upstream_ghg_emissions_kg_per_kg_h2_total, sep = ": "))
 

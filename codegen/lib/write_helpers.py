@@ -44,6 +44,10 @@ helper_code = {
         "py": "def append(a, b):\n    a.append(b)\n    return a\n\n",
         "R": "",
     },
+    "args_to_list": {
+        "py": "def args_to_list(*args):\n    return list(args)\n\n",
+        "R": "args_to_list <- function(...) c(...)\n\n",
+    },
     # "reduce": {
     #     "py": "import functools\n\ndef reduce(function, iterable, initializer=None):\n    return functools.reduce(function, iterable, initializer)\n\n",
     #     "R": "reduce <- Reduce\n\n",
@@ -100,6 +104,9 @@ def helpers_to_lang(lang):
     # append() is a helper function to append a value to a list
     file_str += code["append"][lang]
 
+    # args_to_list() is a helper function to convert a list of arguments to a list
+    file_str += code["args_to_list"][lang]
+
     # reduce() is a helper function to reduce a list to a single value
     # file_str += code["reduce"][lang]
 
@@ -114,6 +121,10 @@ def helpers_to_lang(lang):
     file_str += code["assign_index"][lang]("YEAR_2", 1)
     file_str += code["assign_index"][lang]("YEAR_3", 2)
     file_str += code["assign_index"][lang]("YEAR_4", 3)
+
+    file_str += code["assign_index"][lang]("FIRST", 0)
+    file_str += code["assign_index"][lang]("SECOND", 1)
+    file_str += code["assign_index"][lang]("THIRD", 2)
 
     with open(
         os.path.join(util_code["output_dir"][lang], f"{HELPERS_FILENAME}.{lang}"), "w"

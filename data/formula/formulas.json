@@ -48,7 +48,8 @@
     },
     {
       "name": "feedstock_price_df",
-      "expression": "get_feedstock_price_df(feedstocks, analysis_range, startup_year)"
+      "expression": "get_feedstock_price_df(feedstocks, analysis_range, startup_year)",
+      "excel_loc": "Cash Flow Analysis B139:E181"
     },
     {
       "name": "operation_range",
@@ -802,6 +803,44 @@
       "label": "$/kg of H2: Other Variable Costs (including utilities)",
       "expression": "H2_price_real * percentage_of_cost_variable_cost",
       "excel_loc": "Cash Flow Analysis D125"
+    },
+    {
+      "name": "energy_input_GJ_per_kg_h2",
+      "label": "Energy Input (GJ/kg H2)",
+      "expression": "get_energy_input_for_feedstocks(feedstocks)",
+      "excel_loc": "Results C32"
+    },
+    {
+      "name": "production_process_energy_efficiency",
+      "label": "Production Process Energy Efficiency",
+      "expression": "get(conversion_factors, 'kg_H2_LHV_to_GJ') / sum(energy_input_GJ_per_kg_h2)",
+      "excel_loc": "Results D52"
+    },
+    {
+      "name": "upstream_energy_usage_column_names",
+      "expression": "args_to_list('Total Energy', 'Fossil Fuels', 'Petroleum')"
+    },
+    {
+      "name": "upstream_energy_usage_GJ_per_kg_h2",
+      "label": "Upstream Energy Usage (GJ/kg H2)",
+      "expression": "get_upstream_energy_usage_for_feedstocks(feedstocks, energy_input_GJ_per_kg_h2, upstream_energy_usage_column_names)",
+      "excel_loc": "Results C33"
+    },
+    {
+      "name": "greenhouse_gas_column_names",
+      "expression": "args_to_list('CO2', 'CH4', 'N2O')"
+    },
+    {
+      "name": "upstream_ghg_emissions_kg_per_kg_h2",
+      "label": "Upstream GHG Emissions (kg/kg H2) based on GREET.NET 2017",
+      "expression": "get_upstream_ghg_emissions_for_feedstocks(feedstocks, energy_input_GJ_per_kg_h2, greenhouse_gas_column_names)",
+      "excel_loc": "Results C110"
+    },
+    {
+      "name": "upstream_ghg_emissions_kg_per_kg_h2_total",
+      "label": "Upstream GHG Emissions (kg/kg H2) based on GREET.NET 2017 Total Column",
+      "expression": "get_upstream_total_ghg_emissions_for_feedstocks(upstream_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))",
+      "excel_loc": "Results F110"
     },
     {
       "name": "#",

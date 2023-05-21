@@ -27,7 +27,12 @@ slice <- function(a, start=0, end=NULL) a[(start + 1):end]
 
 sum_args <- function(...) sum(...)
 
+args_to_list <- function(...) c(...)
+
 YEAR_1 <- 1
 YEAR_2 <- 2
 YEAR_3 <- 3
 YEAR_4 <- 4
+FIRST <- 1
+SECOND <- 2
+THIRD <- 3

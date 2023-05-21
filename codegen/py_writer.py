@@ -29,7 +29,7 @@ GLOBALS_FILENAME = "globals"  # Name of the Python file containing a few global 
 HELPER_CODE_KEYS = list(helper_code.keys())
 
 # Some extra helper constants not defined in helper_code
-HELPER_CODE_EXTRA_KEYS = ["YEAR_1", "YEAR_2", "YEAR_3", "YEAR_4"]
+HELPER_CODE_EXTRA_KEYS = ["YEAR_1", "YEAR_2", "YEAR_3", "YEAR_4", "FIRST", "SECOND", "THIRD"]
 
 # All helper functions and constants
 HELPERS_EXPORTS = HELPER_CODE_KEYS + HELPER_CODE_EXTRA_KEYS
@@ -189,7 +189,7 @@ def edges_to_imports(edges, lib_exports):
         import_statements.append(
             {
                 "py": f"from {dir_path_to_import_str(dirs, filename, 'py')} import {py_import_list_str}",
-                "R": f'import::from("{filename}.R", {r_import_list_str}, .directory = here({dir_path_to_import_str(dirs, _, "R")}))',
+                "R": f'import::from("{filename}.R", {r_import_list_str}, .directory = here({dir_path_to_import_str(dirs, "", "R")}))',
             }
         )
 

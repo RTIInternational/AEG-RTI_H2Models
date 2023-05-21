@@ -40,7 +40,13 @@ def append(a, b):
     a.append(b)
     return a
 
+def args_to_list(*args):
+    return list(args)
+
 YEAR_1 = 0
 YEAR_2 = 1
 YEAR_3 = 2
 YEAR_4 = 3
+FIRST = 0
+SECOND = 1
+THIRD = 2

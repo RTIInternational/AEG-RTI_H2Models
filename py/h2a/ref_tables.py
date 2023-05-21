@@ -141,6 +141,11 @@ def read_macrs_depreciation_table():
     df = pd.read_csv(csv_path, index_col=0, header=0, names=[3, 5, 7, 10, 15, 20], dtype={3:float, 5:float, 7:float, 10:float, 15:float, 20:float})
     return df
 
+def read_upstream_energy_and_emissions():
+    # Read the column headers as integers
+    csv_path = os.path.join(root_dir, "data/emissions/table-c1-2010-upstream-energy-and-emissions.csv")
+    df = pd.read_csv(csv_path, index_col=0, header=0)
+    return df
 
 lhv, hhv = read_fuel_heating_values()
 conversion_factors = read_conversion_factors()
@@ -159,4 +164,6 @@ get_aeo = (
     else Exception(f"Price table '{price_table}' not supported.")
 )
 macrs_depreciation_table = read_macrs_depreciation_table()
+upstream_energy_and_emissions = read_upstream_energy_and_emissions()
+# print(upstream_energy_and_emissions["Total Energy"]["Industrial Electricity"])
 # print(macrs_depreciation_table["3"])

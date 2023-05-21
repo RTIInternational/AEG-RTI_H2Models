@@ -1,0 +1,40 @@
+{
+  "functions": [
+    {
+      "name": "calculate_energy_input_for_feedstock",
+      "description": "Get the energy input value for a feedstock",
+      "args": ["feedstock"],
+      "body": "get(feedstock, 'usage') * conversion_factor(concat(get(split(get(feedstock, 'units'),'/'), 0), '_to_$/GJ'))"
+    },
+    {
+      "name": "get_energy_input_for_feedstocks",
+      "description": "Get a dataframe of the energy input value for each feedstock",
+      "args": ["feedstocks"],
+      "map_function": "calculate_energy_input_for_feedstock",
+      "map_iterables": ["feedstocks"],
+      "map_item_names": ["feedstock"]
+    },
+    {
+      "name": "calculate_upstream_energy_usage_for_feedstock_and_energy_column",
+      "description": "Get the upstream energy usage for a feedstock",
+      "args": ["column_name", "feedstock", "energy_input"],
+      "body": "energy_input / 1000000 * get(get(upstream_energy_and_emissions, column_name), get(feedstock, 'name'))"
+    },
+    {
+      "name": "iterate_over_energy_columns_for_feedstock",
+      "description": "Iterate over the energy columns for a feedstock",
+      "args": ["feedstock", "energy_input", "upstream_energy_usage_column_names"],
+      "map_function": "calculate_upstream_energy_usage_for_feedstock_and_energy_column",
+      "map_iterables": ["upstream_energy_usage_column_names"],
+      "map_item_names": ["column_name"]
+    },
+    {
+      "name": "get_upstream_energy_usage_for_feedstocks",
+      "description": "Get the upstream energy usage for the feedstocks",
+      "args": ["feedstocks", "energy_input_GJ_per_kg_h2", "upstream_energy_usage_column_names"],
+      "map_function": "iterate_over_energy_columns_for_feedstock",
+      "map_iterables": ["feedstocks", "energy_input_GJ_per_kg_h2"],
+      "map_item_names": ["feedstock", "energy_input"]
+    }
+  ]
+}
