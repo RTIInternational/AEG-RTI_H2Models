@@ -13,3 +13,16 @@ def read_inputs_json(json_file):
         for key, value in data.items():
             default_inputs[key] = value
     return default_inputs
+
+# Used by check_formulas.py to get excel_locations
+def read_formulas_json():
+    with open(
+        os.path.join(root_dir, "data", "formula", "formulas.json"), newline=""
+    ) as jsonfile:
+        try:
+            loaded_json = json.load(jsonfile)
+            return loaded_json["formulas"]
+        except json.decoder.JSONDecodeError as e:
+            print("invalid json: %s" % e)
+            print(f"File: {jsonfile}")
+            raise

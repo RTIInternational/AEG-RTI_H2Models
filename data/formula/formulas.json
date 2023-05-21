@@ -556,7 +556,7 @@
       "name": "remaining_depreciation_charges",
       "label": "Remaining Depreciation Charges",
       "expression": "get_depreciation_charges(remaining_depreciation_range, recovery_index_range, depreciation_calculation_table)",
-      "excel_loc": "Depreciation B140, B146-B165"
+      "excel_loc": "Depreciation B140 B146-B165"
     },
     {
       "name": "total_remaining_depreciation_charges",

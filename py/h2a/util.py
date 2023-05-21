@@ -4,7 +4,7 @@ import os
 root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Validation function used by check_formulas.py
-def check(excel_vals, py_vals):
+def compare_lists(name, excel_vals, py_vals):
     # For excel_vals, convert None to 0
     excel_vals = [0 if x is None else x for x in excel_vals]
 
@@ -14,8 +14,30 @@ def check(excel_vals, py_vals):
     
     try:
         assert excel_vals == py_vals
+        return True
     except AssertionError:
         # Print each value side by side
+        print("❌", name)
         print("Excel", "Python")
         for i in range(len(excel_vals)):
             print(excel_vals[i], py_vals[i])
+        return False
+
+# Validation function used by check_formulas.py
+def compare_value(name, excel_val, py_val):
+    # Convert None to 0
+    excel_val = 0 if excel_val is None else excel_val
+
+    # For both excel_val and py_val, round to 4 decimal places
+    excel_val = round(excel_val, 4)
+    py_val = round(py_val, 4)
+    
+    try:
+        assert excel_val == py_val
+        return True
+    except AssertionError:
+        # Print each value side by side
+        print("❌", name)
+        print("   Excel: ", excel_val)
+        print("   Python:", py_val)
+        return False
