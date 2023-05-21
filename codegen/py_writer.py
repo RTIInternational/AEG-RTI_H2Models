@@ -10,7 +10,6 @@ from lib.write_formulas import formulas_to_code
 from lib.write_inputs import inputs_to_code
 from lib.read_json_files import (
     read_functions_json,
-    read_globals_json,
     read_inputs_json,
     read_formulas_json,
 )
@@ -23,7 +22,6 @@ from lib.util import (
 from lib.read_ref_table_exports import ref_tables_exports, REF_TABLES_FILENAME
 
 FORMULAS_FILENAME = "formulas"
-GLOBALS_FILENAME = "globals"  # Name of the Python file containing a few global variables that functions use
 
 # function names of helper functions
 HELPER_CODE_KEYS = list(helper_code.keys())
@@ -205,23 +203,10 @@ def main():
     6) Write code to files
     """
     inputs = read_inputs_json()
-    global_formulas = read_globals_json()["globals"]
     all_functions = read_functions_json()
     formulas = read_formulas_json()["formulas"]
 
     input_exports = inputs_to_code(inputs)
-
-    global_exports, global_edges = parse_formulas_to_nodes_and_edges(global_formulas)
-    # Globals dependency tree
-    imports_for_globals = edges_to_imports(
-        global_edges,
-        [
-            (REF_TABLES_FILENAME, ref_tables_exports, []),
-            (INPUTS_FILENAME, input_exports, []),
-        ],
-    )
-
-    formulas_to_code(GLOBALS_FILENAME, global_formulas, imports_for_globals)
 
     new_all_functions = parse_functions_to_nodes_and_edges(all_functions)
     function_filenames = []
@@ -232,7 +217,6 @@ def main():
             [
                 (REF_TABLES_FILENAME, ref_tables_exports, []),
                 (HELPERS_FILENAME, HELPERS_EXPORTS, []),
-                (GLOBALS_FILENAME, global_exports, []),
             ],
         )
         functions_to_code(filename, functions, imports_for_functions)
@@ -247,7 +231,6 @@ def main():
         [
             (REF_TABLES_FILENAME, ref_tables_exports, []),
             (HELPERS_FILENAME, HELPERS_EXPORTS, []),
-            (GLOBALS_FILENAME, global_exports, []),
         ]
         + [
             (filename, exports, ["lib"])

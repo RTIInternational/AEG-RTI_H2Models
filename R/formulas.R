@@ -15,7 +15,6 @@ import::from("energy.R", get_energy_input_for_feedstocks, get_upstream_energy_us
 import::from("feedstock_costs.R", get_total_feedstock_costs, .directory = here(h2a,lib))
 import::from("feedstock_prices.R", get_feedstock_price_df, .directory = here(h2a,lib))
 import::from("fixed_costs.R", get_fixed_cost_column, .directory = here(h2a,lib))
-import::from("globals.R", CEPCIinflator, CPIinflator, INFLATION_FACTOR, analysis_period_end, analysis_period_start, plant_output_kg_per_year, .directory = here(h2a))
 import::from("h2_sales.R", get_h2_sales_kg_per_year, .directory = here(h2a,lib))
 import::from("helpers.R", YEAR_1, args_to_list, get, irr, npv, skip, slice, sum_args, .directory = here(h2a))
 import::from("initial_equity.R", get_initial_equity_depr_cap, .directory = here(h2a,lib))
@@ -24,7 +23,7 @@ import::from("other_non_depreciable_capital_cost.R", get_other_non_depreciable_c
 import::from("other_raw_material_costs.R", get_other_raw_material_cost_column, .directory = here(h2a,lib))
 import::from("predepreciation_income.R", get_predepreciation_income_column, .directory = here(h2a,lib))
 import::from("production_process_ghg_emissions.R", get_production_process_ghg_emissions_for_feedstocks, get_production_process_total_ghg_emissions_for_feedstocks, .directory = here(h2a,lib))
-import::from("ref_tables.R", chemical_price_index, conversion_factor, conversion_factors, get_lhv, labor_index, macrs_depreciation_table, .directory = here(h2a))
+import::from("ref_tables.R", chemical_price_index, conversion_factor, conversion_factors, get_cpi, get_lhv, get_plant_cost_index, labor_index, macrs_depreciation_table, .directory = here(h2a))
 import::from("replacement_costs.R", get_replacement_costs, .directory = here(h2a,lib))
 import::from("revenue_h2_sales.R", get_revenue_h2_sales_column, .directory = here(h2a,lib))
 import::from("salvage.R", get_salvage_column, .directory = here(h2a,lib))
@@ -33,6 +32,30 @@ import::from("total_taxes.R", get_total_taxes_column, .directory = here(h2a,lib)
 import::from("upstream_ghg_emissions.R", get_upstream_ghg_emissions_for_feedstocks, get_upstream_total_ghg_emissions_for_feedstocks, .directory = here(h2a,lib))
 import::from("variable_costs.R", get_variable_cost_column, .directory = here(h2a,lib))
 import::from("working_capital_reserve.R", get_working_cap_reserve_column, get_working_cap_reserve_rows, .directory = here(h2a,lib))
+
+plant_output_kg_per_day <- plant_design_capacity * capacity_factor
+print(paste("plant_output_kg_per_day", plant_output_kg_per_day, sep = ": "))
+
+plant_output_kg_per_year <- plant_output_kg_per_day * 365
+print(paste("plant_output_kg_per_year", plant_output_kg_per_year, sep = ": "))
+
+full_analysis_period <- construct + anal_period
+print(paste("full_analysis_period", full_analysis_period, sep = ": "))
+
+analysis_period_start <- startup_year - construct
+print(paste("analysis_period_start", analysis_period_start, sep = ": "))
+
+analysis_period_end <- analysis_period_start + full_analysis_period
+print(paste("analysis_period_end", analysis_period_end, sep = ": "))
+
+CEPCIinflator <- get_plant_cost_index(CurrentYear) / get_plant_cost_index(BasisYear)
+print(paste("CEPCIinflator", CEPCIinflator, sep = ": "))
+
+CPIinflator <- get_cpi(ref_year) / get_cpi(CurrentYear)
+print(paste("CPIinflator", CPIinflator, sep = ": "))
+
+INFLATION_FACTOR <- (1 + inflation_rate) ** (startup_year - ref_year)
+print(paste("INFLATION_FACTOR", INFLATION_FACTOR, sep = ": "))
 
 H2_LHV_MJ_p_kg <- get_lhv("Hydrogen")
 print(paste("H2_LHV_MJ_p_kg", H2_LHV_MJ_p_kg, sep = ": "))
@@ -58,7 +81,7 @@ print(paste("analysis_range", analysis_range, sep = ": "))
 analysis_index_range <- seq_along(analysis_range)
 print(paste("analysis_index_range", analysis_index_range, sep = ": "))
 
-feedstock_price_df <- get_feedstock_price_df(feedstocks, analysis_range, startup_year)
+feedstock_price_df <- get_feedstock_price_df(feedstocks, analysis_range, startup_year, INFLATION_FACTOR)
 print(paste("feedstock_price_df", feedstock_price_df, sep = ": "))
 
 operation_range <- get_operation_range(analysis_index_range, construct)
@@ -73,7 +96,7 @@ print(paste("total_feedstock_cost_column", total_feedstock_cost_column, sep = ":
 discounted_value_feedstock_cost <- get(total_feedstock_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(total_feedstock_cost_column, 1))
 print(paste("discounted_value_feedstock_cost", discounted_value_feedstock_cost, sep = ": "))
 
-direct_cap <- sum(capital_investment_costs(capital_investments))
+direct_cap <- sum(capital_investment_costs(capital_investments, CEPCIinflator, CPIinflator))
 print(paste("direct_cap", direct_cap, sep = ": "))
 
 CO2_seq <- 0

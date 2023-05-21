@@ -1,6 +1,54 @@
 {
   "formulas": [
     {
+      "name": "plant_output_kg_per_day",
+      "label": "Plant Output (kg/day)",
+      "expression": "plant_design_capacity * capacity_factor",
+      "orig_name": "output_kgpday"
+    },
+    {
+      "name": "plant_output_kg_per_year",
+      "label": "Plant Output (kg/year)",
+      "expression": "plant_output_kg_per_day * 365",
+      "orig_name": "output_kgyear"
+    },
+    {
+      "name": "full_analysis_period",
+      "label": "",
+      "expression": "construct + anal_period",
+      "orig_name": ""
+    },
+    {
+      "name": "analysis_period_start",
+      "label": "",
+      "expression": "startup_year - construct",
+      "orig_name": ""
+    },
+    {
+      "name": "analysis_period_end",
+      "label": "",
+      "expression": "analysis_period_start + full_analysis_period",
+      "orig_name": ""
+    },
+    {
+      "name": "",
+      "label": "Chemical Engineering Plant Cost Index (CEPCI) Inflator",
+      "expression": "get_plant_cost_index(CurrentYear) / get_plant_cost_index(BasisYear)",
+      "orig_name": "CEPCIinflator"
+    },
+    {
+      "name": "",
+      "label": "Consumer Price Inflator (CPI)",
+      "expression": "get_cpi(ref_year) / get_cpi(CurrentYear)",
+      "orig_name": "CPIinflator"
+    },
+    {
+      "name": "",
+      "label": "INFLATION FACTOR",
+      "expression": "(1 + inflation_rate) ** (startup_year - ref_year)",
+      "orig_name": "INFLATION_FACTOR"
+    },
+    {
       "name": "",
       "label": "Hydrogen Gas Lower Heating Value (LHV) (MJ/kg)",
       "expression": "get_lhv(\"Hydrogen\")",
@@ -22,7 +70,8 @@
       "name": "",
       "label": "After-Tax Nominal IRR",
       "expression": "((1 + real_irr) * (1 + inflation_rate)) - 1",
-      "orig_name": "nominal_irr"
+      "orig_name": "nominal_irr",
+      "excel_loc": "Cash Flow Analysis, B27"
     },
     {
       "name": "percentage_debt_financing",
@@ -48,7 +97,7 @@
     },
     {
       "name": "feedstock_price_df",
-      "expression": "get_feedstock_price_df(feedstocks, analysis_range, startup_year)",
+      "expression": "get_feedstock_price_df(feedstocks, analysis_range, startup_year, INFLATION_FACTOR)",
       "excel_loc": "Cash Flow Analysis B139:E181"
     },
     {
@@ -75,7 +124,7 @@
     {
       "orig_name": "direct_cap",
       "label": "H2A Total Direct Capital Cost",
-      "expression": "sum(capital_investment_costs(capital_investments))"
+      "expression": "sum(capital_investment_costs(capital_investments, CEPCIinflator, CPIinflator))"
     },
     {
       "orig_name": "CO2_seq",
@@ -120,7 +169,7 @@
       "name": "replacement_costs",
       "label": "Yearly Replacement Costs Column",
       "expression": "get_replacement_costs(operation_range, inflation_price_increase_factors, replace_factor, depr_cap, ref_year, startup_year, inflation_rate)",
-      "excel_loc": "Cash Flow Analysis I64"
+      "excel_loc": "Cash Flow Analysis, I65:I107"
     },
     {
       "name": "discounted_value_replacement_costs",

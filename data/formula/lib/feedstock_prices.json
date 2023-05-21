@@ -3,7 +3,7 @@
     {
       "name": "get_feedstock_price_for_year",
       "description": "Get the price of a feedstock for a given year",
-      "args": ["year", "feedstock"],
+      "args": ["year", "feedstock", "INFLATION_FACTOR"],
       "body": "get(get(get_aeo(get(feedstock, 'price_table')), get(feedstock, 'name')), year) * get(feedstock, 'usage') * conversion_factor(concat(get(split(get(feedstock, 'units'),'/'), 0), '_to_$/GJ')) * INFLATION_FACTOR"
     },
     {
@@ -12,12 +12,12 @@
       "map_function": "get_feedstock_price_for_year",
       "map_iterables": ["analysis_range"],
       "map_item_names": ["year"],
-      "args": ["analysis_range", "feedstock"]
+      "args": ["analysis_range", "feedstock", "INFLATION_FACTOR"]
     },
     {
       "name": "get_feedstock_price_for_startup_year",
       "description": "Get the price of a feedstock for the startup year",
-      "args": ["year", "feedstock", "startup_year"],
+      "args": ["year", "feedstock", "startup_year", "INFLATION_FACTOR"],
       "body": "get(get(get_aeo(get(feedstock, 'price_table')), get(feedstock, 'name')), startup_year) * get(feedstock, 'usage') * conversion_factor(concat(get(split(get(feedstock, 'units'),'/'), 0), '_to_$/GJ')) * INFLATION_FACTOR"
     },
     {
@@ -26,20 +26,20 @@
       "map_function": "get_feedstock_price_for_startup_year",
       "map_iterables": ["analysis_range"],
       "map_item_names": ["year"],
-      "args": ["analysis_range", "feedstock", "startup_year"]
+      "args": ["analysis_range", "feedstock", "startup_year", "INFLATION_FACTOR"]
     },
     {
       "name": "select_feedstock_prices",
       "description": "For a given feedstock, select whether to lookup prices or use a fixed price",
       "type": "switch",
-      "args": ["feedstock", "analysis_range", "startup_year"],
+      "args": ["feedstock", "analysis_range", "startup_year", "INFLATION_FACTOR"],
       "cases": [
         {
           "condition": "get(feedstock, 'lookup_prices')",
-          "body": "lookup_prices_for_feedstock(analysis_range, feedstock)"
+          "body": "lookup_prices_for_feedstock(analysis_range, feedstock, INFLATION_FACTOR)"
         }, {
           "condition": "TRUE",
-          "body": "fixed_prices_for_feedstock(analysis_range, feedstock, startup_year)"
+          "body": "fixed_prices_for_feedstock(analysis_range, feedstock, startup_year, INFLATION_FACTOR)"
         }
       ]
     },
@@ -49,7 +49,7 @@
       "map_function": "select_feedstock_prices",
       "map_iterables": ["feedstocks"],
       "map_item_names": ["feedstock"],
-      "args": ["feedstocks", "analysis_range", "startup_year"]
+      "args": ["feedstocks", "analysis_range", "startup_year", "INFLATION_FACTOR"]
     }
   ]
 }

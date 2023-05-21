@@ -24,13 +24,6 @@ def read_formulas_json():
             raise
 
 
-def read_globals_json():
-    with open(
-        os.path.join(root_dir, "data/formula/globals.json"), newline=""
-    ) as jsonfile:
-        return json.load(jsonfile)
-
-
 # JSON file containing function definitions
 def read_functions_json():
     # all_functions is a list of tuples (filename, [functions])

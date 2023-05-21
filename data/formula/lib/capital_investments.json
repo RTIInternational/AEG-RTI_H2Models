@@ -2,8 +2,7 @@
   "functions" : [
     {
       "name": "calculate_capital_investment_cost",
-      "args": ["capital_investment"],
-      "globals": ["CEPCIinflator", "CPIinflator"],
+      "args": ["capital_investment", "CEPCIinflator", "CPIinflator"],
       "body": "get(capital_investment, 'cost') * CEPCIinflator * CPIinflator * get(capital_investment, 'installation_cost_factor')"
     },
     {
@@ -12,7 +11,7 @@
       "map_function": "calculate_capital_investment_cost",
       "map_iterables": ["capital_investments"],
       "map_item_names": ["capital_investment"],
-      "args": ["capital_investments"]
+      "args": ["capital_investments", "CEPCIinflator", "CPIinflator"]
     }
   ]
 }
