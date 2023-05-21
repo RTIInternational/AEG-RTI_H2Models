@@ -843,6 +843,18 @@
       "excel_loc": "Results F110"
     },
     {
+      "name": "production_process_ghg_emissions_kg_per_kg_h2",
+      "label": "Production Process GHG Emissions (/kg H2)",
+      "expression": "get_production_process_ghg_emissions_for_feedstocks(feedstocks, greenhouse_gas_column_names)",
+      "excel_loc": "Results C95"
+    },
+    {
+      "name": "production_process_ghg_emissions_kg_per_kg_h2_total",
+      "label": "Production Process GHG Emissions (/kg H2) Total Column",
+      "expression": "get_production_process_total_ghg_emissions_for_feedstocks(production_process_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))",
+      "excel_loc": "Results F95"
+    },
+    {
       "name": "#",
       "label": "Total Depreciable Capital Costs",
       "expression": "(total_cap - non_dep_cap) * INFLATION_FACTOR",

@@ -147,6 +147,11 @@ def read_upstream_energy_and_emissions():
     df = pd.read_csv(csv_path, index_col=0, header=0)
     return df
 
+def read_co2_emissions_factors():
+    csv_path = os.path.join(root_dir, "data/emissions/table-a-col-k-energy-feedstock-emissions.csv")
+    df = pd.read_csv(csv_path, index_col=0, header=0)
+    return df
+
 lhv, hhv = read_fuel_heating_values()
 conversion_factors = read_conversion_factors()
 plant_cost_index = read_plant_cost_index()
@@ -165,5 +170,6 @@ get_aeo = (
 )
 macrs_depreciation_table = read_macrs_depreciation_table()
 upstream_energy_and_emissions = read_upstream_energy_and_emissions()
+co2_emission_factors = read_co2_emissions_factors()
 # print(upstream_energy_and_emissions["Total Energy"]["Industrial Electricity"])
 # print(macrs_depreciation_table["3"])

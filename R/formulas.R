@@ -23,6 +23,7 @@ import::from("nonenergy_materials.R", get_nonenergy_material_price_df, .director
 import::from("other_non_depreciable_capital_cost.R", get_other_non_depreciable_capital_cost_column, .directory = here(h2a,lib))
 import::from("other_raw_material_costs.R", get_other_raw_material_cost_column, .directory = here(h2a,lib))
 import::from("predepreciation_income.R", get_predepreciation_income_column, .directory = here(h2a,lib))
+import::from("production_process_ghg_emissions.R", get_production_process_ghg_emissions_for_feedstocks, get_production_process_total_ghg_emissions_for_feedstocks, .directory = here(h2a,lib))
 import::from("ref_tables.R", chemical_price_index, conversion_factor, conversion_factors, get_lhv, labor_index, macrs_depreciation_table, .directory = here(h2a))
 import::from("replacement_costs.R", get_replacement_costs, .directory = here(h2a,lib))
 import::from("revenue_h2_sales.R", get_revenue_h2_sales_column, .directory = here(h2a,lib))
@@ -469,5 +470,11 @@ upstream_ghg_emissions_kg_per_kg_h2 <- get_upstream_ghg_emissions_for_feedstocks
 print(paste("upstream_ghg_emissions_kg_per_kg_h2", upstream_ghg_emissions_kg_per_kg_h2, sep = ": "))
 
 upstream_ghg_emissions_kg_per_kg_h2_total <- get_upstream_total_ghg_emissions_for_feedstocks(upstream_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
+print(paste("upstream_ghg_emissions_kg_per_kg_h2_total", upstream_ghg_emissions_kg_per_kg_h2_total, sep = ": "))
+
+production_process_ghg_emissions_kg_per_kg_h2 <- get_production_process_ghg_emissions_for_feedstocks(feedstocks, greenhouse_gas_column_names)
+print(paste("production_process_ghg_emissions_kg_per_kg_h2", production_process_ghg_emissions_kg_per_kg_h2, sep = ": "))
+
+upstream_ghg_emissions_kg_per_kg_h2_total <- get_production_process_total_ghg_emissions_for_feedstocks(production_process_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
 print(paste("upstream_ghg_emissions_kg_per_kg_h2_total", upstream_ghg_emissions_kg_per_kg_h2_total, sep = ": "))
 

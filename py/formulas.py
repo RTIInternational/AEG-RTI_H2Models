@@ -23,6 +23,7 @@ from h2a.lib.nonenergy_materials import get_nonenergy_material_price_df
 from h2a.lib.other_non_depreciable_capital_cost import get_other_non_depreciable_capital_cost_column
 from h2a.lib.other_raw_material_costs import get_other_raw_material_cost_column
 from h2a.lib.predepreciation_income import get_predepreciation_income_column
+from h2a.lib.production_process_ghg_emissions import get_production_process_ghg_emissions_for_feedstocks, get_production_process_total_ghg_emissions_for_feedstocks
 from h2a.ref_tables import chemical_price_index, conversion_factor, conversion_factors, get_lhv, labor_index, macrs_depreciation_table
 from h2a.lib.replacement_costs import get_replacement_costs
 from h2a.lib.revenue_h2_sales import get_revenue_h2_sales_column
@@ -469,5 +470,11 @@ upstream_ghg_emissions_kg_per_kg_h2 = get_upstream_ghg_emissions_for_feedstocks(
 print('upstream_ghg_emissions_kg_per_kg_h2: ', upstream_ghg_emissions_kg_per_kg_h2)
 
 upstream_ghg_emissions_kg_per_kg_h2_total = get_upstream_total_ghg_emissions_for_feedstocks(upstream_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
+print('upstream_ghg_emissions_kg_per_kg_h2_total: ', upstream_ghg_emissions_kg_per_kg_h2_total)
+
+production_process_ghg_emissions_kg_per_kg_h2 = get_production_process_ghg_emissions_for_feedstocks(feedstocks, greenhouse_gas_column_names)
+print('production_process_ghg_emissions_kg_per_kg_h2: ', production_process_ghg_emissions_kg_per_kg_h2)
+
+upstream_ghg_emissions_kg_per_kg_h2_total = get_production_process_total_ghg_emissions_for_feedstocks(production_process_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
 print('upstream_ghg_emissions_kg_per_kg_h2_total: ', upstream_ghg_emissions_kg_per_kg_h2_total)
 
