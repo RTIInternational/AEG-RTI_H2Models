@@ -8,4 +8,5 @@ def run_model(input_data_file):
 
 if __name__ == "__main__":
     results = run_model("default-smr-natural-gas-no-cc.json")
+    # results = run_model("default-smr-natural-gas-with-cc.json")
     print(results)

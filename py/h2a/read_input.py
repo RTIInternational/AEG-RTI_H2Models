@@ -13,7 +13,3 @@ def read_inputs_json(json_file):
         for key, value in data.items():
             default_inputs[key] = value
     return default_inputs
-
-
-# user_input = read_inputs_json("default-smr-natural-gas-with-cc.json")
-user_input = read_inputs_json("default-smr-natural-gas-no-cc.json")
