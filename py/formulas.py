@@ -91,9 +91,6 @@ print('process_contingency_cost: ', process_contingency_cost)
 project_contingency_cost = 0.247793627342024 * direct_cap / (CEPCIinflator * CPIinflator)
 print('project_contingency_cost: ', project_contingency_cost)
 
-other_depreciable_capital_cost = 40137000
-print('other_depreciable_capital_cost: ', other_depreciable_capital_cost)
-
 upfront_permitting_costs = (0.15 * CO2_seq / (CEPCIinflator * CPIinflator)) + (0.11599636520534 * direct_cap / (CEPCIinflator * CPIinflator))
 print('upfront_permitting_costs: ', upfront_permitting_costs)
 
@@ -475,6 +472,6 @@ print('upstream_ghg_emissions_kg_per_kg_h2_total: ', upstream_ghg_emissions_kg_p
 production_process_ghg_emissions_kg_per_kg_h2 = get_production_process_ghg_emissions_for_feedstocks(feedstocks, greenhouse_gas_column_names)
 print('production_process_ghg_emissions_kg_per_kg_h2: ', production_process_ghg_emissions_kg_per_kg_h2)
 
-upstream_ghg_emissions_kg_per_kg_h2_total = get_production_process_total_ghg_emissions_for_feedstocks(production_process_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
-print('upstream_ghg_emissions_kg_per_kg_h2_total: ', upstream_ghg_emissions_kg_per_kg_h2_total)
+production_process_ghg_emissions_kg_per_kg_h2_total = get_production_process_total_ghg_emissions_for_feedstocks(production_process_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
+print('production_process_ghg_emissions_kg_per_kg_h2_total: ', production_process_ghg_emissions_kg_per_kg_h2_total)
 

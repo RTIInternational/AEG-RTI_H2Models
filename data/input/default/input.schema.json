@@ -164,6 +164,11 @@
       "minimum": 0,
       "maximum": 1
     },
+    "other_depreciable_capital_cost": {
+      "type": "number",
+      "title": "Other (Depreciable) capital ($)",
+      "minimum": 0
+    },
     "cost_per_acre": {
       "type": "number",
       "title": "Cost of Land ($/acre)",

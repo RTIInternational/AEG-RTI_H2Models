@@ -107,11 +107,6 @@
       "expression": "0.247793627342024 * direct_cap / (CEPCIinflator * CPIinflator)"
     },
     {
-      "name": "other_depreciable_capital_cost",
-      "label": "Other (Depreciable) Capital ($)",
-      "expression": "40137000"
-    },
-    {
       "name": "upfront_permitting_costs",
       "label": "Upfront Permitting Costs ($)",
       "expression": "(0.15 * CO2_seq / (CEPCIinflator * CPIinflator)) + (0.11599636520534 * direct_cap / (CEPCIinflator * CPIinflator))"

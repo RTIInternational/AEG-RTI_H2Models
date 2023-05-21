@@ -15,4 +15,4 @@ def read_default_inputs_json(json_file):
     return default_inputs
 
 
-user_input = read_default_inputs_json("default-smr-natural-gas-no-cc.json")
+user_input = read_default_inputs_json("default-smr-natural-gas-with-cc.json")

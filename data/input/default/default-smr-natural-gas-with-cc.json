@@ -1,7 +1,7 @@
 {
    "$schema": "input.schema.json",
    "capacity_factor": 0.9,
-   "plant_design_capacity": 483024,
+   "plant_design_capacity": 483000,
    "ref_year": 2016,
    "startup_year": 2015,
    "BasisYear": 2018,
@@ -30,25 +30,25 @@
    "fed_tax_rate": 0.21,
    "WorkingCap": 0.15,
 
-   "other_depreciable_capital_cost": 40137000,
-   
+   "other_depreciable_capital_cost": 100993000,
+
    "cost_per_acre": 50000,
    "acres_required": 100,
 
-   "total_plant_staff": 18,
+   "total_plant_staff": 22,
    "labor_cost_per_hour": 50,
    "overhead_rate": 0.2,
    "licensing": 0,
    "tax_ins_rate": 0.02,
    "rent": 0,
-   "material_cost_maintenance_and_repairs": 3050393,
-   "production_cost_maintenance_and_repairs": 2033595,
-   "other_fees": 1056446,
+   "material_cost_maintenance_and_repairs": 7675489,
+   "production_cost_maintenance_and_repairs": 5116993,
+   "other_fees": 1973405,
    "other_fixed": 0,
 
    "other_variable_operating_costs": 0,
-   "other_material_costs": 2914754,
-   "waste_treatment_costs": 16756,
+   "other_material_costs": 6432293,
+   "waste_treatment_costs": 72448,
    "solid_waste_disposal_costs": 0,
    "replace_factor": 0.005,
    "royalties": 0,
@@ -58,14 +58,14 @@
    "feedstocks": [
       {
          "name": "Industrial Electricity",
-         "usage": 0.1311736062804,
+         "usage": 1.50260869565217,
          "units": "kWh/kg H2",
          "price_table": "AEO_2017_Reference_Case",
          "lookup_prices": true
       },
       {
          "name": "Industrial Natural Gas",
-         "usage": 0.1577574276718,
+         "usage": 0.167779663,
          "units": "mmBtu/kg H2",
          "price_table": "AEO_2017_Reference_Case",
          "lookup_prices": true
@@ -74,7 +74,7 @@
    "nonenergy_materials": [
       {
          "name": "Process Water",
-         "usage": 4.343635099,
+         "usage": 8.130186335,
          "units": "gal/kg H2",
          "lookup_prices": true
       }
@@ -82,18 +82,23 @@
    "capital_investments": [
       {
          "name": "Accessory Electric Plant",
-         "cost": 2180000,
-         "installation_cost_factor": 1.93211009174312
+         "cost": 3270000,
+         "installation_cost_factor": 2.09938837920489
       },
       {
          "name": "Cooling Water System",
-         "cost": 5305000,
-         "installation_cost_factor": 1.35852968897267
+         "cost": 19401000,
+         "installation_cost_factor": 1.34678624813154
       },
       {
          "name": "Feedwater & Miscellaneous BOP Systems",
-         "cost": 32610000,
-         "installation_cost_factor": 1.43974241030359
+         "cost": 39465000,
+         "installation_cost_factor": 1.51693905992652
+      },
+      {
+         "name": "Flue Gas Cleanup",
+         "cost": 179884000,
+         "installation_cost_factor": 1.00630127127046
       },
       {
          "name": "Hydrogen Production",
@@ -102,18 +107,18 @@
       },
       {
          "name": "Instrumentation & Control",
-         "cost": 8001000,
-         "installation_cost_factor": 1.1387326584177
+         "cost": 10012000,
+         "installation_cost_factor": 1.14572512984419
       },
       {
          "name": "Reformer & Accessories",
-         "cost": 39658000,
-         "installation_cost_factor": 1.49974784406677
+         "cost": 41908000,
+         "installation_cost_factor": 1.50768349718431
       },
       {
          "name": "Syngas Cleanup",
-         "cost": 3646000,
-         "installation_cost_factor": 2.35189248491498
+         "cost": 22779000,
+         "installation_cost_factor": 1.25848369111901
       }
    ]
 }
