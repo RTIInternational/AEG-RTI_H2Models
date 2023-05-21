@@ -15,7 +15,7 @@ r_h2a_dir = os.path.join(root_dir, "R", "h2a")
 R_ENABLED = True
 
 # Whether to print formula output
-PRINT_FORMULAS = True
+PRINT_FORMULAS = False
 
 INPUTS_FILENAME = "inputs"  # Python file containing the user input variables
 HELPERS_FILENAME = "helpers"  # Name of the Python file containing helper functions

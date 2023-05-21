@@ -4,7 +4,7 @@ from .util import root_dir
 
 
 # Function that reads data/input/default/default-smr-natural-gas-no-cc.json and returns a dictionary {[input_name:str]: input_value}
-def read_default_inputs_json(json_file):
+def read_inputs_json(json_file):
     default_inputs = {}
     with open(
         os.path.join(root_dir, "data", "input", "default", json_file), newline=""
@@ -15,5 +15,5 @@ def read_default_inputs_json(json_file):
     return default_inputs
 
 
-# user_input = read_default_inputs_json("default-smr-natural-gas-with-cc.json")
-user_input = read_default_inputs_json("default-smr-natural-gas-no-cc.json")
+# user_input = read_inputs_json("default-smr-natural-gas-with-cc.json")
+user_input = read_inputs_json("default-smr-natural-gas-no-cc.json")

@@ -1,41 +1,19 @@
-import os
-
-from .util import R_ENABLED, INPUTS_FILENAME, util_code
-
 
 def inputs_to_lang(inputs, lang):
-    """Creates a Python/R file containing the user inputs and returns a list of the names of the variables"""
+    """Returns a Python/R string containing the assignments of the inputs off the dictionary"""
 
     code = {
-        "import": {
-            "py": "from h2a.read_input import user_input\n\n",
-            "R": 'import::from("read_input.R", user_input, .directory = here("h2a"))\n\n',
-        },
         "assign": {
-            "py": lambda key: f"{key} = user_input['{key}']\n",
-            "R": lambda key: f'{key} <- user_input[["{key}"]]\n',
+            "py": lambda key: f"  {key} = user_input['{key}']\n",
+            "R": lambda key: f'  {key} <- user_input[["{key}"]]\n',
         },
     }
 
-    inputs_exports = []
-    file_str = util_code["top_line_comment"][lang]
-    file_str += code["import"][lang]
+    file_str = ""
 
     for key in inputs:
         if key == "$schema":
             continue
         file_str += code["assign"][lang](key)
-        inputs_exports.append(key)
 
-    with open(
-        os.path.join(util_code["output_dir"][lang], f"{INPUTS_FILENAME}.{lang}"), "w"
-    ) as pyfile:
-        pyfile.write(file_str)
-    return inputs_exports
-
-
-def inputs_to_code(inputs):
-    input_exports = inputs_to_lang(inputs, "py")
-    if R_ENABLED:
-        inputs_to_lang(inputs, "R")
-    return input_exports
+    return file_str

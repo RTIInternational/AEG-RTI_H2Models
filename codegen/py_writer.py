@@ -7,16 +7,13 @@ import subprocess
 from lib.write_functions import functions_to_code
 from lib.write_helpers import helpers_to_code, helper_code
 from lib.write_formulas import formulas_to_code
-from lib.write_inputs import inputs_to_code
 from lib.read_json_files import (
     read_functions_json,
-    read_inputs_json,
     read_formulas_json,
 )
 from lib.util import (
     py_dir,
     py_h2a_dir,
-    INPUTS_FILENAME,
     HELPERS_FILENAME,
 )
 from lib.read_ref_table_exports import ref_tables_exports, REF_TABLES_FILENAME
@@ -202,11 +199,8 @@ def main():
     5) Translate formulas & functions to Python/R code
     6) Write code to files
     """
-    inputs = read_inputs_json()
     all_functions = read_functions_json()
     formulas = read_formulas_json()["formulas"]
-
-    input_exports = inputs_to_code(inputs)
 
     new_all_functions = parse_functions_to_nodes_and_edges(all_functions)
     function_filenames = []
@@ -239,8 +233,8 @@ def main():
     )
     formulas_to_code(FORMULAS_FILENAME, formulas, imports_for_formulas)
 
-    # Use subprocess to run `python formulas.py`
-    subprocess.run(["python", "formulas.py"], cwd=os.path.join(py_dir))
+    # Use subprocess to run `python run.py`
+    subprocess.run(["python", "run.py"], cwd=os.path.join(py_dir))
     print("✅ Run complete")
 
     # Use subprocess to run black on the generated Python files
