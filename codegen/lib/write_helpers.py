@@ -11,6 +11,10 @@ helper_code = {
         "py": "def npv(r, cfList):\n    sum_pv = 0\n    for i, pmt in enumerate(cfList, start=1):\n        sum_pv += pmt / ((1 + r) ** i)\n    return sum_pv\n\n",
         "R": "npv <- function(r, cfList) {\n    sum_pv <- 0\n    for (i in seq_along(cfList)) {\n        sum_pv <- sum_pv + cfList[[i]] / ((1 + r) ^ i)\n    }\n    return(sum_pv)\n}\n\n",
     },
+    "round_num": {
+        "py": "def round_num(num, ndigits):\n    if ndigits >= 0:\n        factor = 10 ** ndigits\n        return int(num * factor + 0.5) / factor\n    else:\n        factor = 10 ** abs(ndigits)\n        return int(num / factor + 0.5) * factor\n\n",
+        "R": "round_num <- function(num, ndigits) {\n    if (ndigits >= 0) {\n        factor <- 10 ^ ndigits\n        return(as.integer(num * factor + 0.5) / factor)\n    } else {\n        factor <- 10 ^ abs(ndigits)\n        return(as.integer(num / factor + 0.5) * factor))\n    }\n}\n\n",
+    },
     "get": {
         "py": "def get(obj, key):\n    return obj[key]\n\n",
         "R": "get <- function(obj, key) obj[[key]]\n\n",
@@ -38,6 +42,10 @@ helper_code = {
     "sum_args": {
         "py": "def sum_args(*args):\n    return sum(args)\n\n",
         "R": "sum_args <- function(...) sum(...)\n\n",
+    },
+    "sum_columns": {
+        "py": "def sum_columns(rows):\n    columns = zip(*rows)\n    return list(map(sum, columns))\n\n",
+        "R": "sum_columns <- function(rows) {\n    columns <- t(rows)\n    return(apply(columns, 2, sum))\n}\n\n",
     },
     "seq_along": {"py": "def seq_along(a):\n    return range(len(a))\n\n", "R": ""},
     "append": {
@@ -77,6 +85,10 @@ def helpers_to_lang(lang):
     # npv() is a helper function to calculate the net present value of a list of cash flows
     file_str += code["npv"][lang]
 
+    # round_num() is a helper function to round a number to a specified number of digits
+    # Negative ndigits means rounding to the nearest power of ten (e.g. -2 rounds to the nearest hundred)
+    file_str += code["round_num"][lang]
+
     # get() is a helper function to access a dictionary
     file_str += code["get"][lang]
 
@@ -101,6 +113,9 @@ def helpers_to_lang(lang):
 
     # sum_args() is a helper function to sum a list of arguments
     file_str += code["sum_args"][lang]
+
+    # sum_columns() is a helper function to sum the columns of a list of lists
+    file_str += code["sum_columns"][lang]
 
     # seq_along() is a helper function to get a sequence of integers
     file_str += code["seq_along"][lang]

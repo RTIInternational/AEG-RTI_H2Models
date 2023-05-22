@@ -15,13 +15,14 @@ from h2a.lib.feedstock_costs import get_total_feedstock_costs
 from h2a.lib.feedstock_prices import get_feedstock_price_df
 from h2a.lib.fixed_costs import get_fixed_cost_column
 from h2a.lib.h2_sales import get_h2_sales_kg_per_year
-from h2a.helpers import YEAR_1, args_to_list, evaluate, get, irr, length, npv, seq_along, skip, slice, sum_args
+from h2a.helpers import YEAR_1, args_to_list, evaluate, get, irr, length, npv, round_num, seq_along, skip, slice, sum_args, sum_columns
 from h2a.lib.initial_equity import get_initial_equity_depr_cap
 from h2a.lib.nonenergy_materials import get_nonenergy_material_price_df
 from h2a.lib.other_non_depreciable_capital_cost import get_other_non_depreciable_capital_cost_column
 from h2a.lib.other_raw_material_costs import get_other_raw_material_cost_column
 from h2a.lib.predepreciation_income import get_predepreciation_income_column
 from h2a.lib.production_process_ghg_emissions import get_production_process_ghg_emissions_for_feedstocks, get_production_process_total_ghg_emissions_for_feedstocks
+from h2a.lib.production_process_ghg_emissions_summary import get_total_in_metric_tons_per_year
 from h2a.ref_tables import chemical_price_index, conversion_factor, conversion_factors, get_cpi, get_lhv, get_plant_cost_index, labor_index, macrs_depreciation_table
 from h2a.lib.replacement_costs import get_replacement_costs
 from h2a.lib.revenue_h2_sales import get_revenue_h2_sales_column
@@ -248,4 +249,8 @@ def calculate(user_input):
   upstream_ghg_emissions_kg_per_kg_h2_total = get_upstream_total_ghg_emissions_for_feedstocks(upstream_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
   production_process_ghg_emissions_kg_per_kg_h2 = get_production_process_ghg_emissions_for_feedstocks(feedstocks, greenhouse_gas_column_names)
   production_process_ghg_emissions_kg_per_kg_h2_total = get_production_process_total_ghg_emissions_for_feedstocks(production_process_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
+  total_process_pollutants_produced_kg_per_kg_h2 = sum_columns(production_process_ghg_emissions_kg_per_kg_h2)
+  total_process_pollutants_produced_all_ghg_kg_per_kg_h2 = sum(production_process_ghg_emissions_kg_per_kg_h2_total)
+  total_process_pollutants_produced_metric_tons_per_year = get_total_in_metric_tons_per_year(total_process_pollutants_produced_kg_per_kg_h2, plant_output_kg_per_year)
+  total_process_pollutants_produced_all_ghg_metric_tons_per_year = round_num(total_process_pollutants_produced_all_ghg_kg_per_kg_h2 * plant_output_kg_per_year / 1000, -2)
   return locals()

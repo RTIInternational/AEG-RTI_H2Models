@@ -15,6 +15,16 @@ npv <- function(r, cfList) {
     return(sum_pv)
 }
 
+round_num <- function(num, ndigits) {
+    if (ndigits >= 0) {
+        factor <- 10 ^ ndigits
+        return(as.integer(num * factor + 0.5) / factor)
+    } else {
+        factor <- 10 ^ abs(ndigits)
+        return(as.integer(num / factor + 0.5) * factor))
+    }
+}
+
 get <- function(obj, key) obj[[key]]
 
 concat <- function(a, b) paste(a, b, sep = "")
@@ -26,6 +36,11 @@ skip <- function(a, b) a[(b + 1):length(a)]
 slice <- function(a, start=0, end=NULL) a[(start + 1):end]
 
 sum_args <- function(...) sum(...)
+
+sum_columns <- function(rows) {
+    columns <- t(rows)
+    return(apply(columns, 2, sum))
+}
 
 evaluate <- function(expr) eval(parse(text = expr))
 

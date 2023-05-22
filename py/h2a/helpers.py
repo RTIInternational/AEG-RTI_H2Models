@@ -12,6 +12,14 @@ def npv(r, cfList):
         sum_pv += pmt / ((1 + r) ** i)
     return sum_pv
 
+def round_num(num, ndigits):
+    if ndigits >= 0:
+        factor = 10 ** ndigits
+        return int(num * factor + 0.5) / factor
+    else:
+        factor = 10 ** abs(ndigits)
+        return int(num / factor + 0.5) * factor
+
 def get(obj, key):
     return obj[key]
 
@@ -32,6 +40,10 @@ def length(a):
 
 def sum_args(*args):
     return sum(args)
+
+def sum_columns(rows):
+    columns = zip(*rows)
+    return list(map(sum, columns))
 
 def seq_along(a):
     return range(len(a))

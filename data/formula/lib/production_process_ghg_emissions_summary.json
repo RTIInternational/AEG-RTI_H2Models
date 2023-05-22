@@ -1,0 +1,18 @@
+{
+  "functions": [
+    {
+      "name": "convert_to_metric_tons_per_year",
+      "description": "Converts a value in kg per kg H2 to metric tons per year",
+      "args": ["emission", "plant_output_kg_per_year"],
+      "body": "round_num(emission * plant_output_kg_per_year / 1000, -2)"
+    },
+    {
+      "name": "get_total_in_metric_tons_per_year",
+      "description": "Convert total emissions for each GHG to metric tons per year",
+      "args": ["total_process_pollutants_produced_kg_per_kg_h2", "plant_output_kg_per_year"],
+      "map_function": "convert_to_metric_tons_per_year",
+      "map_iterables": ["total_process_pollutants_produced_kg_per_kg_h2"],
+      "map_item_names": ["emission"]
+    }
+  ]
+}
