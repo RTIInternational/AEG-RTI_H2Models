@@ -40,6 +40,8 @@ def append(a, b):
     a.append(b)
     return a
 
+evaluate = eval
+
 def args_to_list(*args):
     return list(args)
 

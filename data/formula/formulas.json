@@ -4,13 +4,15 @@
       "name": "plant_output_kg_per_day",
       "label": "Plant Output (kg/day)",
       "expression": "plant_design_capacity * capacity_factor",
-      "orig_name": "output_kgpday"
+      "orig_name": "output_kgpday",
+      "excel_loc": "Input_Sheet_Template, C27"
     },
     {
       "name": "plant_output_kg_per_year",
       "label": "Plant Output (kg/year)",
       "expression": "plant_output_kg_per_day * 365",
-      "orig_name": "output_kgyear"
+      "orig_name": "output_kgyear",
+      "excel_loc": "Input_Sheet_Template, C28"
     },
     {
       "name": "full_analysis_period",
@@ -34,25 +36,29 @@
       "name": "",
       "label": "Chemical Engineering Plant Cost Index (CEPCI) Inflator",
       "expression": "get_plant_cost_index(CurrentYear) / get_plant_cost_index(BasisYear)",
-      "orig_name": "CEPCIinflator"
+      "orig_name": "CEPCIinflator",
+      "excel_loc": "Capital Costs, C11"
     },
     {
       "name": "",
       "label": "Consumer Price Inflator (CPI)",
       "expression": "get_cpi(ref_year) / get_cpi(CurrentYear)",
-      "orig_name": "CPIinflator"
+      "orig_name": "CPIinflator",
+      "excel_loc": "Capital Costs, C12"
     },
     {
       "name": "",
       "label": "INFLATION FACTOR",
       "expression": "(1 + inflation_rate) ** (startup_year - ref_year)",
-      "orig_name": "INFLATION_FACTOR"
+      "orig_name": "INFLATION_FACTOR",
+      "excel_loc": "Cash Flow Analysis, B128"
     },
     {
       "name": "",
       "label": "Hydrogen Gas Lower Heating Value (LHV) (MJ/kg)",
       "expression": "get_lhv(\"Hydrogen\")",
-      "orig_name": "H2_LHV_MJ_p_kg"
+      "orig_name": "H2_LHV_MJ_p_kg",
+      "excel_loc": "HyARC Physical Property Data, E7"
     },
     {
       "name": "output_energy_MMBtu_per_year",
@@ -77,13 +83,15 @@
       "name": "percentage_debt_financing",
       "label": "Debt Financing",
       "expression": "1 - percentage_equity_financing",
-      "orig_name": ""
+      "orig_name": "",
+      "excel_loc": "Cash Flow Analysis, B31"
     },
     {
       "name": "target_after_tax_nominal_irr",
       "label": "Target after-tax nominal IRR",
       "expression": "(1 + real_irr)*(1 + inflation_rate) - 1",
-      "orig_name": ""
+      "orig_name": "",
+      "excel_loc": "Cash Flow Analysis, X59"
     },
     {
       "name": "analysis_range",
@@ -107,63 +115,70 @@
     },
     {
       "name": "inflation_price_increase_factors",
-      "expression": "get_inflation_price_increase_factors(analysis_range, inflation_rate, startup_year)"
+      "expression": "get_inflation_price_increase_factors(analysis_range, inflation_rate, startup_year)",
+      "excel_loc": "Cash Flow Analysis, E65:E107"
     },
     {
       "name": "total_feedstock_cost_column",
       "label": "Feedstock Cost column",
       "expression": "get_total_feedstock_costs(operation_range, feedstock_price_df, inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)",
-      "excel_loc": "Cash Flow Analysis O64"
+      "excel_loc": "Cash Flow Analysis, O65:O107"
     },
     {
       "name": "discounted_value_feedstock_cost",
       "label": "Discounted Value of Feedstock Cost",
       "expression": "get(total_feedstock_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(total_feedstock_cost_column, 1))",
-      "excel_loc": "Cash Flow Analysis O116"
+      "excel_loc": "Cash Flow Analysis, O116"
     },
     {
       "orig_name": "direct_cap",
       "label": "H2A Total Direct Capital Cost",
-      "expression": "sum(capital_investment_costs(capital_investments, CEPCIinflator, CPIinflator))"
+      "expression": "sum(capital_investment_costs(capital_investments, CEPCIinflator, CPIinflator))",
+      "excel_loc": "Input_Sheet_Template, C88"
     },
     {
       "orig_name": "CO2_seq",
       "label": "H2A Carbon Sequestration Total Direct Capital Cost",
       "expression": "0",
-      "todo": "Update formula"
+      "excel_loc": "Input_Sheet_Template C89",
+      "translation_note": "Ironically, this value is only in no-cc model and ignored in the with-cc model"
     },
     {
       "name": "site_preparation_cost",
       "label": "Site Preparation ($)",
-      "expression": "(0.02 * CO2_seq / (CEPCIinflator * CPIinflator)) + (0.159872128446844 * direct_cap / (CEPCIinflator * CPIinflator))",
-      "excel_loc": "Input_Sheet_Template C92",
-      "translation_note": "The formula is 2 lines in the spreadsheet; the magic numbers are from it",
-      "todo": "These should be user inputs; they vary depending on the workbook default values"
+      "expression": "evaluate(site_preparation)",
+      "excel_loc": "Input_Sheet_Template, C92",
+      "translation_note": "The formula is 2 lines in the formula bar in Excel"
     },
     {
       "name": "engineering_and_design_cost",
       "label": "Engineering and Design ($)",
-      "expression": "(0.1 * CO2_seq / (CEPCIinflator * CPIinflator)) + (0.11599636520534 * direct_cap / (CEPCIinflator * CPIinflator))"
+      "expression": "evaluate(engineering_and_design)",
+      "excel_loc": "Input_Sheet_Template, C93"
     },
     {
       "name": "process_contingency_cost",
       "label": "Process Contingency ($)",
-      "expression": "0"
+      "expression": "evaluate(process_contingency)",
+      "excel_loc": "Input_Sheet_Template, C94"
     },
     {
       "name": "project_contingency_cost",
       "label": "Project Contingency ($)",
-      "expression": "0.247793627342024 * direct_cap / (CEPCIinflator * CPIinflator)"
+      "expression": "evaluate(project_contingency)",
+      "excel_loc": "Input_Sheet_Template, C95"
     },
     {
       "name": "upfront_permitting_costs",
       "label": "Upfront Permitting Costs ($)",
-      "expression": "(0.15 * CO2_seq / (CEPCIinflator * CPIinflator)) + (0.11599636520534 * direct_cap / (CEPCIinflator * CPIinflator))"
+      "expression": "evaluate(upfront_permitting)",
+      "excel_loc": "Input_Sheet_Template, C98"
     },
     {
       "orig_name": "depr_cap",
       "label": "Total Depreciable Capital Costs",
-      "expression": "direct_cap + CO2_seq + (CEPCIinflator * CPIinflator) * (site_preparation_cost + engineering_and_design_cost + process_contingency_cost + project_contingency_cost + other_depreciable_capital_cost + upfront_permitting_costs)"
+      "expression": "direct_cap + CO2_seq + (CEPCIinflator * CPIinflator) * (site_preparation_cost + engineering_and_design_cost + process_contingency_cost + project_contingency_cost + other_depreciable_capital_cost + upfront_permitting_costs)",
+      "excel_loc": "Input_Sheet_Template, E99"
     },
     {
       "name": "replacement_costs",
@@ -175,119 +190,121 @@
       "name": "discounted_value_replacement_costs",
       "label": "Discounted Value of Yearly Replacement Costs",
       "expression": "get(replacement_costs, YEAR_1) + npv(nominal_irr, skip(replacement_costs, 1))",
-      "excel_loc": "Cash Flow Analysis I116"
+      "excel_loc": "Cash Flow Analysis, I116"
     },
     {
       "name": "pv_of_cashflow_replacement_costs",
       "label": "PV of Cash Flow of Yearly Replacement Costs",
       "expression": "npv(nominal_irr, replacement_costs)",
-      "excel_loc": "Cash Flow Analysis I115"
+      "excel_loc": "Cash Flow Analysis, I115"
     },
     {
       "name": "land_cost",
       "label": "Land Cost ($)",
-      "expression": "acres_required * cost_per_acre * CPIinflator"
+      "expression": "acres_required * cost_per_acre * CPIinflator",
+      "excel_loc": "Input_Sheet_Template, E104"
     },
     {
       "name": "other_non_depreciable_capital_cost",
       "label": "Other Non-Depreciable Capital ($)",
-      "expression": "0"
+      "expression": "0",
+      "excel_loc": "Input_Sheet_Template, E105"
     },
     {
       "name": "non_dep_cap",
       "label": "Non-Depreciable Capital Costs",
       "expression": "land_cost + other_non_depreciable_capital_cost",
-      "excel_loc": "Input_Sheet_Template E106"
+      "excel_loc": "Input_Sheet_Template, E106"
     },
     {
       "name": "total_cap",
       "label": "Total Capital Costs",
       "expression": "depr_cap + non_dep_cap",
-      "excel_loc": "Input_Sheet_Template C108"
+      "excel_loc": "Input_Sheet_Template, C108"
     },
     {
       "orig_name": "depr_cap_infl",
       "label": "Total Depreciable Capital Costs",
       "expression": "(total_cap - non_dep_cap) * INFLATION_FACTOR",
-      "excel_loc": "Cash Flow Analysis B51"
+      "excel_loc": "Cash Flow Analysis, B51"
     },
     {
       "orig_name": "non_dep_infl",
       "label": "Non-Depreciable Capital Costs",
       "expression": "non_dep_cap * INFLATION_FACTOR",
-      "excel_loc": "Cash Flow Analysis B52"
+      "excel_loc": "Cash Flow Analysis, B52"
     },
     {
       "name": "total_capital_investment",
       "label": "Total Capital Investment",
       "expression": "depr_cap_infl + non_dep_infl",
-      "excel_loc": "Cash Flow Analysis B53"
+      "excel_loc": "Cash Flow Analysis, B53"
     },
     {
       "name": "initial_equity_depr_cap",
       "label": "Initial Equity Depreciable Capital Column",
       "expression": "get_initial_equity_depr_cap(analysis_index_range, inflation_price_increase_factors, depr_cap_infl, percentage_equity_financing, percent_cap1, percent_cap2, percent_cap3, percent_cap4)",
-      "excel_loc": "Cash Flow Analysis H64"
+      "excel_loc": "Cash Flow Analysis, H65:H107"
     },
     {
       "name": "discounted_value_initial_equity_depr_cap",
       "label": "Discounted Value of Initial Equity Depreciable Capital",
       "expression": "get(initial_equity_depr_cap, YEAR_1) + npv(nominal_irr, skip(initial_equity_depr_cap, 1))",
-      "excel_loc": "Cash Flow Analysis H116"
+      "excel_loc": "Cash Flow Analysis, H116"
     },
     {
       "name": "pv_of_cashflow_initial_equity_depr_cap",
       "label": "PV of Cash Flow of Initial Equity Depreciable Capital",
       "expression": "npv(nominal_irr, initial_equity_depr_cap)",
-      "excel_loc": "Cash Flow Analysis H115"
+      "excel_loc": "Cash Flow Analysis, H115"
     },
     {
       "name": "other_non_depreciable_capital_cost_column",
       "label": "Other Non-Depreciable Capital Costs Column",
       "expression": "get_other_non_depreciable_capital_cost_column(analysis_index_range, inflation_price_increase_factors, non_dep_infl)",
-      "excel_loc": "Cash Flow Analysis K64"
+      "excel_loc": "Cash Flow Analysis, K65:K107"
     },
     {
       "name": "discounted_value_other_non_depreciable_capital_cost",
       "label": "Discounted Value of Other Non-Depreciable Capital Costs",
       "expression": "get(other_non_depreciable_capital_cost_column, YEAR_1) + npv(nominal_irr, skip(other_non_depreciable_capital_cost_column, 1))",
-      "excel_loc": "Cash Flow Analysis K116"
+      "excel_loc": "Cash Flow Analysis, K116"
     },
     {
       "name": "pv_of_cashflow_other_non_depreciable_capital_cost",
       "label": "PV of Cash Flow of Other Non-Depreciable Capital Costs",
       "expression": "npv(nominal_irr, other_non_depreciable_capital_cost_column)",
-      "excel_loc": "Cash Flow Analysis K115"
+      "excel_loc": "Cash Flow Analysis, K115"
     },
     {
       "orig_name": "decom",
       "label": "Decommissioning",
       "expression": "decom_percent * depr_cap_infl",
-      "excel_loc": "Cash Flow Analysis B54"
+      "excel_loc": "Cash Flow Analysis, B54"
     },
     {
       "name": "decom_costs_column",
       "label": "Decommissioning Costs Column",
       "expression": "get_decom_costs_column(operation_range, inflation_price_increase_factors, decom, plant_life)",
-      "excel_loc": "Cash Flow Analysis M64"
+      "excel_loc": "Cash Flow Analysis, M65:M107"
     },
     {
       "name": "discounted_value_decom_costs",
       "label": "Discounted Value of Decommissioning Costs",
       "expression": "get(decom_costs_column, YEAR_1) + npv(nominal_irr, skip(decom_costs_column, 1))",
-      "excel_loc": "Cash Flow Analysis M116"
+      "excel_loc": "Cash Flow Analysis, M116"
     },
     {
       "orig_name": "salvage",
       "label": "Salvage Value",
       "expression": "salvage_perct * total_capital_investment",
-      "excel_loc": "Cash Flow Analysis B55"
+      "excel_loc": "Cash Flow Analysis, B55"
     },
     {
       "name": "salvage_column",
       "label": "Salvage Value Column",
       "expression": "get_salvage_column(operation_range, inflation_price_increase_factors, salvage, plant_life)",
-      "excel_loc": "Cash Flow Analysis L64"
+      "excel_loc": "Cash Flow Analysis, L65:L107"
     },
     {
       "name": "FTE_HOURS_PER_YEAR",
@@ -301,61 +318,62 @@
       "orig_name": "labor_cost",
       "label": "Labor Cost ($/year)",
       "expression": "total_plant_staff * (labor_cost_per_hour * labor_cost_inflator) * FTE_HOURS_PER_YEAR",
-      "excel_loc": "Input_Sheet_Template E113"
+      "excel_loc": "Input_Sheet_Template, E113"
     },
     {
       "orig_name": "overhead_GA",
       "label": "G&A ($/year)",
       "expression": "labor_cost * overhead_rate",
-      "excel_loc": "Input_Sheet_Template E115"
+      "excel_loc": "Input_Sheet_Template, E115"
     },
     {
       "orig_name": "tax_insurance",
       "label": "Property taxes and insurance ($/year)",
       "expression": "tax_ins_rate * total_cap",
-      "excel_loc": "Input_Sheet_Template E118"
+      "excel_loc": "Input_Sheet_Template, E118"
     },
     {
       "name": "total_fixed_cost",
       "label": "Total Fixed Operating Costs ($/year)",
       "expression": "labor_cost + overhead_GA + tax_insurance + (CEPCIinflator*CPIinflator) * (licensing + rent + material_cost_maintenance_and_repairs + production_cost_maintenance_and_repairs + other_fees + other_fixed)",
-      "excel_loc": "Input_Sheet_Template E124"
+      "excel_loc": "Input_Sheet_Template, E124"
     },
     {
       "orig_name": "inflated_fixed",
       "label": "Fixed Operating Costs ($/year)",
       "expression": "total_fixed_cost * INFLATION_FACTOR",
-      "excel_loc": "Cash Flow Analysis B56"
+      "excel_loc": "Cash Flow Analysis, B56"
     },
     {
       "name": "fixed_cost_column",
       "label": "Fixed Operating Cost",
       "expression": "get_fixed_cost_column(operation_range, inflation_price_increase_factors, inflated_fixed, percnt_fixed, start_time)",
-      "excel_loc": "Cash Flow Analysis N64"
+      "excel_loc": "Cash Flow Analysis, N65:N107"
     },
     {
       "name": "discounted_value_fixed_cost",
       "label": "Discounted Value of Fixed Operating Cost",
       "expression": "get(fixed_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(fixed_cost_column, 1))",
-      "excel_loc": "Cash Flow Analysis N116"
+      "excel_loc": "Cash Flow Analysis, N116"
     },
     {
       "orig_name": "total_tax_rate",
       "label": "Total Tax Rate (%)",
       "expression": "fed_tax_rate + state_tax_rate * (1 - fed_tax_rate)",
-      "excel_loc": "Input_Sheet_Template C55 and Cash Flow Analysis B33"
+      "excel_loc": "Input_Sheet_Template, C55",
+      "translation_note": "Also at Cash Flow Analysis B33"
     },
     {
       "name": "percentage_debt_financing",
       "label": "Debt Financing (%)",
       "expression": "1 - percentage_equity_financing",
-      "excel_loc": "Cash Flow Analysis B31"
+      "excel_loc": "Cash Flow Analysis, B31"
     },
     {
       "name": "initial_capital_financed",
       "label": "Portion of Initial Depreciable Capital Investment Financed with Debt",
       "expression": "-depr_cap_infl * percentage_debt_financing * get(inflation_price_increase_factors, YEAR_1)",
-      "excel_loc": "Cash Flow Analysis G65"
+      "excel_loc": "Cash Flow Analysis, G65"
     },
     {
       "name": "LAST_ANALYSIS_YEAR",
@@ -365,55 +383,57 @@
       "name": "principal_payments_column",
       "label": "Principal Payments Column",
       "expression": "determine_principal_payment(debt_period, analysis_index_range, LAST_ANALYSIS_YEAR, initial_capital_financed)",
-      "excel_loc": "Cash Flow Analysis Z64 and Debt Financing Calculations F13"
+      "excel_loc": "Cash Flow Analysis, Z65:Z107",
+      "translation_note": "Also at Debt Financing Calculations F13"
     },
     {
       "name": "interest_payments_column",
       "label": "Debt Interest / Interest Payments Column",
       "expression": "determine_interest_payment(debt_period, analysis_index_range, initial_capital_financed, debt_interest)",
-      "excel_loc": "Cash Flow Analysis S64 and Debt Financing Calculations E13"
+      "excel_loc": "Cash Flow Analysis, S65:S107",
+      "translation_note": "Also at Debt Financing Calculations E13"
     },
     {
       "name": "discounted_value_interest_payments",
       "label": "Discounted Value of Debt Interest",
       "expression": "get(interest_payments_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(interest_payments_column, 1))",
-      "excel_loc": "Cash Flow Analysis S116"
+      "excel_loc": "Cash Flow Analysis, S116"
     },
     {
       "name": "pv_of_cashflow_interest_payments",
       "label": "PV of Cash Flow of Debt Interest",
       "expression": "npv(nominal_irr, interest_payments_column)",
-      "excel_loc": "Cash Flow Analysis S115"
+      "excel_loc": "Cash Flow Analysis, S115"
     },
     {
       "name": "h2_sales_kg_per_year",
       "label": "Hydrogen Sales (kg/year)",
       "expression": "get_h2_sales_kg_per_year(operation_range, plant_output_kg_per_year, percnt_revs, start_time)",
-      "excel_loc": "Cash Flow Analysis AE64"
+      "excel_loc": "Cash Flow Analysis, AE65:AE107"
     },
     {
       "name": "discounted_value_total_h2_sales_kg",
       "label": "Discounted Value of Total Hydrogen Sales (kg)",
       "expression": "get(h2_sales_kg_per_year, YEAR_1) + npv(real_irr, skip(h2_sales_kg_per_year, 1))",
-      "excel_loc": "Cash Flow Analysis AE116"
+      "excel_loc": "Cash Flow Analysis, AE116"
     },
     {
       "name": "LCOE_contribution_h2_sales_kg",
       "label": "LCOE Contribution from Hydrogen Sales (kg)",
       "expression": "discounted_value_total_h2_sales_kg * (1 - total_tax_rate)",
-      "excel_loc": "Cash Flow Analysis AC57"
+      "excel_loc": "Cash Flow Analysis, AC57"
     },
     {
       "name": "discounted_value_total_salvage_value",
       "label": "Discounted Value of Total Salvage Value",
       "expression": "get(salvage_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(salvage_column, 1))",
-      "excel_loc": "Cash Flow Analysis L116"
+      "excel_loc": "Cash Flow Analysis, L116"
     },
     {
       "name": "pv_of_cashflow_total_salvage_value",
       "label": "PV of Cash Flow of Salvage Value",
       "expression": "npv(nominal_irr, salvage_column)",
-      "excel_loc": "Cash Flow Analysis L115"
+      "excel_loc": "Cash Flow Analysis, L115"
     },
     {
       "name": "nonenergy_material_price_df",
@@ -423,25 +443,25 @@
       "orig_name": "var_misc",
       "label": "Variable O&M Costs ($/year)",
       "expression": "other_variable_operating_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)",
-      "excel_loc": "Input_Sheet_Template E148"
+      "excel_loc": "Input_Sheet_Template, E148"
     },
     {
       "orig_name": "waste_treat",
       "label": "Waste treatment costs ($/year)",
       "expression": "waste_treatment_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)",
-      "excel_loc": "Input_Sheet_Template E150"
+      "excel_loc": "Input_Sheet_Template, E150"
     },
     {
       "orig_name": "solidwaste_treat",
       "label": "Solid waste disposal costs ($/year)",
       "expression": "solid_waste_disposal_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)",
-      "excel_loc": "Input_Sheet_Template E151"
+      "excel_loc": "Input_Sheet_Template, E151"
     },
     {
       "orig_name": "CO2_OandMcost",
       "label": "CO2 sequestration O&M costs and credits ($/year)",
       "expression": "0",
-      "excel_loc": "Input_Sheet_Template E156"
+      "excel_loc": "Input_Sheet_Template, E156"
     },
     {
       "orig_name": "inflated_othervar",

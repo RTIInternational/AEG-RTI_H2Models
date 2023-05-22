@@ -1,6 +1,6 @@
 fuel_type,fuel,lhv_mj_per_kg,hhv_mj_per_kg
 gas,Natural gas,47.141,52.225
-gas,Hydrogen,120.21,142.18
+gas,Hydrogen,120.2116,142.18
 gas,Still gas (in refineries),46.898,50.951
 liquid,Crude oil,42.686,45.543
 liquid,Conventional gasoline,43.448,46.536

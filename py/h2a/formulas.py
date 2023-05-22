@@ -15,7 +15,7 @@ from h2a.lib.feedstock_costs import get_total_feedstock_costs
 from h2a.lib.feedstock_prices import get_feedstock_price_df
 from h2a.lib.fixed_costs import get_fixed_cost_column
 from h2a.lib.h2_sales import get_h2_sales_kg_per_year
-from h2a.helpers import YEAR_1, args_to_list, get, irr, length, npv, seq_along, skip, slice, sum_args
+from h2a.helpers import YEAR_1, args_to_list, evaluate, get, irr, length, npv, seq_along, skip, slice, sum_args
 from h2a.lib.initial_equity import get_initial_equity_depr_cap
 from h2a.lib.nonenergy_materials import get_nonenergy_material_price_df
 from h2a.lib.other_non_depreciable_capital_cost import get_other_non_depreciable_capital_cost_column
@@ -62,7 +62,12 @@ def calculate(user_input):
   state_tax_rate = user_input['state_tax_rate']
   fed_tax_rate = user_input['fed_tax_rate']
   WorkingCap = user_input['WorkingCap']
+  site_preparation = user_input['site_preparation']
+  engineering_and_design = user_input['engineering_and_design']
+  process_contingency = user_input['process_contingency']
+  project_contingency = user_input['project_contingency']
   other_depreciable_capital_cost = user_input['other_depreciable_capital_cost']
+  upfront_permitting = user_input['upfront_permitting']
   cost_per_acre = user_input['cost_per_acre']
   acres_required = user_input['acres_required']
   total_plant_staff = user_input['total_plant_staff']
@@ -111,11 +116,11 @@ def calculate(user_input):
   discounted_value_feedstock_cost = get(total_feedstock_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(total_feedstock_cost_column, 1))
   direct_cap = sum(capital_investment_costs(capital_investments, CEPCIinflator, CPIinflator))
   CO2_seq = 0
-  site_preparation_cost = (0.02 * CO2_seq / (CEPCIinflator * CPIinflator)) + (0.159872128446844 * direct_cap / (CEPCIinflator * CPIinflator))
-  engineering_and_design_cost = (0.1 * CO2_seq / (CEPCIinflator * CPIinflator)) + (0.11599636520534 * direct_cap / (CEPCIinflator * CPIinflator))
-  process_contingency_cost = 0
-  project_contingency_cost = 0.247793627342024 * direct_cap / (CEPCIinflator * CPIinflator)
-  upfront_permitting_costs = (0.15 * CO2_seq / (CEPCIinflator * CPIinflator)) + (0.11599636520534 * direct_cap / (CEPCIinflator * CPIinflator))
+  site_preparation_cost = evaluate(site_preparation)
+  engineering_and_design_cost = evaluate(engineering_and_design)
+  process_contingency_cost = evaluate(process_contingency)
+  project_contingency_cost = evaluate(project_contingency)
+  upfront_permitting_costs = evaluate(upfront_permitting)
   depr_cap = direct_cap + CO2_seq + (CEPCIinflator * CPIinflator) * (site_preparation_cost + engineering_and_design_cost + process_contingency_cost + project_contingency_cost + other_depreciable_capital_cost + upfront_permitting_costs)
   replacement_costs = get_replacement_costs(operation_range, inflation_price_increase_factors, replace_factor, depr_cap, ref_year, startup_year, inflation_rate)
   discounted_value_replacement_costs = get(replacement_costs, YEAR_1) + npv(nominal_irr, skip(replacement_costs, 1))

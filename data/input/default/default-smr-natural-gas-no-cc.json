@@ -30,8 +30,13 @@
    "fed_tax_rate": 0.21,
    "WorkingCap": 0.15,
 
+   "site_preparation": "(0.02 * CO2_seq / (CEPCIinflator * CPIinflator)) + (0.159872128446844 * direct_cap / (CEPCIinflator * CPIinflator))",
+   "engineering_and_design": "(0.1 * CO2_seq / (CEPCIinflator * CPIinflator)) + (0.11599636520534 * direct_cap / (CEPCIinflator * CPIinflator))",
+   "process_contingency": "0",
+   "project_contingency": "0.247793627342024 * direct_cap / (CEPCIinflator * CPIinflator)",
    "other_depreciable_capital_cost": 40137000,
-   
+   "upfront_permitting": "(0.15 * CO2_seq / (CEPCIinflator * CPIinflator)) + (0.11599636520534 * direct_cap / (CEPCIinflator * CPIinflator))",
+
    "cost_per_acre": 50000,
    "acres_required": 100,
 

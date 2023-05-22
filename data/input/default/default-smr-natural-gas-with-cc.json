@@ -30,7 +30,12 @@
    "fed_tax_rate": 0.21,
    "WorkingCap": 0.15,
 
+   "site_preparation": "0.0643491944473551 * direct_cap / (CEPCIinflator * CPIinflator)",
+   "engineering_and_design": "0.137394766021756 * direct_cap / (CEPCIinflator * CPIinflator)",
+   "process_contingency": "0.11079055690422 * direct_cap / (CEPCIinflator * CPIinflator)",
+   "project_contingency": "0.404009659162592 * direct_cap / (CEPCIinflator * CPIinflator)",
    "other_depreciable_capital_cost": 100993000,
+   "upfront_permitting": "0.137394766021756 * direct_cap / (CEPCIinflator * CPIinflator)",
 
    "cost_per_acre": 50000,
    "acres_required": 100,
@@ -65,7 +70,7 @@
       },
       {
          "name": "Industrial Natural Gas",
-         "usage": 0.167779663,
+         "usage": 0.167779663352653,
          "units": "mmBtu/kg H2",
          "price_table": "AEO_2017_Reference_Case",
          "lookup_prices": true

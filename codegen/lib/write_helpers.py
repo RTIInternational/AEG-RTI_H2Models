@@ -44,6 +44,10 @@ helper_code = {
         "py": "def append(a, b):\n    a.append(b)\n    return a\n\n",
         "R": "",
     },
+    "evaluate": {
+        "py": "evaluate = eval\n\n",
+        "R": "evaluate <- function(expr) eval(parse(text = expr))\n\n",
+    },
     "args_to_list": {
         "py": "def args_to_list(*args):\n    return list(args)\n\n",
         "R": "args_to_list <- function(...) c(...)\n\n",
@@ -103,6 +107,9 @@ def helpers_to_lang(lang):
 
     # append() is a helper function to append a value to a list
     file_str += code["append"][lang]
+
+    # eval() is a helper function to evaluate a string as code
+    file_str += code["evaluate"][lang]
 
     # args_to_list() is a helper function to convert a list of arguments to a list
     file_str += code["args_to_list"][lang]

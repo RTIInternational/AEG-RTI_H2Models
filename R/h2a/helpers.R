@@ -27,6 +27,8 @@ slice <- function(a, start=0, end=NULL) a[(start + 1):end]
 
 sum_args <- function(...) sum(...)
 
+evaluate <- function(expr) eval(parse(text = expr))
+
 args_to_list <- function(...) c(...)
 
 YEAR_1 <- 1
