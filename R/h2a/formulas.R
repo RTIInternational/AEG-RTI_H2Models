@@ -22,14 +22,14 @@ import::from("other_non_depreciable_capital_cost.R", get_other_non_depreciable_c
 import::from("other_raw_material_costs.R", get_other_raw_material_cost_column, .directory = here(h2a,lib))
 import::from("predepreciation_income.R", get_predepreciation_income_column, .directory = here(h2a,lib))
 import::from("production_process_ghg_emissions.R", get_production_process_ghg_emissions_for_feedstocks, get_production_process_total_ghg_emissions_for_feedstocks, .directory = here(h2a,lib))
-import::from("production_process_ghg_emissions_summary.R", get_total_in_metric_tons_per_year, .directory = here(h2a,lib))
+import::from("production_process_ghg_emissions_summary.R", get_co2_captured_kg_per_kg_h2, get_co2_captured_metric_tons_per_year, get_total_in_metric_tons_per_year, get_total_process_emissions_kg_per_kg_h2, get_total_process_emissions_metric_tons_per_year, get_total_well_to_pump_emissions_kg_per_kg_h2, .directory = here(h2a,lib))
 import::from("ref_tables.R", chemical_price_index, conversion_factor, conversion_factors, get_cpi, get_lhv, get_plant_cost_index, labor_index, macrs_depreciation_table, .directory = here(h2a))
 import::from("replacement_costs.R", get_replacement_costs, .directory = here(h2a,lib))
 import::from("revenue_h2_sales.R", get_revenue_h2_sales_column, .directory = here(h2a,lib))
 import::from("salvage.R", get_salvage_column, .directory = here(h2a,lib))
 import::from("taxable_income.R", get_taxable_income_column, .directory = here(h2a,lib))
 import::from("total_taxes.R", get_total_taxes_column, .directory = here(h2a,lib))
-import::from("upstream_ghg_emissions.R", get_upstream_ghg_emissions_for_feedstocks, get_upstream_total_ghg_emissions_for_feedstocks, .directory = here(h2a,lib))
+import::from("upstream_ghg_emissions.R", calculate_total_ghg_emission, get_total_ghg_emissions, get_upstream_ghg_emissions_for_feedstocks, .directory = here(h2a,lib))
 import::from("variable_costs.R", get_variable_cost_column, .directory = here(h2a,lib))
 import::from("working_capital_reserve.R", get_working_cap_reserve_column, get_working_cap_reserve_rows, .directory = here(h2a,lib))
 
@@ -89,6 +89,9 @@ calculate <- function(user_input) {
   royalties <- user_input[["royalties"]]
   operator_profit <- user_input[["operator_profit"]]
   tax_credit_per_year <- user_input[["tax_credit_per_year"]]
+  CO2_Capture_Efficiency <- user_input[["CO2_Capture_Efficiency"]]
+  pipeline_length_km <- user_input[["pipeline_length_km"]]
+  CO2_credit <- user_input[["CO2_credit"]]
   feedstocks <- user_input[["feedstocks"]]
   nonenergy_materials <- user_input[["nonenergy_materials"]]
   capital_investments <- user_input[["capital_investments"]]
@@ -246,12 +249,25 @@ calculate <- function(user_input) {
   upstream_energy_usage_GJ_per_kg_h2 <- get_upstream_energy_usage_for_feedstocks(feedstocks, energy_input_GJ_per_kg_h2, upstream_energy_usage_column_names)
   greenhouse_gas_column_names <- args_to_list('CO2', 'CH4', 'N2O')
   upstream_ghg_emissions_kg_per_kg_h2 <- get_upstream_ghg_emissions_for_feedstocks(feedstocks, energy_input_GJ_per_kg_h2, greenhouse_gas_column_names)
-  upstream_ghg_emissions_kg_per_kg_h2_total <- get_upstream_total_ghg_emissions_for_feedstocks(upstream_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
+  upstream_ghg_emissions_kg_per_kg_h2_total <- get_total_ghg_emissions(upstream_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
   production_process_ghg_emissions_kg_per_kg_h2 <- get_production_process_ghg_emissions_for_feedstocks(feedstocks, greenhouse_gas_column_names)
   production_process_ghg_emissions_kg_per_kg_h2_total <- get_production_process_total_ghg_emissions_for_feedstocks(production_process_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
   total_process_pollutants_produced_kg_per_kg_h2 <- sum_columns(production_process_ghg_emissions_kg_per_kg_h2)
   total_process_pollutants_produced_all_ghg_kg_per_kg_h2 <- sum(production_process_ghg_emissions_kg_per_kg_h2_total)
   total_process_pollutants_produced_metric_tons_per_year <- get_total_in_metric_tons_per_year(total_process_pollutants_produced_kg_per_kg_h2, plant_output_kg_per_year)
   total_process_pollutants_produced_all_ghg_metric_tons_per_year <- round_num(total_process_pollutants_produced_all_ghg_kg_per_kg_h2 * plant_output_kg_per_year / 1000, -2)
+  total_feedstock_pollutants_produced_kg_per_kg_h2 <- sum_columns(production_process_ghg_emissions_kg_per_kg_h2)
+  total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2 <- sum(production_process_ghg_emissions_kg_per_kg_h2_total)
+  total_feedstock_pollutants_produced_metric_tons_per_year <- get_total_in_metric_tons_per_year(total_feedstock_pollutants_produced_kg_per_kg_h2, plant_output_kg_per_year)
+  total_feedstock_pollutants_produced_all_ghg_metric_tons_per_year <- round_num(total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2 * plant_output_kg_per_year / 1000, -2)
+  co2_captured_kg_per_kg_h2 <- get_co2_captured_kg_per_kg_h2(total_feedstock_pollutants_produced_kg_per_kg_h2, CO2_Capture_Efficiency)
+  co2_captured_metric_tons_per_year <- get_co2_captured_metric_tons_per_year(co2_captured_kg_per_kg_h2, plant_output_kg_per_year)
+  total_process_emissions_kg_per_kg_h2 <- get_total_process_emissions_kg_per_kg_h2(total_process_pollutants_produced_kg_per_kg_h2, co2_captured_kg_per_kg_h2)
+  total_process_emissions_all_ghg_kg_per_kg_h2 <- calculate_total_ghg_emission(total_process_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
+  total_process_emissions_metric_tons_per_year <- get_total_process_emissions_metric_tons_per_year(total_process_emissions_kg_per_kg_h2, plant_output_kg_per_year)
+  total_upstream_emissions_kg_per_kg_h2 <- sum_columns(upstream_ghg_emissions_kg_per_kg_h2)
+  total_upstream_emissions_all_ghg_kg_per_kg_h2 <- sum(upstream_ghg_emissions_kg_per_kg_h2_total)
+  total_well_to_pump_emissions_kg_per_kg_h2 <- get_total_well_to_pump_emissions_kg_per_kg_h2(total_upstream_emissions_kg_per_kg_h2, total_process_emissions_kg_per_kg_h2)
+  total_well_to_pump_emissions_all_ghg_kg_per_kg_h2 <- total_upstream_emissions_all_ghg_kg_per_kg_h2 + total_process_emissions_all_ghg_kg_per_kg_h2
   return(setNames(mget(ls()), ls()))
 }

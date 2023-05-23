@@ -15,11 +15,11 @@ get_upstream_ghg_emissions_for_feedstocks <- function(feedstocks, energy_input_G
     #'Get upstream GHG emissions for feedstocks
     return(lapply(feedstocks, energy_input_GJ_per_kg_h2, function(feedstock, energy_input) iterate_over_ghg_columns_for_feedstock(feedstock, energy_input, greenhouse_gas_column_names)))
 }
-calculate_total_ghg_emission_for_feedstock <- function(emission, GHG_CO2_factor, GHG_CH4_factor, GHG_N2O_factor) {
-    #'Get the ghg emission for a feedstock
+calculate_total_ghg_emission <- function(emission, GHG_CO2_factor, GHG_CH4_factor, GHG_N2O_factor) {
+    #'Get the total ghg emission
     return(get(emission, FIRST) * GHG_CO2_factor + get(emission, SECOND) * GHG_CH4_factor + get(emission, THIRD) * GHG_N2O_factor)
 }
-get_upstream_total_ghg_emissions_for_feedstocks <- function(upstream_ghg_emissions_kg_per_kg_h2, GHG_CO2_factor, GHG_CH4_factor, GHG_N2O_factor) {
-    #'Get upstream total GHG emissions for feedstocks
-    return(lapply(upstream_ghg_emissions_kg_per_kg_h2, function(emission) calculate_total_ghg_emission_for_feedstock(emission, GHG_CO2_factor, GHG_CH4_factor, GHG_N2O_factor)))
+get_total_ghg_emissions <- function(ghg_emissions_kg_per_kg_h2, GHG_CO2_factor, GHG_CH4_factor, GHG_N2O_factor) {
+    #'Get upstream total GHG emissions
+    return(lapply(ghg_emissions_kg_per_kg_h2, function(emission) calculate_total_ghg_emission(emission, GHG_CO2_factor, GHG_CH4_factor, GHG_N2O_factor)))
 }

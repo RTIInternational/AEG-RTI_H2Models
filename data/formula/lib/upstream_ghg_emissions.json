@@ -23,17 +23,17 @@
       "map_item_names": ["feedstock", "energy_input"]
     },
     {
-      "name": "calculate_total_ghg_emission_for_feedstock",
-      "description": "Get the ghg emission for a feedstock",
+      "name": "calculate_total_ghg_emission",
+      "description": "Get the total ghg emission",
       "args": ["emission", "GHG_CO2_factor", "GHG_CH4_factor", "GHG_N2O_factor"],
       "body": "get(emission, FIRST) * GHG_CO2_factor + get(emission, SECOND) * GHG_CH4_factor + get(emission, THIRD) * GHG_N2O_factor"
     },
     {
-      "name": "get_upstream_total_ghg_emissions_for_feedstocks",
-      "description": "Get upstream total GHG emissions for feedstocks",
-      "args": ["upstream_ghg_emissions_kg_per_kg_h2", "GHG_CO2_factor", "GHG_CH4_factor", "GHG_N2O_factor"],
-      "map_function": "calculate_total_ghg_emission_for_feedstock",
-      "map_iterables": ["upstream_ghg_emissions_kg_per_kg_h2"],
+      "name": "get_total_ghg_emissions",
+      "description": "Get upstream total GHG emissions",
+      "args": ["ghg_emissions_kg_per_kg_h2", "GHG_CO2_factor", "GHG_CH4_factor", "GHG_N2O_factor"],
+      "map_function": "calculate_total_ghg_emission",
+      "map_iterables": ["ghg_emissions_kg_per_kg_h2"],
       "map_item_names": ["emission"]
     }
   ]

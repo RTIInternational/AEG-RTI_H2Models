@@ -13,6 +13,70 @@
       "map_function": "convert_to_metric_tons_per_year",
       "map_iterables": ["total_process_pollutants_produced_kg_per_kg_h2"],
       "map_item_names": ["emission"]
+    },
+    {
+      "name": "calculate_co2_captured_kg_per_kg_h2",
+      "description": "Calculates the amount of CO2 captured per kg of H2 produced",
+      "args": ["i", "total_feedstock_pollutants_produced_kg_per_kg_h2", "CO2_Capture_Efficiency"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "i == FIRST",
+          "body": "get(total_feedstock_pollutants_produced_kg_per_kg_h2, i) * CO2_Capture_Efficiency"
+        },
+        {
+          "condition": "TRUE",
+          "body": "0"
+        }
+      ]
+    },
+    {
+      "name": "get_co2_captured_kg_per_kg_h2",
+      "description": "Gets the amount of CO2 captured per kg of H2 produced for CO2, returns 0 other GHGs",
+      "args": ["total_feedstock_pollutants_produced_kg_per_kg_h2", "CO2_Capture_Efficiency"],
+      "map_function": "calculate_co2_captured_kg_per_kg_h2",
+      "map_iterables": ["total_feedstock_pollutants_produced_kg_per_kg_h2"],
+      "map_item_names": ["i"],
+      "map_args_str": "range(length(total_feedstock_pollutants_produced_kg_per_kg_h2))",
+      "lambda_map_arg_str": "i, total_feedstock_pollutants_produced_kg_per_kg_h2, CO2_Capture_Efficiency"
+    },
+    {
+      "name": "get_co2_captured_metric_tons_per_year",
+      "description": "Gets the amount of CO2 captured in metric tons per year",
+      "args": ["co2_captured_kg_per_kg_h2", "plant_output_kg_per_year"],
+      "map_function": "convert_to_metric_tons_per_year",
+      "map_iterables": ["co2_captured_kg_per_kg_h2"],
+      "map_item_names": ["captured"]
+    },
+    {
+      "name": "subtract",
+      "description": "Subtracts two values",
+      "args": ["amount_produced", "amount_captured"],
+      "body": "amount_produced - amount_captured"
+    },
+    {
+      "name": "get_total_process_emissions_kg_per_kg_h2",
+      "description": "Gets the total process emissions in kg per kg H2",
+      "args": ["total_process_pollutants_produced_kg_per_kg_h2", "co2_captured_kg_per_kg_h2"],
+      "map_function": "subtract",
+      "map_iterables": ["total_process_pollutants_produced_kg_per_kg_h2", "co2_captured_kg_per_kg_h2"],
+      "map_item_names": ["amount_produced", "amount_captured"]
+    },
+    {
+      "name": "get_total_process_emissions_metric_tons_per_year",
+      "description": "Gets the total process emissions in metric tons per year",
+      "args": ["total_process_emissions_kg_per_kg_h2", "plant_output_kg_per_year"],
+      "map_function": "convert_to_metric_tons_per_year",
+      "map_iterables": ["total_process_emissions_kg_per_kg_h2"],
+      "map_item_names": ["emission"]
+    },
+    {
+      "name": "get_total_well_to_pump_emissions_kg_per_kg_h2",
+      "description": "Gets the total well to pump emissions in kg per kg H2",
+      "args": ["total_upstream_emissions_kg_per_kg_h2", "total_process_emissions_kg_per_kg_h2"],
+      "map_function": "sum_args",
+      "map_iterables": ["total_upstream_emissions_kg_per_kg_h2", "total_process_emissions_kg_per_kg_h2"],
+      "map_item_names": ["upstream", "process"]
     }
   ]
 }

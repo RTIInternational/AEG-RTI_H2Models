@@ -60,6 +60,10 @@
    "operator_profit": 0,
    "tax_credit_per_year": 0,
 
+   "CO2_Capture_Efficiency": 0,
+   "pipeline_length_km": 0,
+   "CO2_credit": 0,
+
    "feedstocks": [
       {
          "name": "Industrial Electricity",

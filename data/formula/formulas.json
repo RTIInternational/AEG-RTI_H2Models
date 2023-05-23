@@ -903,7 +903,7 @@
     {
       "name": "upstream_ghg_emissions_kg_per_kg_h2_total",
       "label": "Upstream GHG Emissions (kg/kg H2) based on GREET.NET 2017 Total Column",
-      "expression": "get_upstream_total_ghg_emissions_for_feedstocks(upstream_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))",
+      "expression": "get_total_ghg_emissions(upstream_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))",
       "excel_loc": "Results, F110:F111"
     },
     {
@@ -941,6 +941,84 @@
       "label": "Total Process Pollutants Produced for all GHG (metric tons/year)",
       "expression": "round_num(total_process_pollutants_produced_all_ghg_kg_per_kg_h2 * plant_output_kg_per_year / 1000, -2)",
       "excel_loc": "Results, G84"
+    },
+    {
+      "name": "total_feedstock_pollutants_produced_kg_per_kg_h2",
+      "label": "Total Process Pollutants Produced (kg /kg H2)",
+      "expression": "sum_columns(production_process_ghg_emissions_kg_per_kg_h2)",
+      "excel_loc": "Results, D85:F85"
+    },
+    {
+      "name": "total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2",
+      "label": "Total Process Pollutants Produced for all GHG (kg /kg H2)",
+      "expression": "sum(production_process_ghg_emissions_kg_per_kg_h2_total)",
+      "excel_loc": "Results, G85"
+    },
+    {
+      "name": "total_feedstock_pollutants_produced_metric_tons_per_year",
+      "label": "Total Process Pollutants Produced (metric tons/year)",
+      "expression": "get_total_in_metric_tons_per_year(total_feedstock_pollutants_produced_kg_per_kg_h2, plant_output_kg_per_year)",
+      "excel_loc": "Results, D86:F86"
+    },
+    {
+      "name": "total_feedstock_pollutants_produced_all_ghg_metric_tons_per_year",
+      "label": "Total Process Pollutants Produced for all GHG (metric tons/year)",
+      "expression": "round_num(total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2 * plant_output_kg_per_year / 1000, -2)",
+      "excel_loc": "Results, G86"
+    },
+    {
+      "name": "co2_captured_kg_per_kg_h2",
+      "label": "CO2 Captured (kg/kg H2)",
+      "expression": "get_co2_captured_kg_per_kg_h2(total_feedstock_pollutants_produced_kg_per_kg_h2, CO2_Capture_Efficiency)",
+      "excel_loc": "Results, D87:F87"
+    },
+    {
+      "name": "co2_captured_metric_tons_per_year",
+      "label": "CO2 Captured (metric tons/year)",
+      "expression": "get_co2_captured_metric_tons_per_year(co2_captured_kg_per_kg_h2, plant_output_kg_per_year)",
+      "excel_loc": "Results, D88:F88"
+    },
+    {
+      "name": "total_process_emissions_kg_per_kg_h2",
+      "label": "Total Process Emissions (kg/kg H2)",
+      "expression": "get_total_process_emissions_kg_per_kg_h2(total_process_pollutants_produced_kg_per_kg_h2, co2_captured_kg_per_kg_h2)",
+      "excel_loc": "Results, D89:F89"
+    },
+    {
+      "name": "total_process_emissions_all_ghg_kg_per_kg_h2",
+      "label": "Total Process Emissions for all GHG (kg/kg H2)",
+      "expression": "calculate_total_ghg_emission(total_process_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))",
+      "excel_loc": "Results, G89"
+    },
+    {
+      "name": "total_process_emissions_metric_tons_per_year",
+      "label": "Total Process Emissions (metric tons/year)",
+      "expression": "get_total_process_emissions_metric_tons_per_year(total_process_emissions_kg_per_kg_h2, plant_output_kg_per_year)",
+      "excel_loc": "Results, D90:F90"
+    },
+    {
+      "label": "Total upstream emissions (kg/kg H2)",
+      "name": "total_upstream_emissions_kg_per_kg_h2",
+      "expression": "sum_columns(upstream_ghg_emissions_kg_per_kg_h2)",
+      "excel_loc": "Results, D77:F77"
+    },
+    {
+      "label": "Total upstream emissions for all GHGs (kg/kg H2)",
+      "name": "total_upstream_emissions_all_ghg_kg_per_kg_h2",
+      "expression": "sum(upstream_ghg_emissions_kg_per_kg_h2_total)",
+      "excel_loc": "Results, G77"
+    },
+    {
+      "label": "Total well to pump emissions (kg/kg H2)",
+      "name": "total_well_to_pump_emissions_kg_per_kg_h2",
+      "expression": "get_total_well_to_pump_emissions_kg_per_kg_h2(total_upstream_emissions_kg_per_kg_h2, total_process_emissions_kg_per_kg_h2)",
+      "excel_loc": "Results, D80:F80"
+    },
+    {
+      "name": "total_well_to_pump_emissions_all_ghg_kg_per_kg_h2",
+      "label": "Total well to pump emissions for all GHGs (kg/kg H2)",
+      "expression": "total_upstream_emissions_all_ghg_kg_per_kg_h2 + total_process_emissions_all_ghg_kg_per_kg_h2",
+      "excel_loc": "Results, G80"
     },
     {
       "name": "#",

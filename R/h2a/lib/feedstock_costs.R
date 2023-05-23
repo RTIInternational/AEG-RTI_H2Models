@@ -27,5 +27,5 @@ feedstock_prices_from_df <- function(feedstock_price_df, i) {
 }
 get_total_feedstock_costs <- function(operation_range, feedstock_price_df, inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var) {
     #'Calculate the total cost of all feedstocks over a range of years
-    return(lapply(range(len(operation_range)), function(year) calculate_feedstock_cost_for_year(get(operation_range, year), sum(feedstock_prices_from_df(feedstock_price_df, year)), get(inflation_price_increase_factors, year), start_time, plant_output_kg_per_year, percnt_var)))
+    return(lapply(range(length(operation_range)), function(year) calculate_feedstock_cost_for_year(get(operation_range, year), sum(feedstock_prices_from_df(feedstock_price_df, year)), get(inflation_price_increase_factors, year), start_time, plant_output_kg_per_year, percnt_var)))
 }

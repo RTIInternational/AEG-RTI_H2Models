@@ -44,7 +44,7 @@
       "map_iterables": ["operation_range"],
       "map_item_names": ["year"],
       "args": ["operation_range", "feedstock_price_df", "inflation_price_increase_factors", "start_time", "plant_output_kg_per_year", "percnt_var"],
-      "map_args_str": "range(len(operation_range))",
+      "map_args_str": "range(length(operation_range))",
       "lambda_map_arg_str": "get(operation_range, year), sum(feedstock_prices_from_df(feedstock_price_df, year)), get(inflation_price_increase_factors, year), start_time, plant_output_kg_per_year, percnt_var"
     }
   ]

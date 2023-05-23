@@ -43,10 +43,10 @@ def get_upstream_ghg_emissions_for_feedstocks(
     )
 
 
-def calculate_total_ghg_emission_for_feedstock(
+def calculate_total_ghg_emission(
     emission, GHG_CO2_factor, GHG_CH4_factor, GHG_N2O_factor
 ):
-    """Get the ghg emission for a feedstock"""
+    """Get the total ghg emission"""
     return (
         get(emission, FIRST) * GHG_CO2_factor
         + get(emission, SECOND) * GHG_CH4_factor
@@ -54,15 +54,15 @@ def calculate_total_ghg_emission_for_feedstock(
     )
 
 
-def get_upstream_total_ghg_emissions_for_feedstocks(
-    upstream_ghg_emissions_kg_per_kg_h2, GHG_CO2_factor, GHG_CH4_factor, GHG_N2O_factor
+def get_total_ghg_emissions(
+    ghg_emissions_kg_per_kg_h2, GHG_CO2_factor, GHG_CH4_factor, GHG_N2O_factor
 ):
-    """Get upstream total GHG emissions for feedstocks"""
+    """Get upstream total GHG emissions"""
     return list(
         map(
-            lambda emission: calculate_total_ghg_emission_for_feedstock(
+            lambda emission: calculate_total_ghg_emission(
                 emission, GHG_CO2_factor, GHG_CH4_factor, GHG_N2O_factor
             ),
-            upstream_ghg_emissions_kg_per_kg_h2,
+            ghg_emissions_kg_per_kg_h2,
         )
     )

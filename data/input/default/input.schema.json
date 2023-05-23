@@ -272,6 +272,12 @@
       "title": "Subsidies, Tax Incentives ($/year)",
       "minimum": 0
     },
+    "CO2_Capture_Efficiency": {
+      "type": "number",
+      "title": "Carbon Capture Efficiency (%)",
+      "minimum": 0,
+      "maximum": 1
+    },
     "feedstocks": {
       "type": "array",
       "items": {
