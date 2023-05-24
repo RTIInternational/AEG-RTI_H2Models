@@ -32,6 +32,9 @@ def check_formulas(input_filename, excel_filename):
               if excel_filename == "current-central-steam-methane-reforming-with-co2-sequestration-version-aug-22.xlsm" and sheet == "Input_Sheet_Template" and int(cell[1:]) > 90:
                   cell = cell[0] + str(int(cell[1:])-1)
 
+              if excel_filename == "current-central-steam-methane-reforming-without-co2-sequestration-version-aug22.xlsm" and sheet == "Carbon Sequestration":
+                  continue # No use in checking unused formulas
+
               # If the cell is a range, check that the values in the range match the values in the results dictionary
               if ":" in cell:
                   cells = wb[sheet][cell]

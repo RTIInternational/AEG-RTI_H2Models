@@ -39,6 +39,10 @@ helper_code = {
         "py": "def length(a):\n    return len(a)\n\n",
         "R": "",
     },
+    # "divide": {
+    #     "py": "def divide(a, b):\n    return a / b if b != 0 else 0\n\n",
+    #     "R": "divide <- function(a, b) if (b != 0) a / b else 0\n\n",
+    # },
     "sum_args": {
         "py": "def sum_args(*args):\n    return sum(args)\n\n",
         "R": "sum_args <- function(...) sum(...)\n\n",
@@ -110,6 +114,9 @@ def helpers_to_lang(lang):
 
     # length() is a helper function to get the length of a list
     file_str += code["length"][lang]
+
+    # divide() is a helper function to divide two numbers (returns 0 if the denominator is 0)
+    # file_str += code["divide"][lang]
 
     # sum_args() is a helper function to sum a list of arguments
     file_str += code["sum_args"][lang]

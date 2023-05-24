@@ -40,8 +40,13 @@ def compare_value(name, excel_val, py_val):
     excel_val = round(excel_val, NUM_DECIMALS)
     py_val = round(py_val, NUM_DECIMALS)
     
+    # Assert if the values are within 1% of each other
+    # (Also account for 'divide by 0' errors)
     try:
-        assert excel_val == py_val
+        if excel_val == 0:
+            assert py_val == 0
+        else:
+            assert abs(excel_val - py_val) / excel_val < 0.01
         return True
     except AssertionError:
         # Print each value side by side

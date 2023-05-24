@@ -3,6 +3,7 @@
 #
 from h2a.lib.after_tax_income import get_after_tax_income_column
 from h2a.lib.capital_investments import capital_investment_costs
+from h2a.lib.carbon_sequestration import get_cc_storage_cost, get_cc_transport_cost
 from h2a.lib.cashflow import get_aftertax_post_depreciation_cashflow, get_cumulative_cashflow_column, get_pretax_cashflow_column
 from h2a.lib.cashflow_meta import get_inflation_price_increase_factors, get_operation_range
 from h2a.lib.debt_financing import determine_interest_payment, determine_principal_payment
@@ -15,7 +16,7 @@ from h2a.lib.feedstock_costs import get_total_feedstock_costs
 from h2a.lib.feedstock_prices import get_feedstock_price_df
 from h2a.lib.fixed_costs import get_fixed_cost_column
 from h2a.lib.h2_sales import get_h2_sales_kg_per_year
-from h2a.helpers import YEAR_1, args_to_list, evaluate, get, irr, length, npv, round_num, seq_along, skip, slice, sum_args, sum_columns
+from h2a.helpers import FIRST, YEAR_1, args_to_list, evaluate, get, irr, length, npv, round_num, seq_along, skip, slice, sum_args, sum_columns
 from h2a.lib.initial_equity import get_initial_equity_depr_cap
 from h2a.lib.nonenergy_materials import get_nonenergy_material_price_df
 from h2a.lib.other_non_depreciable_capital_cost import get_other_non_depreciable_capital_cost_column
@@ -173,7 +174,46 @@ def calculate(user_input):
   var_misc = other_variable_operating_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)
   waste_treat = waste_treatment_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)
   solidwaste_treat = solid_waste_disposal_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)
-  CO2_OandMcost = 0
+  energy_input_GJ_per_kg_h2 = get_energy_input_for_feedstocks(feedstocks)
+  production_process_energy_efficiency = get(conversion_factors, 'kg_H2_LHV_to_GJ') / sum(energy_input_GJ_per_kg_h2)
+  upstream_energy_usage_column_names = args_to_list('Total Energy', 'Fossil Fuels', 'Petroleum')
+  upstream_energy_usage_GJ_per_kg_h2 = get_upstream_energy_usage_for_feedstocks(feedstocks, energy_input_GJ_per_kg_h2, upstream_energy_usage_column_names)
+  greenhouse_gas_column_names = args_to_list('CO2', 'CH4', 'N2O')
+  upstream_ghg_emissions_kg_per_kg_h2 = get_upstream_ghg_emissions_for_feedstocks(feedstocks, energy_input_GJ_per_kg_h2, greenhouse_gas_column_names)
+  upstream_ghg_emissions_kg_per_kg_h2_total = get_total_ghg_emissions(upstream_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
+  production_process_ghg_emissions_kg_per_kg_h2 = get_production_process_ghg_emissions_for_feedstocks(feedstocks, greenhouse_gas_column_names)
+  production_process_ghg_emissions_kg_per_kg_h2_total = get_production_process_total_ghg_emissions_for_feedstocks(production_process_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
+  total_process_pollutants_produced_kg_per_kg_h2 = sum_columns(production_process_ghg_emissions_kg_per_kg_h2)
+  total_process_pollutants_produced_all_ghg_kg_per_kg_h2 = sum(production_process_ghg_emissions_kg_per_kg_h2_total)
+  total_process_pollutants_produced_metric_tons_per_year = get_total_in_metric_tons_per_year(total_process_pollutants_produced_kg_per_kg_h2, plant_output_kg_per_year)
+  total_process_pollutants_produced_all_ghg_metric_tons_per_year = round_num(total_process_pollutants_produced_all_ghg_kg_per_kg_h2 * plant_output_kg_per_year / 1000, -2)
+  total_feedstock_pollutants_produced_kg_per_kg_h2 = sum_columns(production_process_ghg_emissions_kg_per_kg_h2)
+  total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2 = sum(production_process_ghg_emissions_kg_per_kg_h2_total)
+  total_feedstock_pollutants_produced_metric_tons_per_year = get_total_in_metric_tons_per_year(total_feedstock_pollutants_produced_kg_per_kg_h2, plant_output_kg_per_year)
+  total_feedstock_pollutants_produced_all_ghg_metric_tons_per_year = round_num(total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2 * plant_output_kg_per_year / 1000, -2)
+  co2_captured_kg_per_kg_h2 = get_co2_captured_kg_per_kg_h2(total_feedstock_pollutants_produced_kg_per_kg_h2, CO2_Capture_Efficiency)
+  co2_captured_metric_tons_per_year = get_co2_captured_metric_tons_per_year(co2_captured_kg_per_kg_h2, plant_output_kg_per_year)
+  total_process_emissions_kg_per_kg_h2 = get_total_process_emissions_kg_per_kg_h2(total_process_pollutants_produced_kg_per_kg_h2, co2_captured_kg_per_kg_h2)
+  total_process_emissions_all_ghg_kg_per_kg_h2 = calculate_total_ghg_emission(total_process_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
+  total_process_emissions_metric_tons_per_year = get_total_process_emissions_metric_tons_per_year(total_process_emissions_kg_per_kg_h2, plant_output_kg_per_year)
+  total_upstream_emissions_kg_per_kg_h2 = sum_columns(upstream_ghg_emissions_kg_per_kg_h2)
+  total_upstream_emissions_all_ghg_kg_per_kg_h2 = sum(upstream_ghg_emissions_kg_per_kg_h2_total)
+  total_well_to_pump_emissions_kg_per_kg_h2 = get_total_well_to_pump_emissions_kg_per_kg_h2(total_upstream_emissions_kg_per_kg_h2, total_process_emissions_kg_per_kg_h2)
+  total_well_to_pump_emissions_all_ghg_kg_per_kg_h2 = total_upstream_emissions_all_ghg_kg_per_kg_h2 + total_process_emissions_all_ghg_kg_per_kg_h2
+  co2_mass_flowrate_metric_tonnes_per_day = get(total_process_pollutants_produced_metric_tons_per_year, FIRST) / 365 * CO2_Capture_Efficiency
+  co2_mass_flowrate_million_metric_tonnes_per_year = co2_mass_flowrate_metric_tonnes_per_day * 365 / 1000000
+  cc_transport_cost_nominal_dollars_per_tonne_co2 = get_cc_transport_cost(CO2_Capture_Efficiency, co2_mass_flowrate_million_metric_tonnes_per_year, capacity_factor, pipeline_length_km)
+  cc_storage_cost_nominal_dollars_per_tonne_co2 = get_cc_storage_cost(CO2_Capture_Efficiency, co2_mass_flowrate_million_metric_tonnes_per_year, capacity_factor)
+  cc_transport_cost_basis_year_dollars_per_tonne_co2 = cc_transport_cost_nominal_dollars_per_tonne_co2 * get_cpi(BasisYear) / get_cpi(startup_year)
+  cc_storage_cost_basis_year_dollars_per_tonne_co2 = cc_storage_cost_nominal_dollars_per_tonne_co2 * get_cpi(BasisYear - 1) / get_cpi(startup_year - 1)
+  cc_transport_cost_first_year_basis_year_dollars_per_year = cc_transport_cost_basis_year_dollars_per_tonne_co2 * co2_mass_flowrate_million_metric_tonnes_per_year * 1000000
+  cc_storage_cost_first_year_basis_year_dollars_per_year = cc_storage_cost_basis_year_dollars_per_tonne_co2 * co2_mass_flowrate_million_metric_tonnes_per_year * 1000000
+  total_cc_cost_first_year_per_tonne_co2 = cc_transport_cost_first_year_basis_year_dollars_per_year + cc_storage_cost_first_year_basis_year_dollars_per_year
+  cc_transport_cost_ref_year_dollars_per_tonne_co2 = cc_transport_cost_basis_year_dollars_per_tonne_co2 * get_cpi(ref_year) / get_cpi(BasisYear)
+  cc_storage_cost_ref_year_dollars_per_tonne_co2 = cc_storage_cost_basis_year_dollars_per_tonne_co2 * get_cpi(ref_year) / get_cpi(BasisYear)
+  cc_transport_cost_ref_year_dollars_per_kg_H2 = (cc_transport_cost_first_year_basis_year_dollars_per_year / plant_output_kg_per_year) * get_cpi(ref_year) / get_cpi(BasisYear)
+  cc_storage_cost_ref_year_dollars_per_kg_H2 = (cc_storage_cost_first_year_basis_year_dollars_per_year / plant_output_kg_per_year) * get_cpi(ref_year - 1) / get_cpi(BasisYear - 1)
+  CO2_OandMcost = total_cc_cost_first_year_per_tonne_co2
   inflated_othervar = INFLATION_FACTOR * (var_misc + royalties + operator_profit + CO2_OandMcost + waste_treat + solidwaste_treat)
   variable_cost_column = get_variable_cost_column(operation_range, analysis_index_range, nonenergy_material_price_df, inflation_price_increase_factors, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar)
   discounted_value_variable_cost = get(variable_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(variable_cost_column, 1))
@@ -243,30 +283,4 @@ def calculate(user_input):
   dollars_per_kg_h2_other_raw_material_cost = H2_price_real * percentage_of_cost_other_raw_material_cost
   dollars_per_kg_h2_byproduct_credits = H2_price_real * percentage_of_cost_byproduct_credits
   dollars_per_kg_h2_variable_cost = H2_price_real * percentage_of_cost_variable_cost
-  energy_input_GJ_per_kg_h2 = get_energy_input_for_feedstocks(feedstocks)
-  production_process_energy_efficiency = get(conversion_factors, 'kg_H2_LHV_to_GJ') / sum(energy_input_GJ_per_kg_h2)
-  upstream_energy_usage_column_names = args_to_list('Total Energy', 'Fossil Fuels', 'Petroleum')
-  upstream_energy_usage_GJ_per_kg_h2 = get_upstream_energy_usage_for_feedstocks(feedstocks, energy_input_GJ_per_kg_h2, upstream_energy_usage_column_names)
-  greenhouse_gas_column_names = args_to_list('CO2', 'CH4', 'N2O')
-  upstream_ghg_emissions_kg_per_kg_h2 = get_upstream_ghg_emissions_for_feedstocks(feedstocks, energy_input_GJ_per_kg_h2, greenhouse_gas_column_names)
-  upstream_ghg_emissions_kg_per_kg_h2_total = get_total_ghg_emissions(upstream_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
-  production_process_ghg_emissions_kg_per_kg_h2 = get_production_process_ghg_emissions_for_feedstocks(feedstocks, greenhouse_gas_column_names)
-  production_process_ghg_emissions_kg_per_kg_h2_total = get_production_process_total_ghg_emissions_for_feedstocks(production_process_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
-  total_process_pollutants_produced_kg_per_kg_h2 = sum_columns(production_process_ghg_emissions_kg_per_kg_h2)
-  total_process_pollutants_produced_all_ghg_kg_per_kg_h2 = sum(production_process_ghg_emissions_kg_per_kg_h2_total)
-  total_process_pollutants_produced_metric_tons_per_year = get_total_in_metric_tons_per_year(total_process_pollutants_produced_kg_per_kg_h2, plant_output_kg_per_year)
-  total_process_pollutants_produced_all_ghg_metric_tons_per_year = round_num(total_process_pollutants_produced_all_ghg_kg_per_kg_h2 * plant_output_kg_per_year / 1000, -2)
-  total_feedstock_pollutants_produced_kg_per_kg_h2 = sum_columns(production_process_ghg_emissions_kg_per_kg_h2)
-  total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2 = sum(production_process_ghg_emissions_kg_per_kg_h2_total)
-  total_feedstock_pollutants_produced_metric_tons_per_year = get_total_in_metric_tons_per_year(total_feedstock_pollutants_produced_kg_per_kg_h2, plant_output_kg_per_year)
-  total_feedstock_pollutants_produced_all_ghg_metric_tons_per_year = round_num(total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2 * plant_output_kg_per_year / 1000, -2)
-  co2_captured_kg_per_kg_h2 = get_co2_captured_kg_per_kg_h2(total_feedstock_pollutants_produced_kg_per_kg_h2, CO2_Capture_Efficiency)
-  co2_captured_metric_tons_per_year = get_co2_captured_metric_tons_per_year(co2_captured_kg_per_kg_h2, plant_output_kg_per_year)
-  total_process_emissions_kg_per_kg_h2 = get_total_process_emissions_kg_per_kg_h2(total_process_pollutants_produced_kg_per_kg_h2, co2_captured_kg_per_kg_h2)
-  total_process_emissions_all_ghg_kg_per_kg_h2 = calculate_total_ghg_emission(total_process_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
-  total_process_emissions_metric_tons_per_year = get_total_process_emissions_metric_tons_per_year(total_process_emissions_kg_per_kg_h2, plant_output_kg_per_year)
-  total_upstream_emissions_kg_per_kg_h2 = sum_columns(upstream_ghg_emissions_kg_per_kg_h2)
-  total_upstream_emissions_all_ghg_kg_per_kg_h2 = sum(upstream_ghg_emissions_kg_per_kg_h2_total)
-  total_well_to_pump_emissions_kg_per_kg_h2 = get_total_well_to_pump_emissions_kg_per_kg_h2(total_upstream_emissions_kg_per_kg_h2, total_process_emissions_kg_per_kg_h2)
-  total_well_to_pump_emissions_all_ghg_kg_per_kg_h2 = total_upstream_emissions_all_ghg_kg_per_kg_h2 + total_process_emissions_all_ghg_kg_per_kg_h2
   return locals()

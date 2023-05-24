@@ -457,417 +457,7 @@
       "expression": "solid_waste_disposal_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)",
       "excel_loc": "Input_Sheet_Template, E151"
     },
-    {
-      "orig_name": "CO2_OandMcost",
-      "label": "CO2 sequestration O&M costs and credits ($/year)",
-      "expression": "0",
-      "excel_loc": "Input_Sheet_Template, E156"
-    },
-    {
-      "orig_name": "inflated_othervar",
-      "label": "Other Variable O&M Costs (not including tax credits and incentives)",
-      "expression": "INFLATION_FACTOR * (var_misc + royalties + operator_profit + CO2_OandMcost + waste_treat + solidwaste_treat)",
-      "excel_loc": "Cash Flow Analysis B58"
-    },
-    {
-      "name": "variable_cost_column",
-      "label": "Other Variable Operating Costs",
-      "expression": "get_variable_cost_column(operation_range, analysis_index_range, nonenergy_material_price_df, inflation_price_increase_factors, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar)",
-      "excel_loc": "Cash Flow Analysis R64"
-    },
-    {
-      "name": "discounted_value_variable_cost",
-      "label": "Discounted Value of Variable Operating Cost",
-      "expression": "get(variable_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(variable_cost_column, 1))",
-      "excel_loc": "Cash Flow Analysis R116"
-    },
-    {
-      "orig_name": "total_other_raw",
-      "label": "Other Material Costs ($/year)",
-      "expression": "other_material_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)",
-      "excel_loc": "Input_Sheet_Template E149"
-    },
-    {
-      "orig_name": "inflated_otherraw",
-      "label": "Other Raw Material ($/year)",
-      "expression": "total_other_raw * INFLATION_FACTOR",
-      "excel_loc": "Cash Flow Analysis B57"
-    },
-    {
-      "name": "other_raw_material_cost_column",
-      "label": "Other Raw Material Cost Column",
-      "expression": "get_other_raw_material_cost_column(operation_range, inflation_price_increase_factors, inflated_otherraw, percnt_var, start_time)",
-      "excel_loc": "Cash Flow Analysis P64"
-    },
-    {
-      "name": "discounted_value_other_raw_material_cost",
-      "label": "Discounted Value of Other Raw Material Cost",
-      "expression": "get(other_raw_material_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(other_raw_material_cost_column, 1))",
-      "excel_loc": "Cash Flow Analysis P116"
-    },
-    {
-      "name": "working_cap_reserve_rows",
-      "label": "Working Capital Reserve Rows",
-      "expression": "get_working_cap_reserve_rows(slice(operation_range, end = length(operation_range) - 1), slice(analysis_index_range, end = length(analysis_index_range) - 1), WorkingCap, fixed_cost_column, total_feedstock_cost_column, other_raw_material_cost_column, variable_cost_column)"
-    },
-    {
-      "name": "working_cap_reserve_column",
-      "label": "Cash from Working Capital Reserve Column",
-      "expression": "get_working_cap_reserve_column(working_cap_reserve_rows)",
-      "excel_loc": "Cash Flow Analysis J64"
-    },
-    {
-      "name": "discounted_value_working_cap_reserve",
-      "label": "Discounted Value of Cash from Working Capital Reserve",
-      "expression": "get(working_cap_reserve_column, YEAR_1) + npv(nominal_irr, skip(working_cap_reserve_column, 1))",
-      "excel_loc": "Cash Flow Analysis J116"
-    },
-    {
-      "name": "pv_of_cashflow_working_cap_reserve",
-      "label": "PV of Cash Flow of Working Capital Reserve",
-      "expression": "npv(nominal_irr, working_cap_reserve_column)",
-      "excel_loc": "Cash Flow Analysis J115"
-    },
-    {
-      "name": "LCOE_contribution_capital_costs",
-      "label": "LCOE Contribution from Capital Costs",
-      "expression": "-(discounted_value_initial_equity_depr_cap + discounted_value_replacement_costs + discounted_value_working_cap_reserve + discounted_value_other_non_depreciable_capital_cost)",
-      "excel_loc": "Cash Flow Analysis W57"
-    },
-    {
-      "name": "total_initial_depreciable_capital",
-      "label": "Total Initial Depreciable Capital",
-      "expression": "-(initial_capital_financed + sum(initial_equity_depr_cap))",
-      "excel_loc": "Depreciation B44"
-    },
-    {
-      "name": "annual_depreciable_capital",
-      "label": "Annual Depreciable Capital",
-      "expression": "get_annual_depreciable_capital(operation_range, replacement_costs, total_initial_depreciable_capital)",
-      "excel_loc": "Depreciation B49"
-    },
-    {
-      "name": "recovery_range",
-      "label": "Recovery Range",
-      "expression": "range(1, 22)",
-      "excel_loc": "Depreciation C48-W48"
-    },
-    {
-      "name": "depreciation_calculation_table",
-      "label": "Depreciation Calculation Table",
-      "expression": "get_depreciation_calculation_table(recovery_range, operation_range, depr_type, depr_length, annual_depreciable_capital)",
-      "excel_loc": "Depreciation C49"
-    },
-    {
-      "name": "recovery_index_range",
-      "expression": "seq_along(recovery_range)"
-    },
-    {
-      "name": "depreciation_charges",
-      "label": "Depreciation Charges",
-      "expression": "get_depreciation_charges(analysis_index_range, recovery_index_range, depreciation_calculation_table)",
-      "excel_loc": "Depreciation B97"
-    },
-    {
-      "name": "remaining_depreciation_range",
-      "expression": "range(anal_period+construct, anal_period+construct+depr_length+1)"
-    },
-    {
-      "name": "remaining_depreciation_charges",
-      "label": "Remaining Depreciation Charges",
-      "expression": "get_depreciation_charges(remaining_depreciation_range, recovery_index_range, depreciation_calculation_table)",
-      "excel_loc": "Depreciation B140 B146-B165"
-    },
-    {
-      "name": "total_remaining_depreciation_charges",
-      "expression": "sum(remaining_depreciation_charges)"
-    },
-    {
-      "name": "depreciation_charges_column",
-      "label": "Depreciation Charges Column",
-      "expression": "get_depreciation_charges_column(depreciation_charges, analysis_index_range, total_remaining_depreciation_charges, anal_period, construct)",
-      "excel_loc": "Cash Flow Analysis U64"
-    },
-    {
-      "name": "discounted_value_depreciation_charges",
-      "label": "Discounted Value of Depreciation Charges",
-      "expression": "get(depreciation_charges_column, YEAR_1) + npv(nominal_irr, skip(depreciation_charges_column, 1))",
-      "excel_loc": "Cash Flow Analysis U116"
-    },
-    {
-      "name": "pv_of_cashflow_depreciation_charges",
-      "label": "PV of Cash Flow of Depreciation Charges",
-      "expression": "npv(nominal_irr, depreciation_charges_column)",
-      "excel_loc": "Cash Flow Analysis U115"
-    },
-    {
-      "name": "LCOE_contribution_depreciation",
-      "label": "LCOE Contribution from Depreciation",
-      "expression": "discounted_value_depreciation_charges * total_tax_rate",
-      "excel_loc": "Cash Flow Analysis W57"
-    },
-    {
-      "name": "LCOE_contribution_principal_payments",
-      "label": "Discounted Value of Depreciation Charges",
-      "expression": "-(get(principal_payments_column, YEAR_1) + npv(nominal_irr, skip(principal_payments_column, 1)))",
-      "excel_loc": "Cash Flow Analysis Z116"
-    },
-    {
-      "name": "pv_of_cashflow_principal_payments",
-      "label": "PV of Cash Flow of Pricipal Payments",
-      "expression": "npv(nominal_irr, principal_payments_column)",
-      "excel_loc": "Cash Flow Analysis Z115"
-    },
-    {
-      "name": "LCOE_contribution_operation_costs",
-      "label": "LCOE Contribution from Operation Costs",
-      "expression": "-(discounted_value_total_salvage_value + discounted_value_decom_costs + discounted_value_fixed_cost + discounted_value_feedstock_cost + discounted_value_other_raw_material_cost + discounted_value_variable_cost + discounted_value_interest_payments) * (1-total_tax_rate)",
-      "excel_loc": "Cash Flow Analysis AA57"
-    },
-    {
-      "orig_name": "H2_price_nominal",
-      "label": "Hydrogen Cost (Start-up Year Nominal $/kg)",
-      "expression": "((LCOE_contribution_capital_costs + LCOE_contribution_depreciation + LCOE_contribution_principal_payments + LCOE_contribution_operation_costs) / LCOE_contribution_h2_sales_kg) * (1 + inflation_rate) ** construct",
-      "excel_loc": "Cash Flow Analysis E17"
-    },
-    {
-      "orig_name": "H2_price_real",
-      "label": "Hydrogen Cost (Ref Year Dollars per kg)",
-      "expression": "H2_price_nominal / INFLATION_FACTOR",
-      "excel_loc": "Cash Flow Analysis E16"
-    },
-    {
-      "name": "revenue_h2_sales",
-      "label": "Revenue from Hydrogen Sales Column",
-      "expression": "get_revenue_h2_sales_column(operation_range, inflation_price_increase_factors, H2_price_nominal, plant_output_kg_per_year, percnt_revs, start_time)",
-      "excel_loc": "Cash Flow Analysis F64"
-    },
-    {
-      "name": "predepreciation_income_column",
-      "label": "Pre-Depreciation Income",
-      "expression": "get_predepreciation_income_column(revenue_h2_sales, salvage_column, decom_costs_column, fixed_cost_column, total_feedstock_cost_column, other_raw_material_cost_column, variable_cost_column, interest_payments_column)",
-      "excel_loc": "Cash Flow Analysis T64"
-    },
-    {
-      "name": "taxable_income_column",
-      "label": "Taxable Income Column",
-      "expression": "get_taxable_income_column(predepreciation_income_column, depreciation_charges_column)",
-      "excel_loc": "Cash Flow Analysis V64"
-    },
-    {
-      "orig_name": "tax_credit",
-      "label": "Subsidies, Tax Incentives ($/year)",
-      "expression": "tax_credit_per_year * CPIinflator",
-      "excel_loc": "Input_Sheet_Template E155"
-    },
-    {
-      "orig_name": "Upstream_CO2_taxpYear",
-      "label": "Upstream Carbon Tax ($/year)",
-      "expression": "0",
-      "excel_loc": "Input_Sheet_Template E159"
-    },
-    {
-      "name": "Proc_CO2_taxpYear",
-      "label": "Process Carbon Tax ($/year)",
-      "expression": "0",
-      "excel_loc": "Input_Sheet_Template E158"
-    },
-    {
-      "name": "total_taxes_column",
-      "label": "Total Taxes Column",
-      "expression": "get_total_taxes_column(taxable_income_column, total_tax_rate, tax_credit, Upstream_CO2_taxpYear, Proc_CO2_taxpYear)",
-      "excel_loc": "Cash Flow Analysis X64"
-    },
-    {
-      "name": "after_tax_income_column",
-      "label": "After-Tax Income Column",
-      "expression": "get_after_tax_income_column(predepreciation_income_column, total_taxes_column)",
-      "excel_loc": "Cash Flow Analysis Y64"
-    },
-    {
-      "name": "aftertax_post_depreciation_cashflow_column",
-      "label": "After-Tax Post-Depreciation Cash Flow Column",
-      "expression": "get_aftertax_post_depreciation_cashflow(initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, total_taxes_column, principal_payments_column)",
-      "excel_loc": "Cash Flow Analysis AA64"
-    },
-    {
-      "name": "cumulative_cashflow_column",
-      "label": "Cumulative Cash Flow Column",
-      "expression": "get_cumulative_cashflow_column(aftertax_post_depreciation_cashflow_column, analysis_index_range)",
-      "excel_loc": "Cash Flow Analysis AB64"
-    },
-    {
-      "name": "pretax_cashflow",
-      "label": "Pretax Cash Flow",
-      "expression": "get_pretax_cashflow_column(initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, principal_payments_column)",
-      "excel_loc": "Cash Flow Analysis AC64"
-    },
-    {
-      "orig_name": "after_tax_nominal_IRR",
-      "label": "After-Tax Nominal IRR",
-      "expression": "irr(aftertax_post_depreciation_cashflow_column)",
-      "excel_loc": "Cash Flow Analysis E20"
-    },
-    {
-      "orig_name": "pre_tax_nominal_IRR",
-      "label": "Pre-Tax Nominal IRR",
-      "expression": "irr(pretax_cashflow)",
-      "excel_loc": "Cash Flow Analysis E21"
-    },
-    {
-      "name": "aftertax_real_capital_recovery_factor",
-      "label": "After Tax Real Capital Recovery Factor",
-      "expression": "(real_irr * (1 + real_irr) ** anal_period) / (((1 + real_irr) ** anal_period) - 1)",
-      "excel_loc": "Cash Flow Analysis E22"
-    },
-    {
-      "name": "aftertax_nominal_capital_recovery_factor",
-      "label": "After Tax Nominal Capital Recovery Factor",
-      "expression": "(nominal_irr * (1 + nominal_irr) ** anal_period) / (((1 + nominal_irr) ** anal_period) - 1)",
-      "excel_loc": "Cash Flow Analysis E23"
-    },
-    {
-      "name": "total_real_fixed_charge_rate",
-      "label": "Total Real Fixed Charge Rate",
-      "expression": "(aftertax_real_capital_recovery_factor * (1 - total_tax_rate * npv(real_irr, get(macrs_depreciation_table, depr_length))) ) / (1 - total_tax_rate)",
-      "excel_loc": "Cash Flow Analysis E24"
-    },
-    {
-      "name": "total_nominal_fixed_charge_rate",
-      "label": "Total Nominal Fixed Charge Rate",
-      "expression": "(aftertax_nominal_capital_recovery_factor * (1 - total_tax_rate * npv(nominal_irr, get(macrs_depreciation_table, depr_length))) ) / (1 - total_tax_rate)",
-      "excel_loc": "Cash Flow Analysis E25"
-    },
-    {
-      "name": "after_tax_present_value_capital_related_costs",
-      "label": "After-Tax Present Value of Capital-Related Costs",
-      "expression": "(pv_of_cashflow_initial_equity_depr_cap + pv_of_cashflow_replacement_costs + pv_of_cashflow_working_cap_reserve + pv_of_cashflow_other_non_depreciable_capital_cost + (pv_of_cashflow_total_salvage_value * (1 - total_tax_rate)) + (pv_of_cashflow_interest_payments * (1 - total_tax_rate)) + (pv_of_cashflow_depreciation_charges * (-total_tax_rate)) + pv_of_cashflow_principal_payments) / (1 - total_tax_rate)",
-      "excel_loc": "Cash Flow Analysis B119"
-    },
-    {
-      "name": "after_tax_present_value_decommissioning_costs",
-      "label": "After-Tax Present Value of Decommissioning Costs",
-      "expression": "npv(nominal_irr, decom_costs_column)",
-      "excel_loc": "Cash Flow Analysis B120"
-    },
-    {
-      "name": "after_tax_present_value_fixed_cost",
-      "label": "After-Tax Present Value of Fixed O&M",
-      "expression": "npv(nominal_irr, fixed_cost_column)",
-      "excel_loc": "Cash Flow Analysis B121"
-    },
-    {
-      "name": "after_tax_present_value_total_feedstock_cost",
-      "label": "After-Tax Present Value of Feedstock Costs",
-      "expression": "npv(nominal_irr, total_feedstock_cost_column)",
-      "excel_loc": "Cash Flow Analysis B122"
-    },
-    {
-      "name": "after_tax_present_value_other_raw_material_cost",
-      "label": "After-Tax Present Value of Other Raw Material Costs",
-      "expression": "npv(nominal_irr, other_raw_material_cost_column)",
-      "excel_loc": "Cash Flow Analysis B123"
-    },
-    {
-      "name": "after_tax_present_value_byproduct_credits",
-      "label": "After-Tax Present Value of Byproduct Credits",
-      "expression": "0",
-      "excel_loc": "Cash Flow Analysis B124"
-    },
-    {
-      "name": "after_tax_present_value_variable_cost",
-      "label": "After-Tax Present Value of Other Variable Costs (including utilities)",
-      "expression": "npv(nominal_irr, variable_cost_column)",
-      "excel_loc": "Cash Flow Analysis B125"
-    },
-    {
-      "name": "summed_cost_components",
-      "expression": "sum_args(after_tax_present_value_capital_related_costs, after_tax_present_value_decommissioning_costs, after_tax_present_value_fixed_cost, after_tax_present_value_total_feedstock_cost, after_tax_present_value_other_raw_material_cost, after_tax_present_value_byproduct_credits, after_tax_present_value_variable_cost)"
-    },
-    {
-      "name": "percentage_of_cost_capital_related_costs",
-      "label": "Percentage of Cost: Capital-Related Costs",
-      "expression": "after_tax_present_value_capital_related_costs / summed_cost_components",
-      "excel_loc": "Cash Flow Analysis C119"
-    },
-    {
-      "name": "percentage_of_cost_decommissioning_costs",
-      "label": "Percentage of Cost: Decommissioning Costs",
-      "expression": "after_tax_present_value_decommissioning_costs / summed_cost_components",
-      "excel_loc": "Cash Flow Analysis C120"
-    },
-    {
-      "name": "percentage_of_cost_fixed_cost",
-      "label": "Percentage of Cost: Fixed O&M",
-      "expression": "after_tax_present_value_fixed_cost / summed_cost_components",
-      "excel_loc": "Cash Flow Analysis C121"
-    },
-    {
-      "name": "percentage_of_cost_total_feedstock_cost",
-      "label": "Percentage of Cost: Feedstock Costs",
-      "expression": "after_tax_present_value_total_feedstock_cost / summed_cost_components",
-      "excel_loc": "Cash Flow Analysis C122"
-    },
-    {
-      "name": "percentage_of_cost_other_raw_material_cost",
-      "label": "Percentage of Cost: Other Raw Material Costs",
-      "expression": "after_tax_present_value_other_raw_material_cost / summed_cost_components",
-      "excel_loc": "Cash Flow Analysis C123"
-    },
-    {
-      "name": "percentage_of_cost_byproduct_credits",
-      "label": "Percentage of Cost: Byproduct Credits",
-      "expression": "after_tax_present_value_byproduct_credits / summed_cost_components",
-      "excel_loc": "Cash Flow Analysis C124"
-    },
-    {
-      "name": "percentage_of_cost_variable_cost",
-      "label": "Percentage of Cost: Other Variable Costs (including utilities)",
-      "expression": "after_tax_present_value_variable_cost / summed_cost_components",
-      "excel_loc": "Cash Flow Analysis C125"
-    },
-    {
-      "name": "dollars_per_kg_h2_capital_related_costs",
-      "label": "$/kg of H2: Capital-Related Costs",
-      "expression": "H2_price_real * percentage_of_cost_capital_related_costs",
-      "excel_loc": "Cash Flow Analysis D119"
-    },
-    {
-      "name": "dollars_per_kg_h2_decommissioning_costs",
-      "label": "$/kg of H2: Decommissioning Costs",
-      "expression": "H2_price_real * percentage_of_cost_decommissioning_costs",
-      "excel_loc": "Cash Flow Analysis D120"
-    },
-    {
-      "name": "dollars_per_kg_h2_fixed_cost",
-      "label": "$/kg of H2: Fixed O&M",
-      "expression": "H2_price_real * percentage_of_cost_fixed_cost",
-      "excel_loc": "Cash Flow Analysis D121"
-    },
-    {
-      "name": "dollars_per_kg_h2_total_feedstock_cost",
-      "label": "$/kg of H2: Feedstock Costs",
-      "expression": "H2_price_real * percentage_of_cost_total_feedstock_cost",
-      "excel_loc": "Cash Flow Analysis D122"
-    },
-    {
-      "name": "dollars_per_kg_h2_other_raw_material_cost",
-      "label": "$/kg of H2: Other Raw Material Costs",
-      "expression": "H2_price_real * percentage_of_cost_other_raw_material_cost",
-      "excel_loc": "Cash Flow Analysis D123"
-    },
-    {
-      "name": "dollars_per_kg_h2_byproduct_credits",
-      "label": "$/kg of H2: Byproduct Credits",
-      "expression": "H2_price_real * percentage_of_cost_byproduct_credits",
-      "excel_loc": "Cash Flow Analysis D124"
-    },
-    {
-      "name": "dollars_per_kg_h2_variable_cost",
-      "label": "$/kg of H2: Other Variable Costs (including utilities)",
-      "expression": "H2_price_real * percentage_of_cost_variable_cost",
-      "excel_loc": "Cash Flow Analysis D125"
-    },
+
     {
       "name": "energy_input_GJ_per_kg_h2",
       "label": "Energy Input (GJ/kg H2)",
@@ -1020,11 +610,500 @@
       "expression": "total_upstream_emissions_all_ghg_kg_per_kg_h2 + total_process_emissions_all_ghg_kg_per_kg_h2",
       "excel_loc": "Results, G80"
     },
+
     {
-      "name": "#",
-      "label": "Total Depreciable Capital Costs",
-      "expression": "(total_cap - non_dep_cap) * INFLATION_FACTOR",
-      "orig_name": ""
+      "name": "co2_mass_flowrate_metric_tonnes_per_day",
+      "label": "CO2 Mass Flowrate (metric tonnes/day)",
+      "expression": "get(total_process_pollutants_produced_metric_tons_per_year, FIRST) / 365 * CO2_Capture_Efficiency",
+      "excel_loc": "Carbon Sequestration, C23",
+      "orig_name": "CO2_flowrate"
+    },
+    {
+      "label": "CO2 Mass Flowrate (million metric tonnes/year)",
+      "name": "co2_mass_flowrate_million_metric_tonnes_per_year",
+      "expression": "co2_mass_flowrate_metric_tonnes_per_day * 365 / 1000000",
+      "excel_loc": "Carbon Sequestration, C24",
+      "orig_name": "CO2_flowrate_GTpY"
+    },
+    {
+      "name": "cc_transport_cost_nominal_dollars_per_tonne_co2",
+      "label": "Transport Cost (nominal $/tonne CO2)",
+      "expression": "get_cc_transport_cost(CO2_Capture_Efficiency, co2_mass_flowrate_million_metric_tonnes_per_year, capacity_factor, pipeline_length_km)",
+      "excel_loc": "Carbon Sequestration, D36"
+    },
+    {
+      "name": "cc_storage_cost_nominal_dollars_per_tonne_co2",
+      "label": "Storage Cost (nominal $/tonne CO2)",
+      "expression": "get_cc_storage_cost(CO2_Capture_Efficiency, co2_mass_flowrate_million_metric_tonnes_per_year, capacity_factor)",
+      "excel_loc": "Carbon Sequestration, D37"
+    },
+    {
+      "name": "cc_transport_cost_basis_year_dollars_per_tonne_co2",
+      "label": "Transport Cost (basis year $/tonne CO2)",
+      "expression": "cc_transport_cost_nominal_dollars_per_tonne_co2 * get_cpi(BasisYear) / get_cpi(startup_year)",
+      "excel_loc": "Carbon Sequestration, E36"
+    },
+    {
+      "name": "cc_storage_cost_basis_year_dollars_per_tonne_co2",
+      "label": "Storage Cost (basis year $/tonne CO2)",
+      "expression": "cc_storage_cost_nominal_dollars_per_tonne_co2 * get_cpi(BasisYear - 1) / get_cpi(startup_year - 1)",
+      "excel_loc": "Carbon Sequestration, E37",
+      "translation_note": "TODO: there is an error in the original formula, offsetting the years by 1. I kept the error so my results would match"
+    },
+    {
+      "name": "cc_transport_cost_first_year_basis_year_dollars_per_year",
+      "label": "Transport Cost first year (basis year $/tonne CO2)",
+      "expression": "cc_transport_cost_basis_year_dollars_per_tonne_co2 * co2_mass_flowrate_million_metric_tonnes_per_year * 1000000",
+      "excel_loc": "Carbon Sequestration, F36"
+    },
+    {
+      "name": "cc_storage_cost_first_year_basis_year_dollars_per_year",
+      "label": "Storage Cost first year (basis year $/tonne CO2)",
+      "expression": "cc_storage_cost_basis_year_dollars_per_tonne_co2 * co2_mass_flowrate_million_metric_tonnes_per_year * 1000000",
+      "excel_loc": "Carbon Sequestration, F37"
+    },
+    {
+      "name": "total_cc_cost_first_year_per_tonne_co2",
+      "label": "Total Cost first year (basis year $/tonne CO2)",
+      "expression": "cc_transport_cost_first_year_basis_year_dollars_per_year + cc_storage_cost_first_year_basis_year_dollars_per_year",
+      "excel_loc": "Carbon Sequestration, F39"
+    },
+    {
+      "name": "cc_transport_cost_ref_year_dollars_per_tonne_co2",
+      "label": "Transport Cost (ref year $/tonne CO2)",
+      "expression": "cc_transport_cost_basis_year_dollars_per_tonne_co2 * get_cpi(ref_year) / get_cpi(BasisYear)",
+      "excel_loc": "Carbon Sequestration, G36"
+    },
+    {
+      "name": "cc_storage_cost_ref_year_dollars_per_tonne_co2",
+      "label": "Storage Cost (ref year $/tonne CO2)",
+      "expression": "cc_storage_cost_basis_year_dollars_per_tonne_co2 * get_cpi(ref_year) / get_cpi(BasisYear)",
+      "excel_loc": "Carbon Sequestration, G37"
+    },
+    {
+      "name": "cc_transport_cost_ref_year_dollars_per_kg_H2",
+      "label": "Transport Cost (ref year $/kg H2)",
+      "expression": "(cc_transport_cost_first_year_basis_year_dollars_per_year / plant_output_kg_per_year) * get_cpi(ref_year) / get_cpi(BasisYear)",
+      "excel_loc": "Carbon Sequestration, H36"
+    },
+    {
+      "name": "cc_storage_cost_ref_year_dollars_per_kg_H2",
+      "label": "Storage Cost (ref year $/kg H2)",
+      "expression": "(cc_storage_cost_first_year_basis_year_dollars_per_year / plant_output_kg_per_year) * get_cpi(ref_year - 1) / get_cpi(BasisYear - 1)",
+      "excel_loc": "Carbon Sequestration, H37",
+      "translation_note": "TODO: there is an error in the original formula, offsetting the years by 1. I kept the error so my results would match"
+    },
+
+    {
+      "orig_name": "CO2_OandMcost",
+      "label": "CO2 sequestration O&M costs and credits ($/year)",
+      "expression": "total_cc_cost_first_year_per_tonne_co2",
+      "excel_loc": "Input_Sheet_Template, E156"
+    },
+    {
+      "orig_name": "inflated_othervar",
+      "label": "Other Variable O&M Costs (not including tax credits and incentives)",
+      "expression": "INFLATION_FACTOR * (var_misc + royalties + operator_profit + CO2_OandMcost + waste_treat + solidwaste_treat)",
+      "excel_loc": "Cash Flow Analysis, B58"
+    },
+    {
+      "name": "variable_cost_column",
+      "label": "Other Variable Operating Costs",
+      "expression": "get_variable_cost_column(operation_range, analysis_index_range, nonenergy_material_price_df, inflation_price_increase_factors, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar)",
+      "excel_loc": "Cash Flow Analysis, R65:R107"
+    },
+    {
+      "name": "discounted_value_variable_cost",
+      "label": "Discounted Value of Variable Operating Cost",
+      "expression": "get(variable_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(variable_cost_column, 1))",
+      "excel_loc": "Cash Flow Analysis, R116"
+    },
+    {
+      "orig_name": "total_other_raw",
+      "label": "Other Material Costs ($/year)",
+      "expression": "other_material_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)",
+      "excel_loc": "Input_Sheet_Template, E149"
+    },
+    {
+      "orig_name": "inflated_otherraw",
+      "label": "Other Raw Material ($/year)",
+      "expression": "total_other_raw * INFLATION_FACTOR",
+      "excel_loc": "Cash Flow Analysis, B57"
+    },
+    {
+      "name": "other_raw_material_cost_column",
+      "label": "Other Raw Material Cost Column",
+      "expression": "get_other_raw_material_cost_column(operation_range, inflation_price_increase_factors, inflated_otherraw, percnt_var, start_time)",
+      "excel_loc": "Cash Flow Analysis, P65:P107"
+    },
+    {
+      "name": "discounted_value_other_raw_material_cost",
+      "label": "Discounted Value of Other Raw Material Cost",
+      "expression": "get(other_raw_material_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(other_raw_material_cost_column, 1))",
+      "excel_loc": "Cash Flow Analysis, P116"
+    },
+    {
+      "name": "working_cap_reserve_rows",
+      "label": "Working Capital Reserve Rows",
+      "expression": "get_working_cap_reserve_rows(slice(operation_range, end = length(operation_range) - 1), slice(analysis_index_range, end = length(analysis_index_range) - 1), WorkingCap, fixed_cost_column, total_feedstock_cost_column, other_raw_material_cost_column, variable_cost_column)"
+    },
+    {
+      "name": "working_cap_reserve_column",
+      "label": "Cash from Working Capital Reserve Column",
+      "expression": "get_working_cap_reserve_column(working_cap_reserve_rows)",
+      "excel_loc": "Cash Flow Analysis, J65:J107"
+    },
+    {
+      "name": "discounted_value_working_cap_reserve",
+      "label": "Discounted Value of Cash from Working Capital Reserve",
+      "expression": "get(working_cap_reserve_column, YEAR_1) + npv(nominal_irr, skip(working_cap_reserve_column, 1))",
+      "excel_loc": "Cash Flow Analysis, J116"
+    },
+    {
+      "name": "pv_of_cashflow_working_cap_reserve",
+      "label": "PV of Cash Flow of Working Capital Reserve",
+      "expression": "npv(nominal_irr, working_cap_reserve_column)",
+      "excel_loc": "Cash Flow Analysis, J115"
+    },
+    {
+      "name": "LCOE_contribution_capital_costs",
+      "label": "LCOE Contribution from Capital Costs",
+      "expression": "-(discounted_value_initial_equity_depr_cap + discounted_value_replacement_costs + discounted_value_working_cap_reserve + discounted_value_other_non_depreciable_capital_cost)",
+      "excel_loc": "Cash Flow Analysis, X57"
+    },
+    {
+      "name": "total_initial_depreciable_capital",
+      "label": "Total Initial Depreciable Capital",
+      "expression": "-(initial_capital_financed + sum(initial_equity_depr_cap))",
+      "excel_loc": "Depreciation, B44"
+    },
+    {
+      "name": "annual_depreciable_capital",
+      "label": "Annual Depreciable Capital",
+      "expression": "get_annual_depreciable_capital(operation_range, replacement_costs, total_initial_depreciable_capital)",
+      "excel_loc": "Depreciation B49"
+    },
+    {
+      "name": "recovery_range",
+      "label": "Recovery Range",
+      "expression": "range(1, 22)",
+      "excel_loc": "Depreciation C48-W48"
+    },
+    {
+      "name": "depreciation_calculation_table",
+      "label": "Depreciation Calculation Table",
+      "expression": "get_depreciation_calculation_table(recovery_range, operation_range, depr_type, depr_length, annual_depreciable_capital)",
+      "excel_loc": "Depreciation C49"
+    },
+    {
+      "name": "recovery_index_range",
+      "expression": "seq_along(recovery_range)"
+    },
+    {
+      "name": "depreciation_charges",
+      "label": "Depreciation Charges",
+      "expression": "get_depreciation_charges(analysis_index_range, recovery_index_range, depreciation_calculation_table)",
+      "excel_loc": "Depreciation B97"
+    },
+    {
+      "name": "remaining_depreciation_range",
+      "expression": "range(anal_period+construct, anal_period+construct+depr_length+1)"
+    },
+    {
+      "name": "remaining_depreciation_charges",
+      "label": "Remaining Depreciation Charges",
+      "expression": "get_depreciation_charges(remaining_depreciation_range, recovery_index_range, depreciation_calculation_table)",
+      "excel_loc": "Depreciation B140 B146-B165"
+    },
+    {
+      "name": "total_remaining_depreciation_charges",
+      "expression": "sum(remaining_depreciation_charges)"
+    },
+    {
+      "name": "depreciation_charges_column",
+      "label": "Depreciation Charges Column",
+      "expression": "get_depreciation_charges_column(depreciation_charges, analysis_index_range, total_remaining_depreciation_charges, anal_period, construct)",
+      "excel_loc": "Cash Flow Analysis, U65:U107"
+    },
+    {
+      "name": "discounted_value_depreciation_charges",
+      "label": "Discounted Value of Depreciation Charges",
+      "expression": "get(depreciation_charges_column, YEAR_1) + npv(nominal_irr, skip(depreciation_charges_column, 1))",
+      "excel_loc": "Cash Flow Analysis, U116"
+    },
+    {
+      "name": "pv_of_cashflow_depreciation_charges",
+      "label": "PV of Cash Flow of Depreciation Charges",
+      "expression": "npv(nominal_irr, depreciation_charges_column)",
+      "excel_loc": "Cash Flow Analysis, U115"
+    },
+    {
+      "name": "LCOE_contribution_depreciation",
+      "label": "LCOE Contribution from Depreciation",
+      "expression": "discounted_value_depreciation_charges * total_tax_rate",
+      "excel_loc": "Cash Flow Analysis, Y57"
+    },
+    {
+      "name": "LCOE_contribution_principal_payments",
+      "label": "Discounted Value of Depreciation Charges",
+      "expression": "-(get(principal_payments_column, YEAR_1) + npv(nominal_irr, skip(principal_payments_column, 1)))",
+      "excel_loc": "Cash Flow Analysis, Z116"
+    },
+    {
+      "name": "pv_of_cashflow_principal_payments",
+      "label": "PV of Cash Flow of Pricipal Payments",
+      "expression": "npv(nominal_irr, principal_payments_column)",
+      "excel_loc": "Cash Flow Analysis, Z115"
+    },
+    {
+      "name": "LCOE_contribution_operation_costs",
+      "label": "LCOE Contribution from Operation Costs",
+      "expression": "-(discounted_value_total_salvage_value + discounted_value_decom_costs + discounted_value_fixed_cost + discounted_value_feedstock_cost + discounted_value_other_raw_material_cost + discounted_value_variable_cost + discounted_value_interest_payments) * (1-total_tax_rate)",
+      "excel_loc": "Cash Flow Analysis, AA57"
+    },
+    {
+      "orig_name": "H2_price_nominal",
+      "label": "Hydrogen Cost (Start-up Year Nominal $/kg)",
+      "expression": "((LCOE_contribution_capital_costs + LCOE_contribution_depreciation + LCOE_contribution_principal_payments + LCOE_contribution_operation_costs) / LCOE_contribution_h2_sales_kg) * (1 + inflation_rate) ** construct",
+      "excel_loc": "Cash Flow Analysis, E17"
+    },
+    {
+      "orig_name": "H2_price_real",
+      "label": "Hydrogen Cost (Ref Year Dollars per kg)",
+      "expression": "H2_price_nominal / INFLATION_FACTOR",
+      "excel_loc": "Cash Flow Analysis, E16"
+    },
+    {
+      "name": "revenue_h2_sales",
+      "label": "Revenue from Hydrogen Sales Column",
+      "expression": "get_revenue_h2_sales_column(operation_range, inflation_price_increase_factors, H2_price_nominal, plant_output_kg_per_year, percnt_revs, start_time)",
+      "excel_loc": "Cash Flow Analysis, F65:F107"
+    },
+    {
+      "name": "predepreciation_income_column",
+      "label": "Pre-Depreciation Income",
+      "expression": "get_predepreciation_income_column(revenue_h2_sales, salvage_column, decom_costs_column, fixed_cost_column, total_feedstock_cost_column, other_raw_material_cost_column, variable_cost_column, interest_payments_column)",
+      "excel_loc": "Cash Flow Analysis, T65:T107"
+    },
+    {
+      "name": "taxable_income_column",
+      "label": "Taxable Income Column",
+      "expression": "get_taxable_income_column(predepreciation_income_column, depreciation_charges_column)",
+      "excel_loc": "Cash Flow Analysis, V65:V107"
+    },
+    {
+      "orig_name": "tax_credit",
+      "label": "Subsidies, Tax Incentives ($/year)",
+      "expression": "tax_credit_per_year * CPIinflator",
+      "excel_loc": "Input_Sheet_Template, E155"
+    },
+    {
+      "orig_name": "Upstream_CO2_taxpYear",
+      "label": "Upstream Carbon Tax ($/year)",
+      "expression": "0",
+      "excel_loc": "Input_Sheet_Template, E159"
+    },
+    {
+      "name": "Proc_CO2_taxpYear",
+      "label": "Process Carbon Tax ($/year)",
+      "expression": "0",
+      "excel_loc": "Input_Sheet_Template, E158"
+    },
+    {
+      "name": "total_taxes_column",
+      "label": "Total Taxes Column",
+      "expression": "get_total_taxes_column(taxable_income_column, total_tax_rate, tax_credit, Upstream_CO2_taxpYear, Proc_CO2_taxpYear)",
+      "excel_loc": "Cash Flow Analysis, X65:X107"
+    },
+    {
+      "name": "after_tax_income_column",
+      "label": "After-Tax Income Column",
+      "expression": "get_after_tax_income_column(predepreciation_income_column, total_taxes_column)",
+      "excel_loc": "Cash Flow Analysis, Y65:Y107"
+    },
+    {
+      "name": "aftertax_post_depreciation_cashflow_column",
+      "label": "After-Tax Post-Depreciation Cash Flow Column",
+      "expression": "get_aftertax_post_depreciation_cashflow(initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, total_taxes_column, principal_payments_column)",
+      "excel_loc": "Cash Flow Analysis, AA65:AA107"
+    },
+    {
+      "name": "cumulative_cashflow_column",
+      "label": "Cumulative Cash Flow Column",
+      "expression": "get_cumulative_cashflow_column(aftertax_post_depreciation_cashflow_column, analysis_index_range)",
+      "excel_loc": "Cash Flow Analysis, AB65:AB107"
+    },
+    {
+      "name": "pretax_cashflow",
+      "label": "Pretax Cash Flow",
+      "expression": "get_pretax_cashflow_column(initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, principal_payments_column)",
+      "excel_loc": "Cash Flow Analysis, AC65:AC107"
+    },
+    {
+      "orig_name": "after_tax_nominal_IRR",
+      "label": "After-Tax Nominal IRR",
+      "expression": "irr(aftertax_post_depreciation_cashflow_column)",
+      "excel_loc": "Cash Flow Analysis, E20"
+    },
+    {
+      "orig_name": "pre_tax_nominal_IRR",
+      "label": "Pre-Tax Nominal IRR",
+      "expression": "irr(pretax_cashflow)",
+      "excel_loc": "Cash Flow Analysis, E21"
+    },
+    {
+      "name": "aftertax_real_capital_recovery_factor",
+      "label": "After Tax Real Capital Recovery Factor",
+      "expression": "(real_irr * (1 + real_irr) ** anal_period) / (((1 + real_irr) ** anal_period) - 1)",
+      "excel_loc": "Cash Flow Analysis, E22"
+    },
+    {
+      "name": "aftertax_nominal_capital_recovery_factor",
+      "label": "After Tax Nominal Capital Recovery Factor",
+      "expression": "(nominal_irr * (1 + nominal_irr) ** anal_period) / (((1 + nominal_irr) ** anal_period) - 1)",
+      "excel_loc": "Cash Flow Analysis, E23"
+    },
+    {
+      "name": "total_real_fixed_charge_rate",
+      "label": "Total Real Fixed Charge Rate",
+      "expression": "(aftertax_real_capital_recovery_factor * (1 - total_tax_rate * npv(real_irr, get(macrs_depreciation_table, depr_length))) ) / (1 - total_tax_rate)",
+      "excel_loc": "Cash Flow Analysis, E24"
+    },
+    {
+      "name": "total_nominal_fixed_charge_rate",
+      "label": "Total Nominal Fixed Charge Rate",
+      "expression": "(aftertax_nominal_capital_recovery_factor * (1 - total_tax_rate * npv(nominal_irr, get(macrs_depreciation_table, depr_length))) ) / (1 - total_tax_rate)",
+      "excel_loc": "Cash Flow Analysis, E25"
+    },
+    {
+      "name": "after_tax_present_value_capital_related_costs",
+      "label": "After-Tax Present Value of Capital-Related Costs",
+      "expression": "(pv_of_cashflow_initial_equity_depr_cap + pv_of_cashflow_replacement_costs + pv_of_cashflow_working_cap_reserve + pv_of_cashflow_other_non_depreciable_capital_cost + (pv_of_cashflow_total_salvage_value * (1 - total_tax_rate)) + (pv_of_cashflow_interest_payments * (1 - total_tax_rate)) + (pv_of_cashflow_depreciation_charges * (-total_tax_rate)) + pv_of_cashflow_principal_payments) / (1 - total_tax_rate)",
+      "excel_loc": "Cash Flow Analysis, B119"
+    },
+    {
+      "name": "after_tax_present_value_decommissioning_costs",
+      "label": "After-Tax Present Value of Decommissioning Costs",
+      "expression": "npv(nominal_irr, decom_costs_column)",
+      "excel_loc": "Cash Flow Analysis, B120"
+    },
+    {
+      "name": "after_tax_present_value_fixed_cost",
+      "label": "After-Tax Present Value of Fixed O&M",
+      "expression": "npv(nominal_irr, fixed_cost_column)",
+      "excel_loc": "Cash Flow Analysis, B121"
+    },
+    {
+      "name": "after_tax_present_value_total_feedstock_cost",
+      "label": "After-Tax Present Value of Feedstock Costs",
+      "expression": "npv(nominal_irr, total_feedstock_cost_column)",
+      "excel_loc": "Cash Flow Analysis, B122"
+    },
+    {
+      "name": "after_tax_present_value_other_raw_material_cost",
+      "label": "After-Tax Present Value of Other Raw Material Costs",
+      "expression": "npv(nominal_irr, other_raw_material_cost_column)",
+      "excel_loc": "Cash Flow Analysis, B123"
+    },
+    {
+      "name": "after_tax_present_value_byproduct_credits",
+      "label": "After-Tax Present Value of Byproduct Credits",
+      "expression": "0",
+      "excel_loc": "Cash Flow Analysis, B124"
+    },
+    {
+      "name": "after_tax_present_value_variable_cost",
+      "label": "After-Tax Present Value of Other Variable Costs (including utilities)",
+      "expression": "npv(nominal_irr, variable_cost_column)",
+      "excel_loc": "Cash Flow Analysis, B125"
+    },
+    {
+      "name": "summed_cost_components",
+      "expression": "sum_args(after_tax_present_value_capital_related_costs, after_tax_present_value_decommissioning_costs, after_tax_present_value_fixed_cost, after_tax_present_value_total_feedstock_cost, after_tax_present_value_other_raw_material_cost, after_tax_present_value_byproduct_credits, after_tax_present_value_variable_cost)"
+    },
+    {
+      "name": "percentage_of_cost_capital_related_costs",
+      "label": "Percentage of Cost: Capital-Related Costs",
+      "expression": "after_tax_present_value_capital_related_costs / summed_cost_components",
+      "excel_loc": "Cash Flow Analysis, C119"
+    },
+    {
+      "name": "percentage_of_cost_decommissioning_costs",
+      "label": "Percentage of Cost: Decommissioning Costs",
+      "expression": "after_tax_present_value_decommissioning_costs / summed_cost_components",
+      "excel_loc": "Cash Flow Analysis, C120"
+    },
+    {
+      "name": "percentage_of_cost_fixed_cost",
+      "label": "Percentage of Cost: Fixed O&M",
+      "expression": "after_tax_present_value_fixed_cost / summed_cost_components",
+      "excel_loc": "Cash Flow Analysis, C121"
+    },
+    {
+      "name": "percentage_of_cost_total_feedstock_cost",
+      "label": "Percentage of Cost: Feedstock Costs",
+      "expression": "after_tax_present_value_total_feedstock_cost / summed_cost_components",
+      "excel_loc": "Cash Flow Analysis, C122"
+    },
+    {
+      "name": "percentage_of_cost_other_raw_material_cost",
+      "label": "Percentage of Cost: Other Raw Material Costs",
+      "expression": "after_tax_present_value_other_raw_material_cost / summed_cost_components",
+      "excel_loc": "Cash Flow Analysis, C123"
+    },
+    {
+      "name": "percentage_of_cost_byproduct_credits",
+      "label": "Percentage of Cost: Byproduct Credits",
+      "expression": "after_tax_present_value_byproduct_credits / summed_cost_components",
+      "excel_loc": "Cash Flow Analysis, C124"
+    },
+    {
+      "name": "percentage_of_cost_variable_cost",
+      "label": "Percentage of Cost: Other Variable Costs (including utilities)",
+      "expression": "after_tax_present_value_variable_cost / summed_cost_components",
+      "excel_loc": "Cash Flow Analysis, C125"
+    },
+    {
+      "name": "dollars_per_kg_h2_capital_related_costs",
+      "label": "$/kg of H2: Capital-Related Costs",
+      "expression": "H2_price_real * percentage_of_cost_capital_related_costs",
+      "excel_loc": "Cash Flow Analysis, D119"
+    },
+    {
+      "name": "dollars_per_kg_h2_decommissioning_costs",
+      "label": "$/kg of H2: Decommissioning Costs",
+      "expression": "H2_price_real * percentage_of_cost_decommissioning_costs",
+      "excel_loc": "Cash Flow Analysis, D120"
+    },
+    {
+      "name": "dollars_per_kg_h2_fixed_cost",
+      "label": "$/kg of H2: Fixed O&M",
+      "expression": "H2_price_real * percentage_of_cost_fixed_cost",
+      "excel_loc": "Cash Flow Analysis, D121"
+    },
+    {
+      "name": "dollars_per_kg_h2_total_feedstock_cost",
+      "label": "$/kg of H2: Feedstock Costs",
+      "expression": "H2_price_real * percentage_of_cost_total_feedstock_cost",
+      "excel_loc": "Cash Flow Analysis, D122"
+    },
+    {
+      "name": "dollars_per_kg_h2_other_raw_material_cost",
+      "label": "$/kg of H2: Other Raw Material Costs",
+      "expression": "H2_price_real * percentage_of_cost_other_raw_material_cost",
+      "excel_loc": "Cash Flow Analysis, D123"
+    },
+    {
+      "name": "dollars_per_kg_h2_byproduct_credits",
+      "label": "$/kg of H2: Byproduct Credits",
+      "expression": "H2_price_real * percentage_of_cost_byproduct_credits",
+      "excel_loc": "Cash Flow Analysis, D124"
+    },
+    {
+      "name": "dollars_per_kg_h2_variable_cost",
+      "label": "$/kg of H2: Other Variable Costs (including utilities)",
+      "expression": "H2_price_real * percentage_of_cost_variable_cost",
+      "excel_loc": "Cash Flow Analysis, D125"
     }
   ]
 }
