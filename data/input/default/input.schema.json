@@ -212,9 +212,8 @@
       "minimum": 0
     },
     "material_cost_maintenance_and_repairs": {
-      "type": "number",
-      "title": "Material costs for maintenance and repairs ($/year)",
-      "minimum": 0
+      "type": "string",
+      "title": "Material costs for maintenance and repairs ($/year)"
     },
     "production_cost_maintenance_and_repairs": {
       "type": "number",

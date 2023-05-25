@@ -46,7 +46,7 @@
    "licensing": 0,
    "tax_ins_rate": 0.02,
    "rent": 0,
-   "material_cost_maintenance_and_repairs": 3050393,
+   "material_cost_maintenance_and_repairs": "3050393",
    "production_cost_maintenance_and_repairs": 2033595,
    "other_fees": 1056446,
    "other_fixed": 0,

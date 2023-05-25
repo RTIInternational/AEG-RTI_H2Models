@@ -1,7 +1,7 @@
 {
    "$schema": "input.schema.json",
    "capacity_factor": 0.9,
-   "plant_design_capacity": 483000,
+   "plant_design_capacity": 660000,
    "ref_year": 2016,
    "startup_year": 2015,
    "BasisYear": 2018,
@@ -30,12 +30,12 @@
    "fed_tax_rate": 0.21,
    "WorkingCap": 0.15,
 
-   "site_preparation": "0.0643491944473551 * direct_cap / (CEPCIinflator * CPIinflator)",
-   "engineering_and_design": "0.137394766021756 * direct_cap / (CEPCIinflator * CPIinflator)",
-   "process_contingency": "0.11079055690422 * direct_cap / (CEPCIinflator * CPIinflator)",
-   "project_contingency": "0.404009659162592 * direct_cap / (CEPCIinflator * CPIinflator)",
-   "other_depreciable_capital_cost": 100993000,
-   "upfront_permitting": "0.137394766021756 * direct_cap / (CEPCIinflator * CPIinflator)",
+   "site_preparation": "0.0614512719060784*(direct_cap)/(CEPCIinflator*CPIinflator)",
+   "engineering_and_design": "0.106142451010464*(direct_cap)/(CEPCIinflator*CPIinflator)",
+   "process_contingency": "0.00101283125449033*(direct_cap)/(CEPCIinflator*CPIinflator)",
+   "project_contingency": "0.142317201456665*(direct_cap)/(CEPCIinflator*CPIinflator)",
+   "other_depreciable_capital_cost": 105157000,
+   "upfront_permitting": "0.106142451010464*(direct_cap)/(CEPCIinflator*CPIinflator)",
 
    "cost_per_acre": 50000,
    "acres_required": 100,
@@ -46,35 +46,35 @@
    "licensing": 0,
    "tax_ins_rate": 0.02,
    "rent": 0,
-   "material_cost_maintenance_and_repairs": "7675489",
-   "production_cost_maintenance_and_repairs": 5116993,
-   "other_fees": 1973405,
+   "material_cost_maintenance_and_repairs": "8215323",
+   "production_cost_maintenance_and_repairs": 5476882,
+   "other_fees": 2063377,
    "other_fixed": 0,
 
    "other_variable_operating_costs": 0,
-   "other_material_costs": 6432293,
-   "waste_treatment_costs": 72448,
+   "other_material_costs": 5492790,
+   "waste_treatment_costs": 92798,
    "solid_waste_disposal_costs": 0,
    "replace_factor": 0.005,
    "royalties": 0,
    "operator_profit": 0,
    "tax_credit_per_year": 0,
 
-   "CO2_Capture_Efficiency": 0.962956537103719,
+   "CO2_Capture_Efficiency": 0.944809423587241,
    "pipeline_length_km": 160,
    "CO2_credit": 0,
 
    "feedstocks": [
       {
          "name": "Industrial Electricity",
-         "usage": 1.50260869565217,
+         "usage": 3.49490909090909,
          "units": "kWh/kg H2",
          "price_table": "AEO_2017_Reference_Case",
          "lookup_prices": true
       },
       {
          "name": "Industrial Natural Gas",
-         "usage": 0.167779663352653,
+         "usage": 0.157680179192705,
          "units": "mmBtu/kg H2",
          "price_table": "AEO_2017_Reference_Case",
          "lookup_prices": true
@@ -83,7 +83,7 @@
    "nonenergy_materials": [
       {
          "name": "Process Water",
-         "usage": 8.130186335,
+         "usage": 8.11636363636364,
          "units": "gal/kg H2",
          "lookup_prices": true
       }
@@ -91,43 +91,48 @@
    "capital_investments": [
       {
          "name": "Accessory Electric Plant",
-         "cost": 3270000,
-         "installation_cost_factor": 2.09938837920489
+         "cost": 3274000,
+         "installation_cost_factor": 2.16921197312156
       },
       {
          "name": "Cooling Water System",
-         "cost": 19401000,
-         "installation_cost_factor": 1.34678624813154
+         "cost": 23054000,
+         "installation_cost_factor": 1.34761863451028
       },
       {
          "name": "Feedwater & Miscellaneous BOP Systems",
-         "cost": 39465000,
-         "installation_cost_factor": 1.51693905992652
+         "cost": 42423000,
+         "installation_cost_factor": 1.54826391344318
+      },
+      {
+         "name": "Fired Heater, Ductwork, & Stack",
+         "cost": 7051000,
+         "installation_cost_factor": 1.47936462913062
       },
       {
          "name": "Flue Gas Cleanup",
-         "cost": 179884000,
-         "installation_cost_factor": 1.00630127127046
+         "cost": 35825000,
+         "installation_cost_factor": 1.21258897418004
       },
       {
          "name": "Hydrogen Production",
-         "cost": 16135000,
-         "installation_cost_factor": 1.08050821196157
+         "cost": 20163000,
+         "installation_cost_factor": 1.07925407925408
       },
       {
          "name": "Instrumentation & Control",
-         "cost": 10012000,
-         "installation_cost_factor": 1.14572512984419
+         "cost": 11200000,
+         "installation_cost_factor": 1.1575
       },
       {
          "name": "Reformer & Accessories",
-         "cost": 41908000,
-         "installation_cost_factor": 1.50768349718431
+         "cost": 173839000,
+         "installation_cost_factor": 1.4455904601384
       },
       {
          "name": "Syngas Cleanup",
-         "cost": 22779000,
-         "installation_cost_factor": 1.25848369111901
+         "cost": 46010000,
+         "installation_cost_factor": 1.11863053085565
       }
    ]
 }

@@ -29,7 +29,9 @@ def check_formulas(input_filename, excel_filename):
               cell = cell.strip()
               # If excel_filename is "current-central-steam-methane-reforming-with-co2-sequestration-version-aug-22.xlsm"
               # and the sheet is "Input_Sheet_Template" and the cell row is greater than 90, subtract 1 from the row
-              if excel_filename == "current-central-steam-methane-reforming-with-co2-sequestration-version-aug-22.xlsm" and sheet == "Input_Sheet_Template" and int(cell[1:]) > 90:
+              if ((excel_filename == "current-central-steam-methane-reforming-with-co2-sequestration-version-aug-22.xlsm"
+                   or excel_filename == "current-central-authothermal-reforming-of-natural-gas-with-co2-sequestration-version-aug22.xlsm")
+                  and sheet == "Input_Sheet_Template" and int(cell[1:]) > 90):
                   cell = cell[0] + str(int(cell[1:])-1)
 
               if excel_filename == "current-central-steam-methane-reforming-without-co2-sequestration-version-aug22.xlsm" and sheet == "Carbon Sequestration":
@@ -59,28 +61,37 @@ def check_formulas(input_filename, excel_filename):
                       print("✅", name)
 
 if __name__ == "__main__":
-    def check_with_cc():
+    def check_smr_with_cc():
         input_filename = "default-smr-natural-gas-with-cc.json"
         excel_filename = "current-central-steam-methane-reforming-with-co2-sequestration-version-aug-22.xlsm"
         check_formulas(input_filename, excel_filename)
 
-    def check_no_cc():
+    def check_smr_no_cc():
         input_filename = "default-smr-natural-gas-no-cc.json"
         excel_filename = "current-central-steam-methane-reforming-without-co2-sequestration-version-aug22.xlsm"
         check_formulas(input_filename, excel_filename)
 
-    def check_both():
-        check_no_cc()
+    def check_atr_with_cc():
+        input_filename = "default-autothermal-reforming-natural-gas-with-cc.json"
+        excel_filename = "current-central-authothermal-reforming-of-natural-gas-with-co2-sequestration-version-aug22.xlsm"
+        check_formulas(input_filename, excel_filename)
+
+    def check_all():
+        check_smr_no_cc()
         print("----------------------------------------")
-        check_with_cc()
+        check_smr_with_cc()
+        print("----------------------------------------")
+        check_atr_with_cc()
         sys.exit()
 
     if len(sys.argv) > 1:
-        if sys.argv[1] == "with-cc":
-            check_with_cc()
-        elif sys.argv[1] == "no-cc":
-            check_no_cc()
+        if sys.argv[1] == "smr-with-cc":
+            check_smr_with_cc()
+        elif sys.argv[1] == "smr-no-cc":
+            check_smr_no_cc()
+        elif sys.argv[1] == "atr":
+            check_atr_with_cc()
         else:
-            check_both()
+            check_all()
     else:
-        check_both()
+        check_all()

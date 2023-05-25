@@ -126,6 +126,7 @@ calculate <- function(user_input) {
   process_contingency_cost <- evaluate(process_contingency)
   project_contingency_cost <- evaluate(project_contingency)
   upfront_permitting_costs <- evaluate(upfront_permitting)
+  material_cost_maintenance_and_repairs_cost <- evaluate(material_cost_maintenance_and_repairs)
   depr_cap <- direct_cap + CO2_seq + (CEPCIinflator * CPIinflator) * (site_preparation_cost + engineering_and_design_cost + process_contingency_cost + project_contingency_cost + other_depreciable_capital_cost + upfront_permitting_costs)
   replacement_costs <- get_replacement_costs(operation_range, inflation_price_increase_factors, replace_factor, depr_cap, ref_year, startup_year, inflation_rate)
   discounted_value_replacement_costs <- get(replacement_costs, YEAR_1) + npv(nominal_irr, skip(replacement_costs, 1))
@@ -153,7 +154,7 @@ calculate <- function(user_input) {
   labor_cost <- total_plant_staff * (labor_cost_per_hour * labor_cost_inflator) * FTE_HOURS_PER_YEAR
   overhead_GA <- labor_cost * overhead_rate
   tax_insurance <- tax_ins_rate * total_cap
-  total_fixed_cost <- labor_cost + overhead_GA + tax_insurance + (CEPCIinflator*CPIinflator) * (licensing + rent + material_cost_maintenance_and_repairs + production_cost_maintenance_and_repairs + other_fees + other_fixed)
+  total_fixed_cost <- labor_cost + overhead_GA + tax_insurance + (CEPCIinflator*CPIinflator) * (licensing + rent + material_cost_maintenance_and_repairs_cost + production_cost_maintenance_and_repairs + other_fees + other_fixed)
   inflated_fixed <- total_fixed_cost * INFLATION_FACTOR
   fixed_cost_column <- get_fixed_cost_column(operation_range, inflation_price_increase_factors, inflated_fixed, percnt_fixed, start_time)
   discounted_value_fixed_cost <- get(fixed_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(fixed_cost_column, 1))
