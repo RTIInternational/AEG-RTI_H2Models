@@ -47,7 +47,7 @@
   "tax_ins_rate": 0.02,
   "rent": 0,
   "material_cost_maintenance_and_repairs": "0.03 * direct_cap / (CEPCIinflator * CPIinflator)",
-  "production_cost_maintenance_and_repairs": 0,
+  "production_cost_maintenance_and_repairs": "0",
   "other_fees": 0,
   "other_fixed": 0,
 

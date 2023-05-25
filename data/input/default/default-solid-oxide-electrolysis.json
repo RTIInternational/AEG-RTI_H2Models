@@ -1,0 +1,103 @@
+{
+   "$schema": "input.schema.json",
+   "capacity_factor": 0.8244,
+   "plant_design_capacity": 50000,
+   "ref_year": 2016,
+   "startup_year": 2015,
+   "BasisYear": 2012,
+   "CurrentYear": 2010,
+   "construct": 1,
+   "percent_cap1": 1,
+   "percent_cap2": 0,
+   "percent_cap3": 0,
+   "percent_cap4": 0,
+   "start_time": 1,
+   "plant_life": 40,
+   "anal_period": 40,
+   "depr_length": 20,
+   "depr_type": "MACRS",
+   "percentage_equity_financing": 0.4,
+   "debt_interest": 0.037,
+   "debt_period": 0,
+   "percnt_fixed": 1,
+   "percnt_revs": 0.5,
+   "percnt_var": 0.75,
+   "decom_percent": 0.1,
+   "salvage_perct": 0.1,
+   "inflation_rate": 0.019,
+   "real_irr": 0.08,
+   "state_tax_rate": 0.06,
+   "fed_tax_rate": 0.21,
+   "WorkingCap": 0.15,
+
+   "site_preparation": "0.02*(direct_cap+CO2_seq)/(CEPCIinflator*CPIinflator)",
+   "engineering_and_design": "0.1*(direct_cap+CO2_seq)/(CEPCIinflator*CPIinflator)",
+   "process_contingency": "0.071741*(direct_cap+CO2_seq)/(CEPCIinflator*CPIinflator)",
+   "project_contingency": "0.071741*(direct_cap+CO2_seq)/(CEPCIinflator*CPIinflator)",
+   "other_depreciable_capital_cost": 0,
+   "upfront_permitting": "0.15*(direct_cap+CO2_seq)/(CEPCIinflator*CPIinflator)",
+
+   "cost_per_acre": 50000,
+   "acres_required": 5,
+
+   "total_plant_staff": 15,
+   "labor_cost_per_hour": 50,
+   "overhead_rate": 0.2,
+   "licensing": 0,
+   "tax_ins_rate": 0.02,
+   "rent": 0,
+   "material_cost_maintenance_and_repairs": "0",
+   "production_cost_maintenance_and_repairs": "0.03*direct_cap/(CEPCIinflator*CPIinflator)",
+   "other_fees": 0,
+   "other_fixed": 0,
+
+   "other_variable_operating_costs": 0,
+   "other_material_costs": 0,
+   "waste_treatment_costs": 0,
+   "solid_waste_disposal_costs": 0,
+   "replace_factor": 0.01,
+   "royalties": 0,
+   "operator_profit": 0,
+   "tax_credit_per_year": 0,
+
+   "CO2_Capture_Efficiency": 0,
+   "pipeline_length_km": 0,
+   "CO2_credit": 0,
+
+   "feedstocks": [
+      {
+         "name": "Industrial Electricity",
+         "usage": 36.8,
+         "units": "kWh/kg H2",
+         "price_table": "AEO_2017_Reference_Case",
+         "lookup_prices": true
+      },
+      {
+         "name": "Industrial Natural Gas",
+         "usage": 0.05613,
+         "units": "mmBtu/kg H2",
+         "price_table": "AEO_2017_Reference_Case",
+         "lookup_prices": true
+      }
+   ],
+   "nonenergy_materials": [
+      {
+         "name": "Process Water",
+         "usage": 2.378,
+         "units": "gal/kg H2",
+         "lookup_prices": true
+      }
+   ],
+   "capital_investments": [
+      {
+         "name": "Electrolyzer Stack",
+         "cost": 22003333.3333333,
+         "installation_cost_factor": 1.12
+      },
+      {
+         "name": "Electrolyzer BoP",
+         "cost": 40863333.3333333,
+         "installation_cost_factor": 1.12
+      }
+   ]
+}

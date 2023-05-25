@@ -181,6 +181,12 @@
       "excel_loc": "Input_Sheet_Template, C120"
     },
     {
+      "name": "production_cost_maintenance_and_repairs_cost",
+      "label": "Production Maintenance and Repairs ($/year)",
+      "expression": "evaluate(production_cost_maintenance_and_repairs)",
+      "excel_loc": "Input_Sheet_Template, C121"
+    },
+    {
       "orig_name": "depr_cap",
       "label": "Total Depreciable Capital Costs",
       "expression": "direct_cap + CO2_seq + (CEPCIinflator * CPIinflator) * (site_preparation_cost + engineering_and_design_cost + process_contingency_cost + project_contingency_cost + other_depreciable_capital_cost + upfront_permitting_costs)",
@@ -341,7 +347,7 @@
     {
       "name": "total_fixed_cost",
       "label": "Total Fixed Operating Costs ($/year)",
-      "expression": "labor_cost + overhead_GA + tax_insurance + (CEPCIinflator*CPIinflator) * (licensing + rent + material_cost_maintenance_and_repairs_cost + production_cost_maintenance_and_repairs + other_fees + other_fixed)",
+      "expression": "labor_cost + overhead_GA + tax_insurance + (CEPCIinflator*CPIinflator) * (licensing + rent + material_cost_maintenance_and_repairs_cost + production_cost_maintenance_and_repairs_cost + other_fees + other_fixed)",
       "excel_loc": "Input_Sheet_Template, E124"
     },
     {
