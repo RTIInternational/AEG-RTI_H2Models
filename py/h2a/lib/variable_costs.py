@@ -6,7 +6,8 @@ from h2a.helpers import get
 
 def calculate_variable_cost_for_year(
     year,
-    price,
+    utility_price,
+    material_price,
     inflation_price_increase_factor,
     plant_output_kg_per_year,
     percnt_var,
@@ -19,13 +20,16 @@ def calculate_variable_cost_for_year(
     elif year == 1 and start_time < 1:
         return -(
             (
-                (price * plant_output_kg_per_year + inflated_othervar)
+                (
+                    (utility_price + material_price) * plant_output_kg_per_year
+                    + inflated_othervar
+                )
                 * inflation_price_increase_factor
                 * percnt_var
                 * start_time
             )
             + (
-                price
+                (utility_price + material_price)
                 * plant_output_kg_per_year
                 * inflation_price_increase_factor
                 * (1 - start_time)
@@ -33,25 +37,32 @@ def calculate_variable_cost_for_year(
         )
     elif year <= start_time:
         return (
-            -(price * plant_output_kg_per_year + inflated_othervar)
+            -(
+                (utility_price + material_price) * plant_output_kg_per_year
+                + inflated_othervar
+            )
             * inflation_price_increase_factor
             * percnt_var
         )
     else:
         return (
-            -(price * plant_output_kg_per_year + inflated_othervar)
+            -(
+                (utility_price + material_price) * plant_output_kg_per_year
+                + inflated_othervar
+            )
             * inflation_price_increase_factor
         )
 
 
-def material_prices_from_df(nonenergy_material_price_df, i):
+def prices_from_df(price_df, i):
     """For a given year (i), return a list containing the price of each material"""
-    return list(map(lambda material: get(material, i), nonenergy_material_price_df))
+    return list(map(lambda prices: get(prices, i), price_df))
 
 
 def get_variable_cost_column(
     operation_range,
     analysis_index_range,
+    utility_price_df,
     nonenergy_material_price_df,
     inflation_price_increase_factors,
     plant_output_kg_per_year,
@@ -64,7 +75,8 @@ def get_variable_cost_column(
         map(
             lambda year, i, inflation_price_increase_factor: calculate_variable_cost_for_year(
                 year,
-                sum(material_prices_from_df(nonenergy_material_price_df, i)),
+                sum(prices_from_df(utility_price_df, i)),
+                sum(prices_from_df(nonenergy_material_price_df, i)),
                 inflation_price_increase_factor,
                 plant_output_kg_per_year,
                 percnt_var,

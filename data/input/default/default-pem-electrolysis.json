@@ -1,11 +1,11 @@
 {
   "$schema": "input.schema.json",
-  "capacity_factor": 0.9,
-  "plant_design_capacity": 483024,
+  "capacity_factor": 0.97,
+  "plant_design_capacity": 56500,
   "ref_year": 2016,
   "startup_year": 2015,
-  "BasisYear": 2018,
-  "CurrentYear": 2018,
+  "BasisYear": 2016,
+  "CurrentYear": 2016,
   "construct": 1,
   "percent_cap1": 1,
   "percent_cap2": 0,
@@ -65,6 +65,15 @@
   "CO2_credit": 0,
 
   "feedstocks": [],
+  "utilities": [
+   {
+      "name": "Industrial Electricity",
+      "usage": 55.5,
+      "units": "kWh/kg H2",
+      "price_table": "AEO_2017_Reference_Case",
+      "lookup_prices": true
+   }
+  ],
   "nonenergy_materials": [
      {
         "name": "Process Water",
@@ -73,6 +82,13 @@
         "lookup_prices": true
      }
   ],
+  "replacement_costs_for_years": {
+      "8": "0.15 * direct_cap",
+      "15": "0.15 * direct_cap",
+      "22": "0.15 * direct_cap",
+      "29": "0.15 * direct_cap",
+      "36": "0.15 * direct_cap"
+  },
   "capital_investments": [
      {
         "name": "Stack Capital Cost",

@@ -15,9 +15,13 @@ helper_code = {
         "py": "def round_num(num, ndigits):\n    if ndigits >= 0:\n        factor = 10 ** ndigits\n        return int(num * factor + 0.5) / factor\n    else:\n        factor = 10 ** abs(ndigits)\n        return int(num / factor + 0.5) * factor\n\n",
         "R": "round_num <- function(num, ndigits) {\n    if (ndigits >= 0) {\n        factor <- 10 ^ ndigits\n        return(as.integer(num * factor + 0.5) / factor)\n    } else {\n        factor <- 10 ^ abs(ndigits)\n        return(as.integer(num / factor + 0.5) * factor))\n    }\n}\n\n",
     },
+    "to_str": {
+        "py": "def to_str(num):\n    return str(num)\n\n",
+        "R": "to_str <- function(num) {\n    return(as.character(num))\n}\n\n",
+    },
     "get": {
-        "py": "def get(obj, key):\n    return obj[key]\n\n",
-        "R": "get <- function(obj, key) obj[[key]]\n\n",
+        "py": "def get(obj, key, default_val=0):\n    return obj.get(key, default_val) if isinstance(obj, dict) else (obj[key] if key in obj or (isinstance(key, int) and len(obj) > key) else default_val)\n\n",
+        "R": "get <- function(obj, key, default_val = 0) {\n    if (is.null(obj[[key]])) {\n        return(default_val)\n    } else {\n        return(obj[[key]])\n    }\n}\n\n",
     },
     "concat": {
         "py": "def concat(a, b):\n    return a + b\n\n",
@@ -92,6 +96,9 @@ def helpers_to_lang(lang):
     # round_num() is a helper function to round a number to a specified number of digits
     # Negative ndigits means rounding to the nearest power of ten (e.g. -2 rounds to the nearest hundred)
     file_str += code["round_num"][lang]
+
+    # to_str() is a helper function to convert a number to a string
+    file_str += code["to_str"][lang]
 
     # get() is a helper function to access a dictionary
     file_str += code["get"][lang]

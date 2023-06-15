@@ -20,8 +20,11 @@ def round_num(num, ndigits):
         factor = 10 ** abs(ndigits)
         return int(num / factor + 0.5) * factor
 
-def get(obj, key):
-    return obj[key]
+def to_str(num):
+    return str(num)
+
+def get(obj, key, default_val=0):
+    return obj.get(key, default_val) if isinstance(obj, dict) else (obj[key] if key in obj or (isinstance(key, int) and len(obj) > key) else default_val)
 
 def concat(a, b):
     return a + b

@@ -80,6 +80,7 @@
          "lookup_prices": true
       }
    ],
+   "utilities": [],
    "nonenergy_materials": [
       {
          "name": "Process Water",
@@ -88,6 +89,7 @@
          "lookup_prices": true
       }
    ],
+   "replacement_costs_for_years": {},
    "capital_investments": [
       {
          "name": "Accessory Electric Plant",

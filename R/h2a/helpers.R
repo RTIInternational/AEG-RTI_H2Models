@@ -25,7 +25,17 @@ round_num <- function(num, ndigits) {
     }
 }
 
-get <- function(obj, key) obj[[key]]
+to_str <- function(num) {
+    return(as.character(num))
+}
+
+get <- function(obj, key, default_val = 0) {
+    if (is.null(obj[[key]])) {
+        return(default_val)
+    } else {
+        return(obj[[key]])
+    }
+}
 
 concat <- function(a, b) paste(a, b, sep = "")
 

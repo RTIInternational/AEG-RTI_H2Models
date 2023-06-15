@@ -80,6 +80,7 @@
          "lookup_prices": true
       }
    ],
+   "utilities": [],
    "nonenergy_materials": [
       {
          "name": "Process Water",

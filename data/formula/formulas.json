@@ -109,6 +109,11 @@
       "excel_loc": "Cash Flow Analysis B139:E181"
     },
     {
+      "name": "utility_price_df",
+      "expression": "get_feedstock_price_df(utilities, analysis_range, startup_year, INFLATION_FACTOR)",
+      "excel_loc": "Cash Flow Analysis F139:J181"
+    },
+    {
       "name": "operation_range",
       "expression": "get_operation_range(analysis_index_range, construct)",
       "sample": "[-3, -2, -1, 1, 2, 3, ..., 40]"
@@ -195,7 +200,7 @@
     {
       "name": "replacement_costs",
       "label": "Yearly Replacement Costs Column",
-      "expression": "get_replacement_costs(operation_range, inflation_price_increase_factors, replace_factor, depr_cap, ref_year, startup_year, inflation_rate)",
+      "expression": "get_replacement_costs(operation_range, inflation_price_increase_factors, replacement_costs_for_years, replace_factor, depr_cap, ref_year, startup_year, inflation_rate)",
       "excel_loc": "Cash Flow Analysis, I65:I107"
     },
     {
@@ -471,15 +476,21 @@
     },
 
     {
-      "name": "energy_input_GJ_per_kg_h2",
-      "label": "Energy Input (GJ/kg H2)",
+      "name": "feedstock_energy_input_GJ_per_kg_h2",
+      "label": "Feedstock Energy Input (GJ/kg H2)",
       "expression": "get_energy_input_for_feedstocks(feedstocks)",
       "excel_loc": "Results, C32:C33"
     },
     {
+      "name": "utility_energy_input_GJ_per_kg_h2",
+      "label": "Utility Energy Input (GJ/kg H2)",
+      "expression": "get_energy_input_for_feedstocks(utilities)",
+      "excel_loc": "Results, C37:C37"
+    },
+    {
       "name": "production_process_energy_efficiency",
       "label": "Production Process Energy Efficiency",
-      "expression": "get(conversion_factors, 'kg_H2_LHV_to_GJ') / sum(energy_input_GJ_per_kg_h2)",
+      "expression": "get(conversion_factors, 'kg_H2_LHV_to_GJ') / (sum(feedstock_energy_input_GJ_per_kg_h2) + sum(utility_energy_input_GJ_per_kg_h2))",
       "excel_loc": "Results, D52"
     },
     {
@@ -489,7 +500,7 @@
     {
       "name": "upstream_energy_usage_GJ_per_kg_h2",
       "label": "Upstream Energy Usage (GJ/kg H2)",
-      "expression": "get_upstream_energy_usage_for_feedstocks(feedstocks, energy_input_GJ_per_kg_h2, upstream_energy_usage_column_names)",
+      "expression": "get_upstream_energy_usage_for_feedstocks(feedstocks, feedstock_energy_input_GJ_per_kg_h2, upstream_energy_usage_column_names)",
       "excel_loc": "Results, C61:E61, C62:E62"
     },
     {
@@ -497,16 +508,28 @@
       "expression": "args_to_list('CO2', 'CH4', 'N2O')"
     },
     {
-      "name": "upstream_ghg_emissions_kg_per_kg_h2",
+      "name": "feedstock_upstream_ghg_emissions_kg_per_kg_h2",
       "label": "Upstream GHG Emissions (kg/kg H2) based on GREET.NET 2017",
-      "expression": "get_upstream_ghg_emissions_for_feedstocks(feedstocks, energy_input_GJ_per_kg_h2, greenhouse_gas_column_names)",
+      "expression": "get_upstream_ghg_emissions_for_feedstocks(feedstocks, feedstock_energy_input_GJ_per_kg_h2, greenhouse_gas_column_names)",
       "excel_loc": "Results, C110:E110, C111:E111"
     },
     {
-      "name": "upstream_ghg_emissions_kg_per_kg_h2_total",
+      "name": "feedstock_upstream_ghg_emissions_kg_per_kg_h2_total",
       "label": "Upstream GHG Emissions (kg/kg H2) based on GREET.NET 2017 Total Column",
-      "expression": "get_total_ghg_emissions(upstream_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))",
+      "expression": "get_total_ghg_emissions(feedstock_upstream_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))",
       "excel_loc": "Results, F110:F111"
+    },
+    {
+      "name": "utility_upstream_ghg_emissions_kg_per_kg_h2",
+      "label": "Utility Upstream GHG Emissions (kg/kg H2) based on GREET.NET 2017",
+      "expression": "get_upstream_ghg_emissions_for_feedstocks(utilities, utility_energy_input_GJ_per_kg_h2, greenhouse_gas_column_names)",
+      "excel_loc": "Results, C115:E115,"
+    },
+    {
+      "name": "utility_upstream_ghg_emissions_kg_per_kg_h2_total",
+      "label": "Utility Upstream GHG Emissions (kg/kg H2) based on GREET.NET 2017 Total Column",
+      "expression": "get_total_ghg_emissions(utility_upstream_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))",
+      "excel_loc": "Results, F115:F115"
     },
     {
       "name": "production_process_ghg_emissions_kg_per_kg_h2",
@@ -601,13 +624,13 @@
     {
       "label": "Total upstream emissions (kg/kg H2)",
       "name": "total_upstream_emissions_kg_per_kg_h2",
-      "expression": "sum_columns(upstream_ghg_emissions_kg_per_kg_h2)",
+      "expression": "sum_columns(feedstock_upstream_ghg_emissions_kg_per_kg_h2)",
       "excel_loc": "Results, D77:F77"
     },
     {
       "label": "Total upstream emissions for all GHGs (kg/kg H2)",
       "name": "total_upstream_emissions_all_ghg_kg_per_kg_h2",
-      "expression": "sum(upstream_ghg_emissions_kg_per_kg_h2_total)",
+      "expression": "sum(feedstock_upstream_ghg_emissions_kg_per_kg_h2_total) + sum(utility_upstream_ghg_emissions_kg_per_kg_h2_total)",
       "excel_loc": "Results, G77"
     },
     {
@@ -721,7 +744,7 @@
     {
       "name": "variable_cost_column",
       "label": "Other Variable Operating Costs",
-      "expression": "get_variable_cost_column(operation_range, analysis_index_range, nonenergy_material_price_df, inflation_price_increase_factors, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar)",
+      "expression": "get_variable_cost_column(operation_range, analysis_index_range, utility_price_df, nonenergy_material_price_df, inflation_price_increase_factors, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar)",
       "excel_loc": "Cash Flow Analysis, R65:R107"
     },
     {
