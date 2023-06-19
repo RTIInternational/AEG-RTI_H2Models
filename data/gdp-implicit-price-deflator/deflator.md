@@ -6,6 +6,8 @@ deflator-orig.csv is the original table from the H2A Excel workbook. The Excel s
 
 deflator-updated.csv is the updated version as of March 2023. The index by default was set to 2012=100.
 
+deflator-soe.csv is an older version used in `current-central-solid-oxide-electrolysis-version-nov20.xlsm`
+
 ## Use in H2A formulas
 
 The table is commonly used with 2 years to calculate a ratio, like so:

@@ -104,35 +104,41 @@ def read_plant_cost_index():
 
 
 def read_consumer_price_index():
-    consumer_price_index = {}
-    with open(
-        os.path.join(root_dir, "data/gdp-implicit-price-deflator/deflator-orig.csv"),
-        newline="",
-    ) as csvfile:
-        reader = csv.reader(csvfile)
-        next(reader)  # skip the first row
-        for row in reader:
-            if row[0].startswith("#"):
-                continue
-            year, value = row
-            consumer_price_index[int(year)] = float(value)
-    return consumer_price_index
+    consumer_price_indices = {}
+    filenames = ["deflator-orig.csv", "deflator-soe.csv"]
+    for filename in filenames:
+        with open(
+            os.path.join(root_dir, f"data/gdp-implicit-price-deflator/{filename}"),
+            newline="",
+        ) as csvfile:
+            consumer_price_indices[filename] = {}
+            reader = csv.reader(csvfile)
+            next(reader)  # skip the first row
+            for row in reader:
+                if row[0].startswith("#"):
+                    continue
+                year, value = row
+                consumer_price_indices[filename][int(year)] = float(value)
+    return consumer_price_indices
 
 
 def read_labor_index():
-    labor_index = {}
-    with open(
-        os.path.join(root_dir, "data/labor-index/labor-index.csv"),
-        newline="",
-    ) as csvfile:
-        reader = csv.reader(csvfile)
-        next(reader)  # skip the first row
-        for row in reader:
-            if row[0].startswith("#"):
-                continue
-            year, value = row
-            labor_index[int(year)] = float(value)
-    return labor_index
+    labor_indices = {}
+    filenames = ["labor-index.csv", "labor-index-soe.csv"]
+    for filename in filenames:
+        with open(
+            os.path.join(root_dir, f"data/labor-index/{filename}"),
+            newline="",
+        ) as csvfile:
+            labor_indices[filename] = {}
+            reader = csv.reader(csvfile)
+            next(reader)  # skip the first row
+            for row in reader:
+                if row[0].startswith("#"):
+                    continue
+                year, value = row
+                labor_indices[filename][int(year)] = float(value)
+    return labor_indices
 
 
 def read_macrs_depreciation_table():
@@ -160,9 +166,10 @@ non_energy_material_prices = read_non_energy_material_prices()
 chemical_price_index = read_chemical_price_index()
 labor_index = read_labor_index()
 get_lhv = lambda fuel: lhv[fuel]
+get_labor_index = lambda year, labor_file: labor_index[labor_file][year]
 conversion_factor = lambda from_to: conversion_factors[from_to]
 get_plant_cost_index = lambda year: plant_cost_index[year]
-get_cpi = lambda year: consumer_price_index[year]
+get_cpi = lambda year, cpi_file: consumer_price_index[cpi_file][year]
 get_aeo = (
     lambda price_table: all_aeo[price_table]
     if price_table == "AEO_2017_Reference_Case"

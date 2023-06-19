@@ -64,6 +64,9 @@
    "pipeline_length_km": 0,
    "CO2_credit": 0,
 
+   "cpi_file": "deflator-soe.csv",
+   "labor_file": "labor-index-soe.csv",
+
    "feedstocks": [
       {
          "name": "Industrial Electricity",
@@ -89,6 +92,48 @@
          "lookup_prices": true
       }
    ],
+   "replacement_costs_for_years": {
+      "1": "0.273 * 0.35 * direct_cap",
+      "2": "0.273 * 0.35 * direct_cap",
+      "3": "0.273 * 0.35 * direct_cap",
+      "4": "0.273 * 0.35 * direct_cap",
+      "5": "0.273 * 0.35 * direct_cap",
+      "6": "0.273 * 0.35 * direct_cap",
+      "7": "0.273 * 0.35 * direct_cap",
+      "8": "0.273 * 0.35 * direct_cap",
+      "9": "0.273 * 0.35 * direct_cap",
+      "10": "0.273 * 0.35 * direct_cap",
+      "11": "0.273 * 0.35 * direct_cap",
+      "12": "0.273 * 0.35 * direct_cap",
+      "13": "0.273 * 0.35 * direct_cap",
+      "14": "0.273 * 0.35 * direct_cap",
+      "15": "0.273 * 0.35 * direct_cap",
+      "16": "0.273 * 0.35 * direct_cap",
+      "17": "0.273 * 0.35 * direct_cap",
+      "18": "0.273 * 0.35 * direct_cap",
+      "19": "0.273 * 0.35 * direct_cap",
+      "20": "0.273 * 0.35 * direct_cap",
+      "21": "0.273 * 0.35 * direct_cap + 0.65 * direct_cap",
+      "22": "0.273 * 0.35 * direct_cap",
+      "23": "0.273 * 0.35 * direct_cap",
+      "24": "0.273 * 0.35 * direct_cap",
+      "25": "0.273 * 0.35 * direct_cap",
+      "26": "0.273 * 0.35 * direct_cap",
+      "27": "0.273 * 0.35 * direct_cap",
+      "28": "0.273 * 0.35 * direct_cap",
+      "29": "0.273 * 0.35 * direct_cap",
+      "30": "0.273 * 0.35 * direct_cap",
+      "31": "0.273 * 0.35 * direct_cap",
+      "32": "0.273 * 0.35 * direct_cap",
+      "33": "0.273 * 0.35 * direct_cap",
+      "34": "0.273 * 0.35 * direct_cap",
+      "35": "0.273 * 0.35 * direct_cap",
+      "36": "0.273 * 0.35 * direct_cap",
+      "37": "0.273 * 0.35 * direct_cap",
+      "38": "0.273 * 0.35 * direct_cap",
+      "39": "0.273 * 0.35 * direct_cap",
+      "40": "0.273 * 0.35 * direct_cap"
+  },
    "capital_investments": [
       {
          "name": "Electrolyzer Stack",

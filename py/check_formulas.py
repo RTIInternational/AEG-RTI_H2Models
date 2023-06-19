@@ -16,6 +16,7 @@ def check_formulas(input_filename, excel_filename):
     wb = load_workbook(filename=excel_filename, data_only=True)
 
     is_pem = "-pem-" in input_filename
+    is_soe = "-solid-oxide-" in input_filename
 
     # For each formula with an excel_loc with a comma, split the string to get the sheet and cell/range
     # Then check that the value in the cell/range matches the value in the results dictionary
@@ -56,7 +57,7 @@ def check_formulas(input_filename, excel_filename):
                 if (
                     (excel_filename
                     == "current-central-steam-methane-reforming-without-co2-sequestration-version-aug22.xlsm"
-                    or is_pem)
+                    or is_pem or is_soe)
                     and sheet == "Carbon Sequestration"
                 ):
                     continue  # No use in checking unused formulas
@@ -152,6 +153,8 @@ if __name__ == "__main__":
         check_atr_with_cc()
         print("----------------------------------------")
         check_pem_electrolysis()
+        print("----------------------------------------")
+        check_solid_oxide_electrolysis()
         sys.exit()
 
     if len(sys.argv) > 1:

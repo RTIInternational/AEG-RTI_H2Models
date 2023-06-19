@@ -64,6 +64,9 @@
   "pipeline_length_km": 0,
   "CO2_credit": 0,
 
+  "cpi_file": "deflator-orig.csv",
+  "labor_file": "labor-index.csv",
+
   "feedstocks": [],
   "utilities": [
    {

@@ -24,7 +24,7 @@ import::from("other_raw_material_costs.R", get_other_raw_material_cost_column, .
 import::from("predepreciation_income.R", get_predepreciation_income_column, .directory = here(h2a,lib))
 import::from("production_process_ghg_emissions.R", get_production_process_ghg_emissions_for_feedstocks, get_production_process_total_ghg_emissions_for_feedstocks, .directory = here(h2a,lib))
 import::from("production_process_ghg_emissions_summary.R", get_co2_captured_kg_per_kg_h2, get_co2_captured_metric_tons_per_year, get_total_in_metric_tons_per_year, get_total_process_emissions_kg_per_kg_h2, get_total_process_emissions_metric_tons_per_year, get_total_well_to_pump_emissions_kg_per_kg_h2, .directory = here(h2a,lib))
-import::from("ref_tables.R", chemical_price_index, conversion_factor, conversion_factors, get_cpi, get_lhv, get_plant_cost_index, labor_index, macrs_depreciation_table, .directory = here(h2a))
+import::from("ref_tables.R", chemical_price_index, conversion_factor, conversion_factors, get_cpi, get_labor_index, get_lhv, get_plant_cost_index, macrs_depreciation_table, .directory = here(h2a))
 import::from("replacement_costs.R", get_replacement_costs, .directory = here(h2a,lib))
 import::from("revenue_h2_sales.R", get_revenue_h2_sales_column, .directory = here(h2a,lib))
 import::from("salvage.R", get_salvage_column, .directory = here(h2a,lib))
@@ -93,6 +93,8 @@ calculate <- function(user_input) {
   CO2_Capture_Efficiency <- user_input[["CO2_Capture_Efficiency"]]
   pipeline_length_km <- user_input[["pipeline_length_km"]]
   CO2_credit <- user_input[["CO2_credit"]]
+  cpi_file <- user_input[["cpi_file"]]
+  labor_file <- user_input[["labor_file"]]
   feedstocks <- user_input[["feedstocks"]]
   utilities <- user_input[["utilities"]]
   nonenergy_materials <- user_input[["nonenergy_materials"]]
@@ -118,7 +120,7 @@ calculate <- function(user_input) {
   CEPCIinflator <- get_plant_cost_index(CurrentYear) / get_plant_cost_index(BasisYear)
   print(paste("CEPCIinflator", CEPCIinflator, sep = ": "))
 
-  CPIinflator <- get_cpi(ref_year) / get_cpi(CurrentYear)
+  CPIinflator <- get_cpi(ref_year, cpi_file) / get_cpi(CurrentYear, cpi_file)
   print(paste("CPIinflator", CPIinflator, sep = ": "))
 
   INFLATION_FACTOR <- (1 + inflation_rate) ** (startup_year - ref_year)
@@ -262,7 +264,7 @@ calculate <- function(user_input) {
   FTE_HOURS_PER_YEAR <- 2080
   print(paste("FTE_HOURS_PER_YEAR", FTE_HOURS_PER_YEAR, sep = ": "))
 
-  labor_cost_inflator <- get(labor_index, ref_year) / get(labor_index, BasisYear)
+  labor_cost_inflator <- get_labor_index(ref_year, labor_file) / get_labor_index(BasisYear, labor_file)
   print(paste("labor_cost_inflator", labor_cost_inflator, sep = ": "))
 
   labor_cost <- total_plant_staff * (labor_cost_per_hour * labor_cost_inflator) * FTE_HOURS_PER_YEAR
@@ -436,10 +438,10 @@ calculate <- function(user_input) {
   cc_storage_cost_nominal_dollars_per_tonne_co2 <- get_cc_storage_cost(CO2_Capture_Efficiency, co2_mass_flowrate_million_metric_tonnes_per_year, capacity_factor)
   print(paste("cc_storage_cost_nominal_dollars_per_tonne_co2", cc_storage_cost_nominal_dollars_per_tonne_co2, sep = ": "))
 
-  cc_transport_cost_basis_year_dollars_per_tonne_co2 <- cc_transport_cost_nominal_dollars_per_tonne_co2 * get_cpi(BasisYear) / get_cpi(startup_year)
+  cc_transport_cost_basis_year_dollars_per_tonne_co2 <- cc_transport_cost_nominal_dollars_per_tonne_co2 * get_cpi(BasisYear, cpi_file) / get_cpi(startup_year, cpi_file)
   print(paste("cc_transport_cost_basis_year_dollars_per_tonne_co2", cc_transport_cost_basis_year_dollars_per_tonne_co2, sep = ": "))
 
-  cc_storage_cost_basis_year_dollars_per_tonne_co2 <- cc_storage_cost_nominal_dollars_per_tonne_co2 * get_cpi(BasisYear - 1) / get_cpi(startup_year - 1)
+  cc_storage_cost_basis_year_dollars_per_tonne_co2 <- cc_storage_cost_nominal_dollars_per_tonne_co2 * get_cpi(BasisYear - 1, cpi_file) / get_cpi(startup_year - 1, cpi_file)
   print(paste("cc_storage_cost_basis_year_dollars_per_tonne_co2", cc_storage_cost_basis_year_dollars_per_tonne_co2, sep = ": "))
 
   cc_transport_cost_first_year_basis_year_dollars_per_year <- cc_transport_cost_basis_year_dollars_per_tonne_co2 * co2_mass_flowrate_million_metric_tonnes_per_year * 1000000
@@ -451,16 +453,16 @@ calculate <- function(user_input) {
   total_cc_cost_first_year_per_tonne_co2 <- cc_transport_cost_first_year_basis_year_dollars_per_year + cc_storage_cost_first_year_basis_year_dollars_per_year
   print(paste("total_cc_cost_first_year_per_tonne_co2", total_cc_cost_first_year_per_tonne_co2, sep = ": "))
 
-  cc_transport_cost_ref_year_dollars_per_tonne_co2 <- cc_transport_cost_basis_year_dollars_per_tonne_co2 * get_cpi(ref_year) / get_cpi(BasisYear)
+  cc_transport_cost_ref_year_dollars_per_tonne_co2 <- cc_transport_cost_basis_year_dollars_per_tonne_co2 * get_cpi(ref_year, cpi_file) / get_cpi(BasisYear, cpi_file)
   print(paste("cc_transport_cost_ref_year_dollars_per_tonne_co2", cc_transport_cost_ref_year_dollars_per_tonne_co2, sep = ": "))
 
-  cc_storage_cost_ref_year_dollars_per_tonne_co2 <- cc_storage_cost_basis_year_dollars_per_tonne_co2 * get_cpi(ref_year) / get_cpi(BasisYear)
+  cc_storage_cost_ref_year_dollars_per_tonne_co2 <- cc_storage_cost_basis_year_dollars_per_tonne_co2 * get_cpi(ref_year, cpi_file) / get_cpi(BasisYear, cpi_file)
   print(paste("cc_storage_cost_ref_year_dollars_per_tonne_co2", cc_storage_cost_ref_year_dollars_per_tonne_co2, sep = ": "))
 
-  cc_transport_cost_ref_year_dollars_per_kg_H2 <- (cc_transport_cost_first_year_basis_year_dollars_per_year / plant_output_kg_per_year) * get_cpi(ref_year) / get_cpi(BasisYear)
+  cc_transport_cost_ref_year_dollars_per_kg_H2 <- (cc_transport_cost_first_year_basis_year_dollars_per_year / plant_output_kg_per_year) * get_cpi(ref_year, cpi_file) / get_cpi(BasisYear, cpi_file)
   print(paste("cc_transport_cost_ref_year_dollars_per_kg_H2", cc_transport_cost_ref_year_dollars_per_kg_H2, sep = ": "))
 
-  cc_storage_cost_ref_year_dollars_per_kg_H2 <- (cc_storage_cost_first_year_basis_year_dollars_per_year / plant_output_kg_per_year) * get_cpi(ref_year - 1) / get_cpi(BasisYear - 1)
+  cc_storage_cost_ref_year_dollars_per_kg_H2 <- (cc_storage_cost_first_year_basis_year_dollars_per_year / plant_output_kg_per_year) * get_cpi(ref_year - 1, cpi_file) / get_cpi(BasisYear - 1, cpi_file)
   print(paste("cc_storage_cost_ref_year_dollars_per_kg_H2", cc_storage_cost_ref_year_dollars_per_kg_H2, sep = ": "))
 
   CO2_OandMcost <- total_cc_cost_first_year_per_tonne_co2

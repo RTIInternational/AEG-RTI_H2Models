@@ -42,7 +42,7 @@
     {
       "name": "",
       "label": "Consumer Price Inflator (CPI)",
-      "expression": "get_cpi(ref_year) / get_cpi(CurrentYear)",
+      "expression": "get_cpi(ref_year, cpi_file) / get_cpi(CurrentYear, cpi_file)",
       "orig_name": "CPIinflator",
       "excel_loc": "Capital Costs, C12"
     },
@@ -329,7 +329,7 @@
     },
     {
       "name": "labor_cost_inflator",
-      "expression": "get(labor_index, ref_year) / get(labor_index, BasisYear)"
+      "expression": "get_labor_index(ref_year, labor_file) / get_labor_index(BasisYear, labor_file)"
     },
     {
       "orig_name": "labor_cost",
@@ -675,13 +675,13 @@
     {
       "name": "cc_transport_cost_basis_year_dollars_per_tonne_co2",
       "label": "Transport Cost (basis year $/tonne CO2)",
-      "expression": "cc_transport_cost_nominal_dollars_per_tonne_co2 * get_cpi(BasisYear) / get_cpi(startup_year)",
+      "expression": "cc_transport_cost_nominal_dollars_per_tonne_co2 * get_cpi(BasisYear, cpi_file) / get_cpi(startup_year, cpi_file)",
       "excel_loc": "Carbon Sequestration, E36"
     },
     {
       "name": "cc_storage_cost_basis_year_dollars_per_tonne_co2",
       "label": "Storage Cost (basis year $/tonne CO2)",
-      "expression": "cc_storage_cost_nominal_dollars_per_tonne_co2 * get_cpi(BasisYear - 1) / get_cpi(startup_year - 1)",
+      "expression": "cc_storage_cost_nominal_dollars_per_tonne_co2 * get_cpi(BasisYear - 1, cpi_file) / get_cpi(startup_year - 1, cpi_file)",
       "excel_loc": "Carbon Sequestration, E37",
       "translation_note": "TODO: there is an error in the original formula, offsetting the years by 1. I kept the error so my results would match"
     },
@@ -706,25 +706,25 @@
     {
       "name": "cc_transport_cost_ref_year_dollars_per_tonne_co2",
       "label": "Transport Cost (ref year $/tonne CO2)",
-      "expression": "cc_transport_cost_basis_year_dollars_per_tonne_co2 * get_cpi(ref_year) / get_cpi(BasisYear)",
+      "expression": "cc_transport_cost_basis_year_dollars_per_tonne_co2 * get_cpi(ref_year, cpi_file) / get_cpi(BasisYear, cpi_file)",
       "excel_loc": "Carbon Sequestration, G36"
     },
     {
       "name": "cc_storage_cost_ref_year_dollars_per_tonne_co2",
       "label": "Storage Cost (ref year $/tonne CO2)",
-      "expression": "cc_storage_cost_basis_year_dollars_per_tonne_co2 * get_cpi(ref_year) / get_cpi(BasisYear)",
+      "expression": "cc_storage_cost_basis_year_dollars_per_tonne_co2 * get_cpi(ref_year, cpi_file) / get_cpi(BasisYear, cpi_file)",
       "excel_loc": "Carbon Sequestration, G37"
     },
     {
       "name": "cc_transport_cost_ref_year_dollars_per_kg_H2",
       "label": "Transport Cost (ref year $/kg H2)",
-      "expression": "(cc_transport_cost_first_year_basis_year_dollars_per_year / plant_output_kg_per_year) * get_cpi(ref_year) / get_cpi(BasisYear)",
+      "expression": "(cc_transport_cost_first_year_basis_year_dollars_per_year / plant_output_kg_per_year) * get_cpi(ref_year, cpi_file) / get_cpi(BasisYear, cpi_file)",
       "excel_loc": "Carbon Sequestration, H36"
     },
     {
       "name": "cc_storage_cost_ref_year_dollars_per_kg_H2",
       "label": "Storage Cost (ref year $/kg H2)",
-      "expression": "(cc_storage_cost_first_year_basis_year_dollars_per_year / plant_output_kg_per_year) * get_cpi(ref_year - 1) / get_cpi(BasisYear - 1)",
+      "expression": "(cc_storage_cost_first_year_basis_year_dollars_per_year / plant_output_kg_per_year) * get_cpi(ref_year - 1, cpi_file) / get_cpi(BasisYear - 1, cpi_file)",
       "excel_loc": "Carbon Sequestration, H37",
       "translation_note": "TODO: there is an error in the original formula, offsetting the years by 1. I kept the error so my results would match"
     },

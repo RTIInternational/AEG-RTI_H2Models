@@ -4,6 +4,8 @@
 
 labor-index.csv is the original table from the H2A Excel workbook.
 
+labor-index-soe.csv is the table used in the solid oxide electrolysis workbook.
+
 ## Use in H2A formulas
 
 The table is commonly used with 2 years to calculate a ratio, like so:
