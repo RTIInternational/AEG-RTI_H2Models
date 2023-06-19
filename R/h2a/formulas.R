@@ -196,7 +196,7 @@ calculate <- function(user_input) {
   depr_cap <- direct_cap + CO2_seq + (CEPCIinflator * CPIinflator) * (site_preparation_cost + engineering_and_design_cost + process_contingency_cost + project_contingency_cost + other_depreciable_capital_cost + upfront_permitting_costs)
   print(paste("depr_cap", depr_cap, sep = ": "))
 
-  replacement_costs <- get_replacement_costs(operation_range, inflation_price_increase_factors, replacement_costs_for_years, replace_factor, depr_cap, ref_year, startup_year, inflation_rate)
+  replacement_costs <- get_replacement_costs(operation_range, inflation_price_increase_factors, replacement_costs_for_years, replace_factor, direct_cap, depr_cap, ref_year, startup_year, inflation_rate)
   print(paste("replacement_costs", replacement_costs, sep = ": "))
 
   discounted_value_replacement_costs <- get(replacement_costs, YEAR_1) + npv(nominal_irr, skip(replacement_costs, 1))

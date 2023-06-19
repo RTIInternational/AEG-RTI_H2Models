@@ -9,6 +9,7 @@ def calculate_replacement_cost(
     inflation_price_increase_factor,
     replacement_costs_for_years,
     replace_factor,
+    direct_cap,
     depr_cap,
     ref_year,
     startup_year,
@@ -20,7 +21,7 @@ def calculate_replacement_cost(
         return (
             -inflation_price_increase_factor
             * (
-                evaluate(to_str(get(replacement_costs_for_years, year, 0)))
+                evaluate(to_str(get(replacement_costs_for_years, to_str(year), 0)))
                 + (replace_factor * depr_cap)
             )
             * ((1 + inflation_rate) ** (startup_year - ref_year))
@@ -32,6 +33,7 @@ def get_replacement_costs(
     inflation_price_increase_factors,
     replacement_costs_for_years,
     replace_factor,
+    direct_cap,
     depr_cap,
     ref_year,
     startup_year,
@@ -45,6 +47,7 @@ def get_replacement_costs(
                 inflation_price_increase_factor,
                 replacement_costs_for_years,
                 replace_factor,
+                direct_cap,
                 depr_cap,
                 ref_year,
                 startup_year,

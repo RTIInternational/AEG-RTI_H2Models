@@ -6,8 +6,8 @@ def calculate_revenue(
     inflation_price_increase_factor,
     H2_price_nominal,
     plant_output_kg_per_year,
-    start_time,
     percnt_revs,
+    start_time,
 ):
     """For a given year, calculate revenue from H2 sales"""
     if year < 0:

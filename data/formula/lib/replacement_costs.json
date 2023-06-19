@@ -2,7 +2,7 @@
   "functions" : [
     {
       "name": "calculate_replacement_cost",
-      "args": ["year", "inflation_price_increase_factor", "replacement_costs_for_years", "replace_factor", "depr_cap", "ref_year", "startup_year", "inflation_rate"],
+      "args": ["year", "inflation_price_increase_factor", "replacement_costs_for_years", "replace_factor", "direct_cap", "depr_cap", "ref_year", "startup_year", "inflation_rate"],
       "type": "switch",
       "cases": [
         {
@@ -11,7 +11,7 @@
         },
         {
           "condition": "TRUE",
-          "body": "-inflation_price_increase_factor * (evaluate(to_str(get(replacement_costs_for_years, year, 0))) + (replace_factor * depr_cap)) * ((1 + inflation_rate) ** (startup_year - ref_year))"
+          "body": "-inflation_price_increase_factor * (evaluate(to_str(get(replacement_costs_for_years, to_str(year), 0))) + (replace_factor * depr_cap)) * ((1 + inflation_rate) ** (startup_year - ref_year))"
         }
       ]
     },
@@ -21,7 +21,7 @@
       "map_function": "calculate_replacement_cost",
       "map_iterables": ["operation_range", "inflation_price_increase_factors"],
       "map_item_names": ["year", "inflation_price_increase_factor"],
-      "args": ["operation_range", "inflation_price_increase_factors", "replacement_costs_for_years", "replace_factor", "depr_cap", "ref_year", "startup_year", "inflation_rate"]
+      "args": ["operation_range", "inflation_price_increase_factors", "replacement_costs_for_years", "replace_factor", "direct_cap", "depr_cap", "ref_year", "startup_year", "inflation_rate"]
     }
   ]
 }

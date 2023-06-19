@@ -200,7 +200,7 @@
     {
       "name": "replacement_costs",
       "label": "Yearly Replacement Costs Column",
-      "expression": "get_replacement_costs(operation_range, inflation_price_increase_factors, replacement_costs_for_years, replace_factor, depr_cap, ref_year, startup_year, inflation_rate)",
+      "expression": "get_replacement_costs(operation_range, inflation_price_increase_factors, replacement_costs_for_years, replace_factor, direct_cap, depr_cap, ref_year, startup_year, inflation_rate)",
       "excel_loc": "Cash Flow Analysis, I65:I107"
     },
     {

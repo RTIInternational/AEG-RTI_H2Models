@@ -145,11 +145,12 @@ if __name__ == "__main__":
         check_formulas(input_filename, excel_filename)
 
     def check_all():
-        # check_smr_no_cc()
-        # print("----------------------------------------")
-        # check_smr_with_cc()
-        # print("----------------------------------------")
-        # check_atr_with_cc()
+        check_smr_no_cc()
+        print("----------------------------------------")
+        check_smr_with_cc()
+        print("----------------------------------------")
+        check_atr_with_cc()
+        print("----------------------------------------")
         check_pem_electrolysis()
         sys.exit()
 
