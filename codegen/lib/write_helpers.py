@@ -13,7 +13,7 @@ helper_code = {
     },
     "round_num": {
         "py": "def round_num(num, ndigits):\n    if ndigits >= 0:\n        factor = 10 ** ndigits\n        return int(num * factor + 0.5) / factor\n    else:\n        factor = 10 ** abs(ndigits)\n        return int(num / factor + 0.5) * factor\n\n",
-        "R": "round_num <- function(num, ndigits) {\n    if (ndigits >= 0) {\n        factor <- 10 ^ ndigits\n        return(as.integer(num * factor + 0.5) / factor)\n    } else {\n        factor <- 10 ^ abs(ndigits)\n        return(as.integer(num / factor + 0.5) * factor))\n    }\n}\n\n",
+        "R": "round_num <- function(num, ndigits) {\n    if (ndigits >= 0) {\n        factor <- 10 ^ ndigits\n        return(as.integer(num * factor + 0.5) / factor)\n    } else {\n        factor <- 10 ^ abs(ndigits)\n        return(as.integer(num / factor + 0.5) * factor)\n    }\n}\n\n",
     },
     "to_str": {
         "py": "def to_str(num):\n    return str(num)\n\n",

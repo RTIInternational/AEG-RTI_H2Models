@@ -1,16 +1,13 @@
-import::from(here, here)
+import::here(here, here)
 read_fuel_heating_values <- function() {
   lower_heating_values <- list()
   higher_heating_values <- list()
   csvfile <- read.csv(
-    file.path("data", "fuel-heating-values", "fuel-heating-values.csv"),
+    here("..", "data", "fuel-heating-values", "fuel-heating-values.csv"),
     header = TRUE
   )
   for (i in 1:nrow(csvfile)) { # nolint: seq_linter.
     row <- csvfile[i, ]
-    if (startsWith(csvfile[i, 1], "#")) {
-      next
-    }
     # fuel_type <- row[1] # nolint
     fuel <- as.character(row[2])
     lhv_mj_per_kg <- as.numeric(row[3])
@@ -23,14 +20,11 @@ read_fuel_heating_values <- function() {
 
 read_conversion_factors <- function() {
   conversions <- list()
-  csvfile <- read.csv(file.path("data", "conversion", "conversions.csv"),
+  csvfile <- read.csv(here("..", "data", "conversion", "conversions.csv"),
     header = TRUE
   )
   for (i in 1:nrow(csvfile)) { # nolint: seq_linter.
     row <- csvfile[i, ]
-    if (startsWith(csvfile[i, 1], "#")) {
-      next
-    }
     # conversion_type <- as.character(row[1]) # nolint
     from_unit <- as.character(row[2])
     to_unit <- as.character(row[3])
@@ -57,6 +51,45 @@ get_aeo <- function(price_table) {
   }
 }
 
+read_macrs_depreciation_table <- function() {
+  # Read the column headers as integers
+  csv_path <- here("..", "data", "macrs", "macrs-depreciation-table.csv")
+  df <- read.csv(csv_path, header = TRUE, row.names = 1)
+  colnames(df) <- c(3, 5, 7, 10, 15, 20)
+  df <- as.data.frame(lapply(df, as.numeric))
+  return(df)
+}
+
+read_upstream_energy_and_emissions <- function() {
+  # Read the column headers as integers
+  csv_path <- here("..", "data", "emissions", "table-c1-2010-upstream-energy-and-emissions.csv")
+  df <- read.csv(csv_path, header = TRUE, row.names = 1)
+  return(df)
+}
+
+read_co2_emissions_factors <- function() {
+  # Read the column headers as integers
+  csv_path <- here("..", "data", "emissions", "table-a-col-k-energy-feedstock-emissions.csv")
+  df <- read.csv(csv_path, header = TRUE, row.names = 1)
+  return(df)
+}
+
+read_labor_index <- function() {
+  labor_indices <- list()
+  filenames <- c("labor-index.csv", "labor-index-soe.csv")
+  for (filename in filenames) {
+    csv_path <- here("..", "data", "labor-index", filename)
+    labor_indices[[filename]] <- data.frame(read.csv(csv_path, header = TRUE))
+    labor_indices[[filename]] <- labor_indices[[filename]][-1,] # skip the first row
+    labor_indices[[filename]]$X1 <- as.numeric(labor_indices[[filename]]$X1)
+    labor_indices[[filename]]$X2 <- as.numeric(labor_indices[[filename]]$X2)
+    colnames(labor_indices[[filename]]) <- c("year", "value")
+    labor_indices[[filename]]$year <- as.integer(labor_indices[[filename]]$year)
+    labor_indices[[filename]]$value <- as.numeric(labor_indices[[filename]]$value)
+  }
+  return(labor_indices)
+}
+
 read_chemical_price_index <- function() {
   chemical_price_index <- list()
   csvfile <- read.csv(
@@ -65,9 +98,6 @@ read_chemical_price_index <- function() {
   )
   for (i in 1:nrow(csvfile)) { # nolint: seq_linter.
     row <- csvfile[i, ]
-    if (startsWith(csvfile[i, 1], "#")) {
-      next
-    }
     year <- as.integer(row[1])
     price_index <- as.numeric(row[2])
     chemical_price_index[[year]] <- price_index
@@ -91,9 +121,6 @@ read_plant_cost_index <- function() {
   )
   for (i in 1:nrow(csvfile)) { # nolint: seq_linter.
     row <- csvfile[i, ]
-    if (startsWith(csvfile[i, 1], "#")) {
-      next
-    }
     year <- as.integer(row[1])
     value <- as.numeric(row[2])
     plant_cost_index[[year]] <- value
@@ -102,21 +129,21 @@ read_plant_cost_index <- function() {
 }
 
 read_consumer_price_index <- function() {
-  consumer_price_index <- list()
-  csvfile <- read.csv(
-    here("..", "data", "gdp-implicit-price-deflator", "deflator-orig.csv"),
-    header = TRUE
-  )
-  for (i in 1:nrow(csvfile)) { # nolint: seq_linter.
-    row <- csvfile[i, ]
-    if (startsWith(csvfile[i, 1], "#")) {
-      next
+  consumer_price_indices <- list()
+  filenames <- c("deflator-orig.csv", "deflator-soe.csv")
+  for (filename in filenames) {
+    csv_path <- here("..", "data", "gdp-implicit-price-deflator", filename)
+    csv_file <- data.frame(read.csv(csv_path, header = TRUE))
+    consumer_price_indices[[filename]] <- list()
+    for (i in 1:nrow(csv_file)) { # nolint: seq_linter.
+      row <- csv_file[i, ]
+      year <- as.integer(row[1])
+      value <- as.numeric(row[2])
+      consumer_price_indices[[filename]][[year]] <- value
     }
-    year <- as.integer(row[1])
-    value <- as.numeric(row[2])
-    consumer_price_index[[year]] <- value
   }
-  return(consumer_price_index)
+  # print(consumer_price_indices[["deflator-soe.csv"]][2001])
+  return(consumer_price_indices)
 }
 
 read_labor_index <- function() {
@@ -127,9 +154,6 @@ read_labor_index <- function() {
   )
   for (i in 1:nrow(csvfile)) { # nolint: seq_linter.
     row <- csvfile[i, ]
-    if (startsWith(csvfile[i, 1], "#")) {
-      next
-    }
     year <- as.integer(row[1])
     value <- as.numeric(row[2])
     labor_index[[year]] <- value
@@ -146,7 +170,16 @@ consumer_price_index <- read_consumer_price_index()
 non_energy_material_prices <- read_non_energy_material_prices()
 chemical_price_index <- read_chemical_price_index()
 labor_index <- read_labor_index()
+macrs_depreciation_table = read_macrs_depreciation_table()
+upstream_energy_and_emissions = read_upstream_energy_and_emissions()
+co2_emission_factors = read_co2_emissions_factors()
+labor_index = read_labor_index()
+get_labor_index <- function(year, labor_file) {
+  return(labor_index[[labor_file]][[year]])
+}
 get_lhv <- function(fuel) lower_heating_values[[fuel]]
 conversion_factor <- function(from_to) conversion_factors[[from_to]]
 get_plant_cost_index <- function(year) plant_cost_index[[year]]
-get_cpi <- function(year) consumer_price_index[[year]]
+get_cpi <- function(year, cpi_file) {
+  return(consumer_price_index[[cpi_file]][[year]])
+}

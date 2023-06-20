@@ -21,7 +21,7 @@ round_num <- function(num, ndigits) {
         return(as.integer(num * factor + 0.5) / factor)
     } else {
         factor <- 10 ^ abs(ndigits)
-        return(as.integer(num / factor + 0.5) * factor))
+        return(as.integer(num / factor + 0.5) * factor)
     }
 }
 

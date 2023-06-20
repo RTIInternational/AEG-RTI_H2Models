@@ -139,8 +139,9 @@ def dir_path_to_import_str(dirs, filename, lang):
         return py_import_path
     elif lang == "R":
         # R_import_path is "h2a" joined with dirs if any exist, separated by commas
-        R_import_path = "h2a"
+        R_import_path = "\"h2a\""
         if dirs:
+            dirs = ["\"" + dir + "\"" for dir in dirs]
             R_import_path += "," + ",".join(dirs)
         return R_import_path
 
@@ -184,7 +185,7 @@ def edges_to_imports(edges, lib_exports):
         import_statements.append(
             {
                 "py": f"from {dir_path_to_import_str(dirs, filename, 'py')} import {py_import_list_str}",
-                "R": f'import::from("{filename}.R", {r_import_list_str}, .directory = here({dir_path_to_import_str(dirs, "", "R")}))',
+                "R": f'import::here({r_import_list_str}, .from = "{filename}.R", .directory = here({dir_path_to_import_str(dirs, "", "R")}))',
             }
         )
 
