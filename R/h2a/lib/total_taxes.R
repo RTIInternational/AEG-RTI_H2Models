@@ -7,5 +7,5 @@ calculate_total_taxes <- function(taxable_income, total_tax_rate, tax_credit, Up
 }
 get_total_taxes_column <- function(taxable_income_column, total_tax_rate, tax_credit, Upstream_CO2_taxpYear, Proc_CO2_taxpYear) {
     #'Get the total taxes column (Column X)
-    return(lapply(taxable_income_column, function(taxable_income) calculate_total_taxes(taxable_income, total_tax_rate, tax_credit, Upstream_CO2_taxpYear, Proc_CO2_taxpYear)))
+    return(mapply(function(taxable_income) list(calculate_total_taxes(taxable_income, total_tax_rate, tax_credit, Upstream_CO2_taxpYear, Proc_CO2_taxpYear)), taxable_income_column) )
 }

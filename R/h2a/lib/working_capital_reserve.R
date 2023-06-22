@@ -13,7 +13,7 @@ calculate_working_cap_reserve_for_year <- function(year, i, WorkingCap, fixed_co
 }
 get_working_cap_reserve_rows <- function(operation_range, analysis_index_range, WorkingCap, fixed_cost_column, total_feedstock_cost_column, other_raw_material_cost_column, variable_cost_column) {
     #'Get the rows for the working capital reserve
-    return(lapply(operation_range, analysis_index_range, function(year, i) calculate_working_cap_reserve_for_year(year, i, WorkingCap, fixed_cost_column, total_feedstock_cost_column, other_raw_material_cost_column, variable_cost_column)))
+    return(mapply(function(year, i) list(calculate_working_cap_reserve_for_year(year, i, WorkingCap, fixed_cost_column, total_feedstock_cost_column, other_raw_material_cost_column, variable_cost_column)), operation_range, analysis_index_range) )
 }
 get_working_cap_reserve_column <- function(working_cap_reserve_rows) {
     #'Get the column for the working capital reserve

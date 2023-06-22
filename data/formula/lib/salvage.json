@@ -6,7 +6,7 @@
       "type": "switch",
       "cases": [
         {
-          "condition": "year == plant_life",
+          "condition": "year == plant_life + FIRST",
           "body": "inflation_price_increase_factor * salvage"
         },
         {

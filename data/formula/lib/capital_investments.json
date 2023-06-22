@@ -3,7 +3,7 @@
     {
       "name": "calculate_capital_investment_cost",
       "args": ["capital_investment", "CEPCIinflator", "CPIinflator"],
-      "body": "get(capital_investment, 'cost') * CEPCIinflator * CPIinflator * get(capital_investment, 'installation_cost_factor')"
+      "body": "to_num(get(capital_investment, 'cost')) * CEPCIinflator * CPIinflator * to_num(get(capital_investment, 'installation_cost_factor'))"
     },
     {
       "name": "capital_investment_costs",

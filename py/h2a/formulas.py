@@ -16,7 +16,7 @@ from h2a.lib.feedstock_costs import get_total_feedstock_costs
 from h2a.lib.feedstock_prices import get_feedstock_price_df
 from h2a.lib.fixed_costs import get_fixed_cost_column
 from h2a.lib.h2_sales import get_h2_sales_kg_per_year
-from h2a.helpers import FIRST, YEAR_1, args_to_list, evaluate, get, irr, length, npv, round_num, seq_along, skip, slice, sum_args, sum_columns
+from h2a.helpers import FIRST, YEAR_1, args_to_list, evaluate, get, irr, length, npv, num_range, round_num, seq_along, skip, slice, sum_args, sum_columns, sum_list
 from h2a.lib.initial_equity import get_initial_equity_depr_cap
 from h2a.lib.nonenergy_materials import get_nonenergy_material_price_df
 from h2a.lib.other_non_depreciable_capital_cost import get_other_non_depreciable_capital_cost_column
@@ -144,7 +144,7 @@ def calculate(user_input):
   target_after_tax_nominal_irr = (1 + real_irr)*(1 + inflation_rate) - 1
   print('target_after_tax_nominal_irr: ', target_after_tax_nominal_irr)
 
-  analysis_range = range(analysis_period_start, analysis_period_end)
+  analysis_range = num_range(analysis_period_start, analysis_period_end)
   print('analysis_range: ', analysis_range)
 
   analysis_index_range = seq_along(analysis_range)
@@ -168,7 +168,7 @@ def calculate(user_input):
   discounted_value_feedstock_cost = get(total_feedstock_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(total_feedstock_cost_column, 1))
   print('discounted_value_feedstock_cost: ', discounted_value_feedstock_cost)
 
-  direct_cap = sum(capital_investment_costs(capital_investments, CEPCIinflator, CPIinflator))
+  direct_cap = sum_list(capital_investment_costs(capital_investments, CEPCIinflator, CPIinflator))
   print('direct_cap: ', direct_cap)
 
   CO2_seq = 0
@@ -297,7 +297,7 @@ def calculate(user_input):
   initial_capital_financed = -depr_cap_infl * percentage_debt_financing * get(inflation_price_increase_factors, YEAR_1)
   print('initial_capital_financed: ', initial_capital_financed)
 
-  LAST_ANALYSIS_YEAR = anal_period + construct - 1
+  LAST_ANALYSIS_YEAR = FIRST + anal_period + construct - 1
   print('LAST_ANALYSIS_YEAR: ', LAST_ANALYSIS_YEAR)
 
   principal_payments_column = determine_principal_payment(debt_period, analysis_index_range, LAST_ANALYSIS_YEAR, initial_capital_financed)
@@ -345,7 +345,7 @@ def calculate(user_input):
   utility_energy_input_GJ_per_kg_h2 = get_energy_input_for_feedstocks(utilities)
   print('utility_energy_input_GJ_per_kg_h2: ', utility_energy_input_GJ_per_kg_h2)
 
-  production_process_energy_efficiency = get(conversion_factors, 'kg_H2_LHV_to_GJ') / (sum(feedstock_energy_input_GJ_per_kg_h2) + sum(utility_energy_input_GJ_per_kg_h2))
+  production_process_energy_efficiency = get(conversion_factors, 'kg_H2_LHV_to_GJ') / (sum_list(feedstock_energy_input_GJ_per_kg_h2) + sum_list(utility_energy_input_GJ_per_kg_h2))
   print('production_process_energy_efficiency: ', production_process_energy_efficiency)
 
   upstream_energy_usage_column_names = args_to_list('Total Energy', 'Fossil Fuels', 'Petroleum')
@@ -378,7 +378,7 @@ def calculate(user_input):
   total_process_pollutants_produced_kg_per_kg_h2 = sum_columns(production_process_ghg_emissions_kg_per_kg_h2)
   print('total_process_pollutants_produced_kg_per_kg_h2: ', total_process_pollutants_produced_kg_per_kg_h2)
 
-  total_process_pollutants_produced_all_ghg_kg_per_kg_h2 = sum(production_process_ghg_emissions_kg_per_kg_h2_total)
+  total_process_pollutants_produced_all_ghg_kg_per_kg_h2 = sum_list(production_process_ghg_emissions_kg_per_kg_h2_total)
   print('total_process_pollutants_produced_all_ghg_kg_per_kg_h2: ', total_process_pollutants_produced_all_ghg_kg_per_kg_h2)
 
   total_process_pollutants_produced_metric_tons_per_year = get_total_in_metric_tons_per_year(total_process_pollutants_produced_kg_per_kg_h2, plant_output_kg_per_year)
@@ -390,7 +390,7 @@ def calculate(user_input):
   total_feedstock_pollutants_produced_kg_per_kg_h2 = sum_columns(production_process_ghg_emissions_kg_per_kg_h2)
   print('total_feedstock_pollutants_produced_kg_per_kg_h2: ', total_feedstock_pollutants_produced_kg_per_kg_h2)
 
-  total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2 = sum(production_process_ghg_emissions_kg_per_kg_h2_total)
+  total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2 = sum_list(production_process_ghg_emissions_kg_per_kg_h2_total)
   print('total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2: ', total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2)
 
   total_feedstock_pollutants_produced_metric_tons_per_year = get_total_in_metric_tons_per_year(total_feedstock_pollutants_produced_kg_per_kg_h2, plant_output_kg_per_year)
@@ -417,7 +417,7 @@ def calculate(user_input):
   total_upstream_emissions_kg_per_kg_h2 = sum_columns(feedstock_upstream_ghg_emissions_kg_per_kg_h2)
   print('total_upstream_emissions_kg_per_kg_h2: ', total_upstream_emissions_kg_per_kg_h2)
 
-  total_upstream_emissions_all_ghg_kg_per_kg_h2 = sum(feedstock_upstream_ghg_emissions_kg_per_kg_h2_total) + sum(utility_upstream_ghg_emissions_kg_per_kg_h2_total)
+  total_upstream_emissions_all_ghg_kg_per_kg_h2 = sum_list(feedstock_upstream_ghg_emissions_kg_per_kg_h2_total) + sum_list(utility_upstream_ghg_emissions_kg_per_kg_h2_total)
   print('total_upstream_emissions_all_ghg_kg_per_kg_h2: ', total_upstream_emissions_all_ghg_kg_per_kg_h2)
 
   total_well_to_pump_emissions_kg_per_kg_h2 = get_total_well_to_pump_emissions_kg_per_kg_h2(total_upstream_emissions_kg_per_kg_h2, total_process_emissions_kg_per_kg_h2)
@@ -510,7 +510,7 @@ def calculate(user_input):
   annual_depreciable_capital = get_annual_depreciable_capital(operation_range, replacement_costs, total_initial_depreciable_capital)
   print('annual_depreciable_capital: ', annual_depreciable_capital)
 
-  recovery_range = range(1, 22)
+  recovery_range = num_range(1, 22)
   print('recovery_range: ', recovery_range)
 
   depreciation_calculation_table = get_depreciation_calculation_table(recovery_range, operation_range, depr_type, depr_length, annual_depreciable_capital)
@@ -522,7 +522,7 @@ def calculate(user_input):
   depreciation_charges = get_depreciation_charges(analysis_index_range, recovery_index_range, depreciation_calculation_table)
   print('depreciation_charges: ', depreciation_charges)
 
-  remaining_depreciation_range = range(anal_period+construct, anal_period+construct+depr_length+1)
+  remaining_depreciation_range = num_range(anal_period+construct, anal_period+construct+depr_length+1)
   print('remaining_depreciation_range: ', remaining_depreciation_range)
 
   remaining_depreciation_charges = get_depreciation_charges(remaining_depreciation_range, recovery_index_range, depreciation_calculation_table)

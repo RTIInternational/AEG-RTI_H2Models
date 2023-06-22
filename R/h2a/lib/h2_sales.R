@@ -17,5 +17,5 @@ calculate_h2_sales_kg_per_year <- function(year, plant_output_kg_per_year, percn
 }
 get_h2_sales_kg_per_year <- function(operation_range, plant_output_kg_per_year, percnt_revs, start_time) {
     #'H2 sales (kg/year)
-    return(lapply(operation_range, function(year) calculate_h2_sales_kg_per_year(year, plant_output_kg_per_year, percnt_revs, start_time)))
+    return(mapply(function(year) list(calculate_h2_sales_kg_per_year(year, plant_output_kg_per_year, percnt_revs, start_time)), operation_range) )
 }

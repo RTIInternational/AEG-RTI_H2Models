@@ -8,7 +8,7 @@ convert_to_metric_tons_per_year <- function(emission, plant_output_kg_per_year) 
 }
 get_total_in_metric_tons_per_year <- function(total_process_pollutants_produced_kg_per_kg_h2, plant_output_kg_per_year) {
     #'Convert total emissions for each GHG to metric tons per year
-    return(lapply(total_process_pollutants_produced_kg_per_kg_h2, function(emission) convert_to_metric_tons_per_year(emission, plant_output_kg_per_year)))
+    return(mapply(function(emission) list(convert_to_metric_tons_per_year(emission, plant_output_kg_per_year)), total_process_pollutants_produced_kg_per_kg_h2) )
 }
 calculate_co2_captured_kg_per_kg_h2 <- function(i, total_feedstock_pollutants_produced_kg_per_kg_h2, CO2_Capture_Efficiency) {
     #'Calculates the amount of CO2 captured per kg of H2 produced
@@ -21,11 +21,11 @@ calculate_co2_captured_kg_per_kg_h2 <- function(i, total_feedstock_pollutants_pr
 }
 get_co2_captured_kg_per_kg_h2 <- function(total_feedstock_pollutants_produced_kg_per_kg_h2, CO2_Capture_Efficiency) {
     #'Gets the amount of CO2 captured per kg of H2 produced for CO2, returns 0 other GHGs
-    return(lapply(range(length(total_feedstock_pollutants_produced_kg_per_kg_h2)), function(i) calculate_co2_captured_kg_per_kg_h2(i, total_feedstock_pollutants_produced_kg_per_kg_h2, CO2_Capture_Efficiency)))
+    return(mapply(function(i) list(calculate_co2_captured_kg_per_kg_h2(i, total_feedstock_pollutants_produced_kg_per_kg_h2, CO2_Capture_Efficiency)), range(length(total_feedstock_pollutants_produced_kg_per_kg_h2))) )
 }
 get_co2_captured_metric_tons_per_year <- function(co2_captured_kg_per_kg_h2, plant_output_kg_per_year) {
     #'Gets the amount of CO2 captured in metric tons per year
-    return(lapply(co2_captured_kg_per_kg_h2, function(captured) convert_to_metric_tons_per_year(captured, plant_output_kg_per_year)))
+    return(mapply(function(captured) list(convert_to_metric_tons_per_year(captured, plant_output_kg_per_year)), co2_captured_kg_per_kg_h2) )
 }
 subtract <- function(amount_produced, amount_captured) {
     #'Subtracts two values
@@ -33,13 +33,13 @@ subtract <- function(amount_produced, amount_captured) {
 }
 get_total_process_emissions_kg_per_kg_h2 <- function(total_process_pollutants_produced_kg_per_kg_h2, co2_captured_kg_per_kg_h2) {
     #'Gets the total process emissions in kg per kg H2
-    return(lapply(total_process_pollutants_produced_kg_per_kg_h2, co2_captured_kg_per_kg_h2, function(amount_produced, amount_captured) subtract(amount_produced, amount_captured)))
+    return(mapply(function(amount_produced, amount_captured) list(subtract(amount_produced, amount_captured)), total_process_pollutants_produced_kg_per_kg_h2, co2_captured_kg_per_kg_h2) )
 }
 get_total_process_emissions_metric_tons_per_year <- function(total_process_emissions_kg_per_kg_h2, plant_output_kg_per_year) {
     #'Gets the total process emissions in metric tons per year
-    return(lapply(total_process_emissions_kg_per_kg_h2, function(emission) convert_to_metric_tons_per_year(emission, plant_output_kg_per_year)))
+    return(mapply(function(emission) list(convert_to_metric_tons_per_year(emission, plant_output_kg_per_year)), total_process_emissions_kg_per_kg_h2) )
 }
 get_total_well_to_pump_emissions_kg_per_kg_h2 <- function(total_upstream_emissions_kg_per_kg_h2, total_process_emissions_kg_per_kg_h2) {
     #'Gets the total well to pump emissions in kg per kg H2
-    return(lapply(total_upstream_emissions_kg_per_kg_h2, total_process_emissions_kg_per_kg_h2, function(upstream, process) sum_args(upstream, process)))
+    return(mapply(function(upstream, process) list(sum_args(upstream, process)), total_upstream_emissions_kg_per_kg_h2, total_process_emissions_kg_per_kg_h2) )
 }

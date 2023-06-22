@@ -12,5 +12,5 @@ calculate_replacement_cost <- function(year, inflation_price_increase_factor, re
 }
 get_replacement_costs <- function(operation_range, inflation_price_increase_factors, replacement_costs_for_years, replace_factor, direct_cap, depr_cap, ref_year, startup_year, inflation_rate) {
     #'Unplanned Yearly Replacement Capital (Depreciable)
-    return(lapply(operation_range, inflation_price_increase_factors, function(year, inflation_price_increase_factor) calculate_replacement_cost(year, inflation_price_increase_factor, replacement_costs_for_years, replace_factor, direct_cap, depr_cap, ref_year, startup_year, inflation_rate)))
+    return(mapply(function(year, inflation_price_increase_factor) list(calculate_replacement_cost(year, inflation_price_increase_factor, replacement_costs_for_years, replace_factor, direct_cap, depr_cap, ref_year, startup_year, inflation_rate)), operation_range, inflation_price_increase_factors) )
 }

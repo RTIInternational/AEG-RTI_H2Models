@@ -22,7 +22,7 @@ calculate_principal_payment_when_paying_debt <- function(annual_payment, interes
 }
 get_principal_payments_constant_debt <- function(analysis_range, last_year, initial_capital_financed) {
     #'Principal payments for the constant debt case
-    return(lapply(analysis_range, function(year) calculate_principal_payment_when_constant_debt(year, last_year, initial_capital_financed)))
+    return(mapply(function(year) list(calculate_principal_payment_when_constant_debt(year, last_year, initial_capital_financed)), analysis_range) )
 }
 determine_principal_payment <- function(debt_period, analysis_range, last_year, initial_capital_financed) {
     #'✅ Constant or paying down debt?
@@ -39,7 +39,7 @@ calculate_interest_amount <- function(year, balance, debt_interest) {
 }
 get_interest_payments_constant_debt <- function(analysis_range, initial_capital_financed, debt_interest) {
     #'Interest payments for the constant debt case
-    return(lapply(analysis_range, function(year) calculate_interest_amount(year, initial_capital_financed, debt_interest)))
+    return(mapply(function(year) list(calculate_interest_amount(year, initial_capital_financed, debt_interest)), analysis_range) )
 }
 determine_interest_payment <- function(debt_period, analysis_range, initial_capital_financed, debt_interest) {
     #'✅ Constant or paying down debt?

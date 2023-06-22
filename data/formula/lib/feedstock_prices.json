@@ -4,7 +4,7 @@
       "name": "get_feedstock_price_for_year",
       "description": "Get the price of a feedstock for a given year",
       "args": ["year", "feedstock", "INFLATION_FACTOR"],
-      "body": "get(get(get_aeo(get(feedstock, 'price_table')), get(feedstock, 'name')), year) * get(feedstock, 'usage') * conversion_factor(concat(get(split(get(feedstock, 'units'),'/'), 0), '_to_$/GJ')) * INFLATION_FACTOR"
+      "body": "get_cell(get_aeo(get(feedstock, 'price_table')), year, get(feedstock, 'name')) * to_num(get(feedstock, 'usage')) * conversion_factor(concat(get(split(get(feedstock, 'units'),'/'), FIRST), '_to_$/GJ')) * INFLATION_FACTOR"
     },
     {
       "name": "lookup_prices_for_feedstock",
@@ -18,7 +18,7 @@
       "name": "get_feedstock_price_for_startup_year",
       "description": "Get the price of a feedstock for the startup year",
       "args": ["year", "feedstock", "startup_year", "INFLATION_FACTOR"],
-      "body": "get(get(get_aeo(get(feedstock, 'price_table')), get(feedstock, 'name')), startup_year) * get(feedstock, 'usage') * conversion_factor(concat(get(split(get(feedstock, 'units'),'/'), 0), '_to_$/GJ')) * INFLATION_FACTOR"
+      "body": "get_cell(get_aeo(get(feedstock, 'price_table')), year, get(feedstock, 'startup_year')) * to_num(get(feedstock, 'usage')) * conversion_factor(concat(get(split(get(feedstock, 'units'),'/'), FIRST), '_to_$/GJ')) * INFLATION_FACTOR"
     },
     {
       "name": "fixed_prices_for_feedstock",

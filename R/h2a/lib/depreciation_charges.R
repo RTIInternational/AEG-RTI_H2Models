@@ -13,7 +13,7 @@ access <- function(i, table, row) {
 }
 diagonal <- function(table, row, recovery_index_range) {
     #'Get the diagonal cells of a table given a row, e.g. diagonal(table, 2, 3) returns [table[0,2], table[1,1], table[2,0]]
-    return(lapply(recovery_index_range, function(i) access(i, table, row)))
+    return(mapply(function(i) list(access(i, table, row)), recovery_index_range) )
 }
 calculate_depreciation_charge <- function(year, recovery_index_range, depreciation_calculation_table) {
     #'Calculate the depreciation charge for a given year by summing the diagonal
@@ -21,7 +21,7 @@ calculate_depreciation_charge <- function(year, recovery_index_range, depreciati
 }
 get_depreciation_charges <- function(analysis_index_range, recovery_index_range, depreciation_calculation_table) {
     #'Get the depreciation charges
-    return(lapply(analysis_index_range, function(year) calculate_depreciation_charge(year, recovery_index_range, depreciation_calculation_table)))
+    return(mapply(function(year) list(calculate_depreciation_charge(year, recovery_index_range, depreciation_calculation_table)), analysis_index_range) )
 }
 get_depr_charge <- function(charge, i, total_remaining_depreciation_charges, anal_period, construct) {
     #'Get the depreciation charge
@@ -34,5 +34,5 @@ get_depr_charge <- function(charge, i, total_remaining_depreciation_charges, ana
 }
 get_depreciation_charges_column <- function(depreciation_charges, analysis_index_range, total_remaining_depreciation_charges, anal_period, construct) {
     #'Get the depreciation charges column for the Cash Flow Analysis
-    return(lapply(depreciation_charges, analysis_index_range, function(charge, i) get_depr_charge(charge, i, total_remaining_depreciation_charges, anal_period, construct)))
+    return(mapply(function(charge, i) list(get_depr_charge(charge, i, total_remaining_depreciation_charges, anal_period, construct)), depreciation_charges, analysis_index_range) )
 }

@@ -4,7 +4,7 @@
       "name": "calculate_energy_input_for_feedstock",
       "description": "Get the energy input value for a feedstock",
       "args": ["feedstock"],
-      "body": "get(feedstock, 'usage') * conversion_factor(concat(get(split(get(feedstock, 'units'),'/'), 0), '_to_$/GJ'))"
+      "body": "to_num(get(feedstock, 'usage')) * conversion_factor(concat(get(split(get(feedstock, 'units'),'/'), FIRST), '_to_$/GJ'))"
     },
     {
       "name": "get_energy_input_for_feedstocks",
@@ -18,7 +18,7 @@
       "name": "calculate_upstream_energy_usage_for_feedstock_and_energy_column",
       "description": "Get the upstream energy usage for a feedstock",
       "args": ["column_name", "feedstock", "energy_input"],
-      "body": "energy_input / 1000000 * get(get(upstream_energy_and_emissions, column_name), get(feedstock, 'name'))"
+      "body": "energy_input / 1000000 * get_cell(upstream_energy_and_emissions, get(feedstock, 'name'), column_name)"
     },
     {
       "name": "iterate_over_energy_columns_for_feedstock",

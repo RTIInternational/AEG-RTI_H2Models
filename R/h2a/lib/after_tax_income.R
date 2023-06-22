@@ -4,5 +4,5 @@
 import::here(sum_args, .from = "helpers.R", .directory = here("h2a"))
 get_after_tax_income_column <- function(predepreciation_income_column, total_taxes_column) {
     #'Get the after tax income column (Column Y)
-    return(lapply(predepreciation_income_column, total_taxes_column, function(predepreciation_income, total_taxes) sum_args(predepreciation_income, total_taxes)))
+    return(mapply(function(predepreciation_income, total_taxes) list(sum_args(predepreciation_income, total_taxes)), predepreciation_income_column, total_taxes_column) )
 }

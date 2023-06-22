@@ -29,6 +29,10 @@ to_str <- function(num) {
     return(as.character(num))
 }
 
+to_num <- function(str) {
+    return(as.numeric(str))
+}
+
 get <- function(obj, key, default_val = 0) {
     if (is.null(obj[[key]])) {
         return(default_val)
@@ -36,6 +40,8 @@ get <- function(obj, key, default_val = 0) {
         return(obj[[key]])
     }
 }
+
+get_cell <- function(df, row, col) df[as.character(row), col]
 
 concat <- function(a, b) paste(a, b, sep = "")
 
@@ -47,9 +53,15 @@ slice <- function(a, start=0, end=NULL) a[(start + 1):end]
 
 sum_args <- function(...) sum(...)
 
+sum_list <- function(a) sum(unlist(a))
+
+num_range <- function(start, end) seq(start, end - 1)
+
 sum_columns <- function(rows) {
     columns <- t(rows)
-    return(apply(columns, 2, sum))
+    df <- as.data.frame(do.call(rbind, columns))
+    numeric_df <- dplyr::mutate_all(df, function(x) as.numeric(as.character(x)))
+    return(colSums(numeric_df))
 }
 
 evaluate <- function(expr) eval(parse(text = expr))

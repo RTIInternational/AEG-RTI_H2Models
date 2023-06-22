@@ -95,13 +95,13 @@
     },
     {
       "name": "analysis_range",
-      "expression": "range(analysis_period_start, analysis_period_end)",
-      "sample": "range(2012, 2055)"
+      "expression": "num_range(analysis_period_start, analysis_period_end)",
+      "sample": "num_range(2012, 2055)"
     },
     {
       "name": "analysis_index_range",
       "expression": "seq_along(analysis_range)",
-      "sample": "range(0, 43)"
+      "sample": "num_range(0, 43)"
     },
     {
       "name": "feedstock_price_df",
@@ -138,7 +138,7 @@
     {
       "orig_name": "direct_cap",
       "label": "H2A Total Direct Capital Cost",
-      "expression": "sum(capital_investment_costs(capital_investments, CEPCIinflator, CPIinflator))",
+      "expression": "sum_list(capital_investment_costs(capital_investments, CEPCIinflator, CPIinflator))",
       "excel_loc": "Input_Sheet_Template, C88"
     },
     {
@@ -394,7 +394,7 @@
     },
     {
       "name": "LAST_ANALYSIS_YEAR",
-      "expression": "anal_period + construct - 1"
+      "expression": "FIRST + anal_period + construct - 1"
     },
     {
       "name": "principal_payments_column",
@@ -490,7 +490,7 @@
     {
       "name": "production_process_energy_efficiency",
       "label": "Production Process Energy Efficiency",
-      "expression": "get(conversion_factors, 'kg_H2_LHV_to_GJ') / (sum(feedstock_energy_input_GJ_per_kg_h2) + sum(utility_energy_input_GJ_per_kg_h2))",
+      "expression": "get(conversion_factors, 'kg_H2_LHV_to_GJ') / (sum_list(feedstock_energy_input_GJ_per_kg_h2) + sum_list(utility_energy_input_GJ_per_kg_h2))",
       "excel_loc": "Results, D52"
     },
     {
@@ -552,7 +552,7 @@
     {
       "name": "total_process_pollutants_produced_all_ghg_kg_per_kg_h2",
       "label": "Total Process Pollutants Produced for all GHG (kg /kg H2)",
-      "expression": "sum(production_process_ghg_emissions_kg_per_kg_h2_total)",
+      "expression": "sum_list(production_process_ghg_emissions_kg_per_kg_h2_total)",
       "excel_loc": "Results, G83"
     },
     {
@@ -576,7 +576,7 @@
     {
       "name": "total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2",
       "label": "Total Process Pollutants Produced for all GHG (kg /kg H2)",
-      "expression": "sum(production_process_ghg_emissions_kg_per_kg_h2_total)",
+      "expression": "sum_list(production_process_ghg_emissions_kg_per_kg_h2_total)",
       "excel_loc": "Results, G85"
     },
     {
@@ -630,7 +630,7 @@
     {
       "label": "Total upstream emissions for all GHGs (kg/kg H2)",
       "name": "total_upstream_emissions_all_ghg_kg_per_kg_h2",
-      "expression": "sum(feedstock_upstream_ghg_emissions_kg_per_kg_h2_total) + sum(utility_upstream_ghg_emissions_kg_per_kg_h2_total)",
+      "expression": "sum_list(feedstock_upstream_ghg_emissions_kg_per_kg_h2_total) + sum_list(utility_upstream_ghg_emissions_kg_per_kg_h2_total)",
       "excel_loc": "Results, G77"
     },
     {
@@ -821,7 +821,7 @@
     {
       "name": "recovery_range",
       "label": "Recovery Range",
-      "expression": "range(1, 22)",
+      "expression": "num_range(1, 22)",
       "excel_loc": "Depreciation C48-W48"
     },
     {
@@ -842,7 +842,7 @@
     },
     {
       "name": "remaining_depreciation_range",
-      "expression": "range(anal_period+construct, anal_period+construct+depr_length+1)"
+      "expression": "num_range(anal_period+construct, anal_period+construct+depr_length+1)"
     },
     {
       "name": "remaining_depreciation_charges",

@@ -4,13 +4,13 @@
       "name": "get_nonenergy_material_price_conversion_factor",
       "description": "Get the conversion factor for converting Non-Energy Material prices from source year to reference year dollars",
       "args": ["nonenergy_material", "ref_year"],
-      "body": "get(chemical_price_index, ref_year) / get( chemical_price_index, get( get(non_energy_material_prices, 'Source Data Year'), get(nonenergy_material, 'name') ) )"
+      "body": "get(chemical_price_index, ref_year) / get( chemical_price_index, get_cell(non_energy_material_prices, get(nonenergy_material, 'name'), 'Source Data Year') )"
     },
     {
       "name": "get_nonenergy_material_price_for_year",
       "description": "Calculate the price of a given Non-Energy Material for a year (although year is not used in this function)",
       "args": ["year", "nonenergy_material", "INFLATION_FACTOR", "ref_year"],
-      "body": "INFLATION_FACTOR * get(nonenergy_material, 'usage') * ( get( get(non_energy_material_prices, 'Price'), get(nonenergy_material, 'name'), ) * get_nonenergy_material_price_conversion_factor(nonenergy_material, ref_year) )"
+      "body": "INFLATION_FACTOR * to_num(get(nonenergy_material, 'usage')) * ( get_cell(non_energy_material_prices, get(nonenergy_material, 'name'), 'Price') * get_nonenergy_material_price_conversion_factor(nonenergy_material, ref_year) )"
     },
     {
       "name": "prices_for_nonenergy_material",

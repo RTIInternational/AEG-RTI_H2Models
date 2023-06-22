@@ -7,14 +7,14 @@
       "args": ["i", "construct"],
       "cases": [
         {
-          "condition": "i == construct",
+          "condition": "(i - FIRST) == construct",
           "body": "1"
         }, {
-          "condition": "i < construct",
-          "body": "-construct + i"
+          "condition": "(i - FIRST) < construct",
+          "body": "-construct + (i - FIRST)"
         }, {
           "condition": "TRUE",
-          "body": "i - construct + 1"
+          "body": "(i - FIRST) - construct + 1"
         }
       ]
     },

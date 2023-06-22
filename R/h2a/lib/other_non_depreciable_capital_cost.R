@@ -12,5 +12,5 @@ calculate_other_non_depr_cap <- function(year, inflation_price_increase_factor, 
 }
 get_other_non_depreciable_capital_cost_column <- function(analysis_index_range, inflation_price_increase_factors, non_dep_infl) {
     #'Other Non-Depreciable Capital Costs
-    return(lapply(analysis_index_range, inflation_price_increase_factors, function(year, inflation_price_increase_factor) calculate_other_non_depr_cap(year, inflation_price_increase_factor, non_dep_infl)))
+    return(mapply(function(year, inflation_price_increase_factor) list(calculate_other_non_depr_cap(year, inflation_price_increase_factor, non_dep_infl)), analysis_index_range, inflation_price_increase_factors) )
 }

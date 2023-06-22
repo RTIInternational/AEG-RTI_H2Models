@@ -4,7 +4,7 @@
       "name": "calculate_ghg_emission_for_feedstock_and_ghg_column",
       "description": "Get the ghg emission for a feedstock",
       "args": ["column_name", "feedstock", "energy_input"],
-      "body": "energy_input * get(get(upstream_energy_and_emissions, column_name), get(feedstock, 'name'))"
+      "body": "energy_input * get_cell(upstream_energy_and_emissions, get(feedstock, 'name'), column_name)"
     },
     {
       "name": "iterate_over_ghg_columns_for_feedstock",

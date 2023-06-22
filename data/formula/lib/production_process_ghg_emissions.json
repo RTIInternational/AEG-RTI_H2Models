@@ -4,7 +4,7 @@
       "name": "calculate_ghg_emission_for_feedstock_and_ghg_column",
       "description": "Get the ghg emission for a feedstock",
       "args": ["column_name", "feedstock"],
-      "body": "get(get(co2_emission_factors, column_name), get(feedstock, 'name')) * get(feedstock, 'usage') * conversion_factor(concat(get(split(get(feedstock, 'units'),'/'), 0), '_to_$/GJ'))"
+      "body": "get_cell(co2_emission_factors, get(feedstock, 'name'), column_name) * to_num(get(feedstock, 'usage')) * conversion_factor(concat(get(split(get(feedstock, 'units'),'/'), FIRST), '_to_$/GJ'))"
     },
     {
       "name": "iterate_over_ghg_columns_for_feedstock",

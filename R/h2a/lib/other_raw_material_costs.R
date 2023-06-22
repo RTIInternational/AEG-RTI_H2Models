@@ -17,5 +17,5 @@ calculate_other_raw_material_cost <- function(year, inflation_price_increase_fac
 }
 get_other_raw_material_cost_column <- function(operation_range, inflation_price_increase_factors, inflated_otherraw, percnt_var, start_time) {
     #'Other Raw Material Cost
-    return(lapply(operation_range, inflation_price_increase_factors, function(year, inflation_price_increase_factor) calculate_other_raw_material_cost(year, inflation_price_increase_factor, inflated_otherraw, percnt_var, start_time)))
+    return(mapply(function(year, inflation_price_increase_factor) list(calculate_other_raw_material_cost(year, inflation_price_increase_factor, inflated_otherraw, percnt_var, start_time)), operation_range, inflation_price_increase_factors) )
 }

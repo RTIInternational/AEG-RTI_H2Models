@@ -4,13 +4,13 @@
 import::here(YEAR_1, slice, sum_args, .from = "helpers.R", .directory = here("h2a"))
 get_aftertax_post_depreciation_cashflow <- function(initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, total_taxes_column, principal_payments_column) {
     #'Calculates the After-Tax Post-Depreciation Cash Flow
-    return(lapply(initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, total_taxes_column, principal_payments_column, function(depr_cap, replacement_costs, working_cap_reserve, other_non_depreciable_capital_cost, predepreciation_income, total_taxes, principal_payments) sum_args(depr_cap, replacement_costs, working_cap_reserve, other_non_depreciable_capital_cost, predepreciation_income, total_taxes, principal_payments)))
+    return(mapply(function(depr_cap, replacement_costs, working_cap_reserve, other_non_depreciable_capital_cost, predepreciation_income, total_taxes, principal_payments) list(sum_args(depr_cap, replacement_costs, working_cap_reserve, other_non_depreciable_capital_cost, predepreciation_income, total_taxes, principal_payments)), initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, total_taxes_column, principal_payments_column) )
 }
 get_cumulative_cashflow_column <- function(cashflow_column, analysis_index_range) {
     #'Calculates the Cumulative Cash Flow Column
-    return(lapply(analysis_index_range, function(i) sum(slice(cashflow_column, YEAR_1, i+1))))
+    return(mapply(function(i) list(sum(slice(cashflow_column, YEAR_1, i+1))), analysis_index_range) )
 }
 get_pretax_cashflow_column <- function(initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, principal_payments_column) {
     #'Calculates the Pre-Tax Cash Flow
-    return(lapply(initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, principal_payments_column, function(depr_cap, replacement_costs, working_cap_reserve, other_non_depreciable_capital_cost, predepreciation_income, principal_payments) sum_args(depr_cap, replacement_costs, working_cap_reserve, other_non_depreciable_capital_cost, predepreciation_income, principal_payments)))
+    return(mapply(function(depr_cap, replacement_costs, working_cap_reserve, other_non_depreciable_capital_cost, predepreciation_income, principal_payments) list(sum_args(depr_cap, replacement_costs, working_cap_reserve, other_non_depreciable_capital_cost, predepreciation_income, principal_payments)), initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, principal_payments_column) )
 }

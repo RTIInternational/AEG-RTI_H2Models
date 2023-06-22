@@ -1,4 +1,5 @@
 import os
+import re
 from lib.read_json_files import read_inputs_json
 from lib.write_inputs import inputs_to_lang
 from .util import R_ENABLED, PRINT_FORMULAS, util_code
@@ -49,7 +50,16 @@ def formulas_to_lang(filename, formulas, import_statements, lang):
             if "name" in formula and formula["name"] != ""
             else formula["orig_name"]
         )
-        file_str += code["assign"][lang](name, formula["expression"])
+        expression = formula["expression"]
+        # If lang is R and expression matches regex of evaluate() function, replace with eval(parse(text = expr)
+        if lang == "R" and re.match(r"evaluate\(.+\)", expression):
+            expression = re.sub(
+                r"evaluate\((.+)\)",
+                r"eval(parse(text = \1))",
+                expression,
+            )
+
+        file_str += code["assign"][lang](name, expression)
         if PRINT_FORMULAS and filename == "formulas":
             file_str += code["print"][lang](name)
 

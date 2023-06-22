@@ -18,5 +18,5 @@ calculate_revenue <- function(year, inflation_price_increase_factor, H2_price_no
 }
 get_revenue_h2_sales_column <- function(operation_range, inflation_price_increase_factors, H2_price_nominal, plant_output_kg_per_year, percnt_revs, start_time) {
     #'Revenue from Hydrogen Sales column
-    return(lapply(operation_range, inflation_price_increase_factors, function(year, inflation_price_increase_factor) calculate_revenue(year, inflation_price_increase_factor, H2_price_nominal, plant_output_kg_per_year, percnt_revs, start_time)))
+    return(mapply(function(year, inflation_price_increase_factor) list(calculate_revenue(year, inflation_price_increase_factor, H2_price_nominal, plant_output_kg_per_year, percnt_revs, start_time)), operation_range, inflation_price_increase_factors) )
 }

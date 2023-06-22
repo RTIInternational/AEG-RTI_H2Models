@@ -19,9 +19,17 @@ helper_code = {
         "py": "def to_str(num):\n    return str(num)\n\n",
         "R": "to_str <- function(num) {\n    return(as.character(num))\n}\n\n",
     },
+    "to_num": {
+        "py": "def to_num(str):\n    return float(str)\n\n",
+        "R": "to_num <- function(str) {\n    return(as.numeric(str))\n}\n\n",
+    },
     "get": {
         "py": "def get(obj, key, default_val=0):\n    return obj.get(key, default_val) if isinstance(obj, dict) else (obj[key] if key in obj or (isinstance(key, int) and len(obj) > key) else default_val)\n\n",
         "R": "get <- function(obj, key, default_val = 0) {\n    if (is.null(obj[[key]])) {\n        return(default_val)\n    } else {\n        return(obj[[key]])\n    }\n}\n\n",
+    },
+    "get_cell": {
+        "py": "def get_cell(df, row, col):\n    return get(get(df, col), row) \n\n",
+        "R": "get_cell <- function(df, row, col) df[as.character(row), col]\n\n",
     },
     "concat": {
         "py": "def concat(a, b):\n    return a + b\n\n",
@@ -47,13 +55,21 @@ helper_code = {
     #     "py": "def divide(a, b):\n    return a / b if b != 0 else 0\n\n",
     #     "R": "divide <- function(a, b) if (b != 0) a / b else 0\n\n",
     # },
+    "sum_list": {
+        "py": "def sum_list(a):\n    return sum(a)\n\n",
+        "R": "sum_list <- function(a) sum(unlist(a))\n\n",
+    },
     "sum_args": {
         "py": "def sum_args(*args):\n    return sum(args)\n\n",
         "R": "sum_args <- function(...) sum(...)\n\n",
     },
+    "num_range": {
+        "py": "def num_range(start, end):\n    return range(start, end)\n\n",
+        "R": "num_range <- function(start, end) seq(start, end - 1)\n\n",
+    },
     "sum_columns": {
         "py": "def sum_columns(rows):\n    columns = zip(*rows)\n    return list(map(sum, columns))\n\n",
-        "R": "sum_columns <- function(rows) {\n    columns <- t(rows)\n    return(apply(columns, 2, sum))\n}\n\n",
+        "R": "sum_columns <- function(rows) {\n    columns <- t(rows)\n    df <- as.data.frame(do.call(rbind, columns))\n    numeric_df <- dplyr::mutate_all(df, function(x) as.numeric(as.character(x)))\n    return(colSums(numeric_df))\n}\n\n",
     },
     "seq_along": {"py": "def seq_along(a):\n    return range(len(a))\n\n", "R": ""},
     "append": {
@@ -100,8 +116,14 @@ def helpers_to_lang(lang):
     # to_str() is a helper function to convert a number to a string
     file_str += code["to_str"][lang]
 
+    # to_num() is a helper function to convert a string to a number
+    file_str += code["to_num"][lang]
+
     # get() is a helper function to access a dictionary
     file_str += code["get"][lang]
+
+    # get_cell() is a helper function to access a dataframe
+    file_str += code["get_cell"][lang]
 
     # at() is a helper function to access a list using zero-based indexing
     # file_str += "def at(obj, index):\n    return obj[index]\n\n"
@@ -127,6 +149,12 @@ def helpers_to_lang(lang):
 
     # sum_args() is a helper function to sum a list of arguments
     file_str += code["sum_args"][lang]
+
+    # sum_list() is a helper function to sum a list
+    file_str += code["sum_list"][lang]
+
+    # range() is a helper function to get a range of integers
+    file_str += code["num_range"][lang]
 
     # sum_columns() is a helper function to sum the columns of a list of lists
     file_str += code["sum_columns"][lang]

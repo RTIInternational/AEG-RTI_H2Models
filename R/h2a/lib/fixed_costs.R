@@ -17,5 +17,5 @@ calculate_fixed_cost <- function(year, inflation_price_increase_factor, inflated
 }
 get_fixed_cost_column <- function(operation_range, inflation_price_increase_factors, inflated_fixed, percnt_fixed, start_time) {
     #'Fixed Operating Costs column
-    return(lapply(operation_range, inflation_price_increase_factors, function(year, inflation_price_increase_factor) calculate_fixed_cost(year, inflation_price_increase_factor, inflated_fixed, percnt_fixed, start_time)))
+    return(mapply(function(year, inflation_price_increase_factor) list(calculate_fixed_cost(year, inflation_price_increase_factor, inflated_fixed, percnt_fixed, start_time)), operation_range, inflation_price_increase_factors) )
 }

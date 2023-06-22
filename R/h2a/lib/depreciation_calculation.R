@@ -17,9 +17,9 @@ calculate_depreciation <- function(op_year, depreciable_capital, recovery_year, 
 }
 calculate_depreciation_column <- function(recovery_year, operation_range, depr_type, depr_length, annual_depreciable_capital) {
     #'Calculate the depreciation for a given recovery year and operation range
-    return(lapply(operation_range, annual_depreciable_capital, function(op_year, depreciable_capital) calculate_depreciation(op_year, depreciable_capital, recovery_year, depr_type, depr_length)))
+    return(mapply(function(op_year, depreciable_capital) list(calculate_depreciation(op_year, depreciable_capital, recovery_year, depr_type, depr_length)), operation_range, annual_depreciable_capital) )
 }
 get_depreciation_calculation_table <- function(recovery_range, operation_range, depr_type, depr_length, annual_depreciable_capital) {
     #'Get the 2D table of depreciation calculations (recovery_range by operation_range)
-    return(lapply(recovery_range, function(recovery_year) calculate_depreciation_column(recovery_year, operation_range, depr_type, depr_length, annual_depreciable_capital)))
+    return(mapply(function(recovery_year) list(calculate_depreciation_column(recovery_year, operation_range, depr_type, depr_length, annual_depreciable_capital)), recovery_range) )
 }

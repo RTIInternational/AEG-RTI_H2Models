@@ -16,7 +16,7 @@ import::here(get_total_feedstock_costs, .from = "feedstock_costs.R", .directory 
 import::here(get_feedstock_price_df, .from = "feedstock_prices.R", .directory = here("h2a","lib"))
 import::here(get_fixed_cost_column, .from = "fixed_costs.R", .directory = here("h2a","lib"))
 import::here(get_h2_sales_kg_per_year, .from = "h2_sales.R", .directory = here("h2a","lib"))
-import::here(FIRST, YEAR_1, args_to_list, evaluate, get, irr, npv, round_num, skip, slice, sum_args, sum_columns, .from = "helpers.R", .directory = here("h2a"))
+import::here(FIRST, YEAR_1, args_to_list, evaluate, get, irr, npv, num_range, round_num, skip, slice, sum_args, sum_columns, sum_list, .from = "helpers.R", .directory = here("h2a"))
 import::here(get_initial_equity_depr_cap, .from = "initial_equity.R", .directory = here("h2a","lib"))
 import::here(get_nonenergy_material_price_df, .from = "nonenergy_materials.R", .directory = here("h2a","lib"))
 import::here(get_other_non_depreciable_capital_cost_column, .from = "other_non_depreciable_capital_cost.R", .directory = here("h2a","lib"))
@@ -144,7 +144,7 @@ calculate <- function(user_input) {
   target_after_tax_nominal_irr <- (1 + real_irr)*(1 + inflation_rate) - 1
   print(paste("target_after_tax_nominal_irr", target_after_tax_nominal_irr, sep = ": "))
 
-  analysis_range <- range(analysis_period_start, analysis_period_end)
+  analysis_range <- num_range(analysis_period_start, analysis_period_end)
   print(paste("analysis_range", analysis_range, sep = ": "))
 
   analysis_index_range <- seq_along(analysis_range)
@@ -168,31 +168,31 @@ calculate <- function(user_input) {
   discounted_value_feedstock_cost <- get(total_feedstock_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(total_feedstock_cost_column, 1))
   print(paste("discounted_value_feedstock_cost", discounted_value_feedstock_cost, sep = ": "))
 
-  direct_cap <- sum(capital_investment_costs(capital_investments, CEPCIinflator, CPIinflator))
+  direct_cap <- sum_list(capital_investment_costs(capital_investments, CEPCIinflator, CPIinflator))
   print(paste("direct_cap", direct_cap, sep = ": "))
 
   CO2_seq <- 0
   print(paste("CO2_seq", CO2_seq, sep = ": "))
 
-  site_preparation_cost <- evaluate(site_preparation)
+  site_preparation_cost <- eval(parse(text = site_preparation))
   print(paste("site_preparation_cost", site_preparation_cost, sep = ": "))
 
-  engineering_and_design_cost <- evaluate(engineering_and_design)
+  engineering_and_design_cost <- eval(parse(text = engineering_and_design))
   print(paste("engineering_and_design_cost", engineering_and_design_cost, sep = ": "))
 
-  process_contingency_cost <- evaluate(process_contingency)
+  process_contingency_cost <- eval(parse(text = process_contingency))
   print(paste("process_contingency_cost", process_contingency_cost, sep = ": "))
 
-  project_contingency_cost <- evaluate(project_contingency)
+  project_contingency_cost <- eval(parse(text = project_contingency))
   print(paste("project_contingency_cost", project_contingency_cost, sep = ": "))
 
-  upfront_permitting_costs <- evaluate(upfront_permitting)
+  upfront_permitting_costs <- eval(parse(text = upfront_permitting))
   print(paste("upfront_permitting_costs", upfront_permitting_costs, sep = ": "))
 
-  material_cost_maintenance_and_repairs_cost <- evaluate(material_cost_maintenance_and_repairs)
+  material_cost_maintenance_and_repairs_cost <- eval(parse(text = material_cost_maintenance_and_repairs))
   print(paste("material_cost_maintenance_and_repairs_cost", material_cost_maintenance_and_repairs_cost, sep = ": "))
 
-  production_cost_maintenance_and_repairs_cost <- evaluate(production_cost_maintenance_and_repairs)
+  production_cost_maintenance_and_repairs_cost <- eval(parse(text = production_cost_maintenance_and_repairs))
   print(paste("production_cost_maintenance_and_repairs_cost", production_cost_maintenance_and_repairs_cost, sep = ": "))
 
   depr_cap <- direct_cap + CO2_seq + (CEPCIinflator * CPIinflator) * (site_preparation_cost + engineering_and_design_cost + process_contingency_cost + project_contingency_cost + other_depreciable_capital_cost + upfront_permitting_costs)
@@ -297,7 +297,7 @@ calculate <- function(user_input) {
   initial_capital_financed <- -depr_cap_infl * percentage_debt_financing * get(inflation_price_increase_factors, YEAR_1)
   print(paste("initial_capital_financed", initial_capital_financed, sep = ": "))
 
-  LAST_ANALYSIS_YEAR <- anal_period + construct - 1
+  LAST_ANALYSIS_YEAR <- FIRST + anal_period + construct - 1
   print(paste("LAST_ANALYSIS_YEAR", LAST_ANALYSIS_YEAR, sep = ": "))
 
   principal_payments_column <- determine_principal_payment(debt_period, analysis_index_range, LAST_ANALYSIS_YEAR, initial_capital_financed)
@@ -345,7 +345,7 @@ calculate <- function(user_input) {
   utility_energy_input_GJ_per_kg_h2 <- get_energy_input_for_feedstocks(utilities)
   print(paste("utility_energy_input_GJ_per_kg_h2", utility_energy_input_GJ_per_kg_h2, sep = ": "))
 
-  production_process_energy_efficiency <- get(conversion_factors, 'kg_H2_LHV_to_GJ') / (sum(feedstock_energy_input_GJ_per_kg_h2) + sum(utility_energy_input_GJ_per_kg_h2))
+  production_process_energy_efficiency <- get(conversion_factors, 'kg_H2_LHV_to_GJ') / (sum_list(feedstock_energy_input_GJ_per_kg_h2) + sum_list(utility_energy_input_GJ_per_kg_h2))
   print(paste("production_process_energy_efficiency", production_process_energy_efficiency, sep = ": "))
 
   upstream_energy_usage_column_names <- args_to_list('Total Energy', 'Fossil Fuels', 'Petroleum')
@@ -378,7 +378,7 @@ calculate <- function(user_input) {
   total_process_pollutants_produced_kg_per_kg_h2 <- sum_columns(production_process_ghg_emissions_kg_per_kg_h2)
   print(paste("total_process_pollutants_produced_kg_per_kg_h2", total_process_pollutants_produced_kg_per_kg_h2, sep = ": "))
 
-  total_process_pollutants_produced_all_ghg_kg_per_kg_h2 <- sum(production_process_ghg_emissions_kg_per_kg_h2_total)
+  total_process_pollutants_produced_all_ghg_kg_per_kg_h2 <- sum_list(production_process_ghg_emissions_kg_per_kg_h2_total)
   print(paste("total_process_pollutants_produced_all_ghg_kg_per_kg_h2", total_process_pollutants_produced_all_ghg_kg_per_kg_h2, sep = ": "))
 
   total_process_pollutants_produced_metric_tons_per_year <- get_total_in_metric_tons_per_year(total_process_pollutants_produced_kg_per_kg_h2, plant_output_kg_per_year)
@@ -390,7 +390,7 @@ calculate <- function(user_input) {
   total_feedstock_pollutants_produced_kg_per_kg_h2 <- sum_columns(production_process_ghg_emissions_kg_per_kg_h2)
   print(paste("total_feedstock_pollutants_produced_kg_per_kg_h2", total_feedstock_pollutants_produced_kg_per_kg_h2, sep = ": "))
 
-  total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2 <- sum(production_process_ghg_emissions_kg_per_kg_h2_total)
+  total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2 <- sum_list(production_process_ghg_emissions_kg_per_kg_h2_total)
   print(paste("total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2", total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2, sep = ": "))
 
   total_feedstock_pollutants_produced_metric_tons_per_year <- get_total_in_metric_tons_per_year(total_feedstock_pollutants_produced_kg_per_kg_h2, plant_output_kg_per_year)
@@ -417,7 +417,7 @@ calculate <- function(user_input) {
   total_upstream_emissions_kg_per_kg_h2 <- sum_columns(feedstock_upstream_ghg_emissions_kg_per_kg_h2)
   print(paste("total_upstream_emissions_kg_per_kg_h2", total_upstream_emissions_kg_per_kg_h2, sep = ": "))
 
-  total_upstream_emissions_all_ghg_kg_per_kg_h2 <- sum(feedstock_upstream_ghg_emissions_kg_per_kg_h2_total) + sum(utility_upstream_ghg_emissions_kg_per_kg_h2_total)
+  total_upstream_emissions_all_ghg_kg_per_kg_h2 <- sum_list(feedstock_upstream_ghg_emissions_kg_per_kg_h2_total) + sum_list(utility_upstream_ghg_emissions_kg_per_kg_h2_total)
   print(paste("total_upstream_emissions_all_ghg_kg_per_kg_h2", total_upstream_emissions_all_ghg_kg_per_kg_h2, sep = ": "))
 
   total_well_to_pump_emissions_kg_per_kg_h2 <- get_total_well_to_pump_emissions_kg_per_kg_h2(total_upstream_emissions_kg_per_kg_h2, total_process_emissions_kg_per_kg_h2)
@@ -510,7 +510,7 @@ calculate <- function(user_input) {
   annual_depreciable_capital <- get_annual_depreciable_capital(operation_range, replacement_costs, total_initial_depreciable_capital)
   print(paste("annual_depreciable_capital", annual_depreciable_capital, sep = ": "))
 
-  recovery_range <- range(1, 22)
+  recovery_range <- num_range(1, 22)
   print(paste("recovery_range", recovery_range, sep = ": "))
 
   depreciation_calculation_table <- get_depreciation_calculation_table(recovery_range, operation_range, depr_type, depr_length, annual_depreciable_capital)
@@ -522,7 +522,7 @@ calculate <- function(user_input) {
   depreciation_charges <- get_depreciation_charges(analysis_index_range, recovery_index_range, depreciation_calculation_table)
   print(paste("depreciation_charges", depreciation_charges, sep = ": "))
 
-  remaining_depreciation_range <- range(anal_period+construct, anal_period+construct+depr_length+1)
+  remaining_depreciation_range <- num_range(anal_period+construct, anal_period+construct+depr_length+1)
   print(paste("remaining_depreciation_range", remaining_depreciation_range, sep = ": "))
 
   remaining_depreciation_charges <- get_depreciation_charges(remaining_depreciation_range, recovery_index_range, depreciation_calculation_table)

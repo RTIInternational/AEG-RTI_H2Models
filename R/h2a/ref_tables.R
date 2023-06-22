@@ -38,7 +38,7 @@ read_conversion_factors <- function() {
 }
 
 read_aeo <- function() {
-  df <- read.csv(here("..", "data", "aeo_orig", "2017.csv"), header = TRUE)
+  df <- read.csv(here("..", "data", "aeo_orig", "2017.csv"), header = TRUE, check.names=FALSE, row.names = 1)
   return(list("AEO_2017_Reference_Case" = df))
 }
 all_aeo <- read_aeo()
@@ -79,13 +79,8 @@ read_labor_index <- function() {
   filenames <- c("labor-index.csv", "labor-index-soe.csv")
   for (filename in filenames) {
     csv_path <- here("..", "data", "labor-index", filename)
-    labor_indices[[filename]] <- data.frame(read.csv(csv_path, header = TRUE))
-    labor_indices[[filename]] <- labor_indices[[filename]][-1,] # skip the first row
-    labor_indices[[filename]]$X1 <- as.numeric(labor_indices[[filename]]$X1)
-    labor_indices[[filename]]$X2 <- as.numeric(labor_indices[[filename]]$X2)
-    colnames(labor_indices[[filename]]) <- c("year", "value")
-    labor_indices[[filename]]$year <- as.integer(labor_indices[[filename]]$year)
-    labor_indices[[filename]]$value <- as.numeric(labor_indices[[filename]]$value)
+    df <- read.csv(csv_path, header = TRUE, check.names=FALSE, row.names = 1)
+    labor_indices[[filename]] <- df
   }
   return(labor_indices)
 }
@@ -108,7 +103,7 @@ read_chemical_price_index <- function() {
 read_non_energy_material_prices <- function() {
   df <- read.csv(
     here("..", "data", "non-energy-material-prices", "non-energy-material-prices.csv"),
-    header = TRUE
+    header = TRUE, check.names=FALSE, row.names = 1
   )
   return(df)
 }
@@ -146,21 +141,6 @@ read_consumer_price_index <- function() {
   return(consumer_price_indices)
 }
 
-read_labor_index <- function() {
-  labor_index <- list()
-  csvfile <- read.csv(
-    here("..", "data", "labor-index", "labor-index.csv"),
-    header = TRUE
-  )
-  for (i in 1:nrow(csvfile)) { # nolint: seq_linter.
-    row <- csvfile[i, ]
-    year <- as.integer(row[1])
-    value <- as.numeric(row[2])
-    labor_index[[year]] <- value
-  }
-  return(labor_index)
-}
-
 lhv_hhv <- read_fuel_heating_values()
 lower_heating_values <- lhv_hhv[[1]]
 higher_heating_values <- lhv_hhv[[2]]
@@ -169,13 +149,12 @@ plant_cost_index <- read_plant_cost_index()
 consumer_price_index <- read_consumer_price_index()
 non_energy_material_prices <- read_non_energy_material_prices()
 chemical_price_index <- read_chemical_price_index()
-labor_index <- read_labor_index()
 macrs_depreciation_table = read_macrs_depreciation_table()
 upstream_energy_and_emissions = read_upstream_energy_and_emissions()
 co2_emission_factors = read_co2_emissions_factors()
 labor_index = read_labor_index()
 get_labor_index <- function(year, labor_file) {
-  return(labor_index[[labor_file]][[year]])
+  return(as.numeric(labor_index[[labor_file]][[as.character(year), "Value"]]))
 }
 get_lhv <- function(fuel) lower_heating_values[[fuel]]
 conversion_factor <- function(from_to) conversion_factors[[from_to]]

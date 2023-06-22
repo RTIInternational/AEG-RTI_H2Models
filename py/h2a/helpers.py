@@ -23,8 +23,14 @@ def round_num(num, ndigits):
 def to_str(num):
     return str(num)
 
+def to_num(str):
+    return float(str)
+
 def get(obj, key, default_val=0):
     return obj.get(key, default_val) if isinstance(obj, dict) else (obj[key] if key in obj or (isinstance(key, int) and len(obj) > key) else default_val)
+
+def get_cell(df, row, col):
+    return get(get(df, col), row) 
 
 def concat(a, b):
     return a + b
@@ -43,6 +49,12 @@ def length(a):
 
 def sum_args(*args):
     return sum(args)
+
+def sum_list(a):
+    return sum(a)
+
+def num_range(start, end):
+    return range(start, end)
 
 def sum_columns(rows):
     columns = zip(*rows)

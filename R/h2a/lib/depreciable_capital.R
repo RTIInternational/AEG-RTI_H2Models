@@ -15,5 +15,5 @@ calculate_annual_depreciable_capital <- function(year, replacement_cost_for_year
 }
 get_annual_depreciable_capital <- function(operation_range, replacement_costs, total_initial_depreciable_capital) {
     #'Get the annual depreciable capital column of the depreciation calculation table
-    return(lapply(operation_range, replacement_costs, function(year, replacement_cost_for_year) calculate_annual_depreciable_capital(year, replacement_cost_for_year, total_initial_depreciable_capital)))
+    return(mapply(function(year, replacement_cost_for_year) list(calculate_annual_depreciable_capital(year, replacement_cost_for_year, total_initial_depreciable_capital)), operation_range, replacement_costs) )
 }

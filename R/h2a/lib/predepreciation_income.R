@@ -4,5 +4,5 @@
 import::here(sum_args, .from = "helpers.R", .directory = here("h2a"))
 get_predepreciation_income_column <- function(revenue_h2_sales, salvage_column, decom_costs_column, fixed_cost_column, feedstock_cost_column, other_raw_material_cost_column, variable_cost_column, interest_payments_column) {
     #'Get the Pre-Depreciation Income (Column T)
-    return(lapply(revenue_h2_sales, salvage_column, decom_costs_column, fixed_cost_column, feedstock_cost_column, other_raw_material_cost_column, variable_cost_column, interest_payments_column, function(revenue, salvage, decom_costs, fixed_cost, feedstock_cost, other_raw_material_cost, variable_cost, interest_payments) sum_args(revenue, salvage, decom_costs, fixed_cost, feedstock_cost, other_raw_material_cost, variable_cost, interest_payments)))
+    return(mapply(function(revenue, salvage, decom_costs, fixed_cost, feedstock_cost, other_raw_material_cost, variable_cost, interest_payments) list(sum_args(revenue, salvage, decom_costs, fixed_cost, feedstock_cost, other_raw_material_cost, variable_cost, interest_payments)), revenue_h2_sales, salvage_column, decom_costs_column, fixed_cost_column, feedstock_cost_column, other_raw_material_cost_column, variable_cost_column, interest_payments_column) )
 }

@@ -40,7 +40,7 @@ def functions_to_lang(filename, functions, import_statements, lang):
         },
         "map": {
             "py": lambda lambda_args_str, func, lambda_map_arg_str, map_args_str: f"    return list(map(lambda {lambda_args_str}: {func}({lambda_map_arg_str}), {map_args_str}))\n\n",
-            "R": lambda lambda_args_str, func, lambda_map_arg_str, map_args_str: f"    return(lapply({map_args_str}, function({lambda_args_str}) {func}({lambda_map_arg_str})))\n"
+            "R": lambda lambda_args_str, func, lambda_map_arg_str, map_args_str: f"    return(mapply(function({lambda_args_str}) list({func}({lambda_map_arg_str})), {map_args_str}) )\n"
             + "}\n",
         },
         # Reduce codegen uses the helper function `reduce`

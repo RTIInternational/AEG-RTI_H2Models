@@ -36,7 +36,7 @@
       "map_iterables": ["operation_range", "analysis_index_range", "inflation_price_increase_factors"],
       "map_item_names": ["year", "i", "inflation_price_increase_factor"],
       "args": ["operation_range", "analysis_index_range", "utility_price_df", "nonenergy_material_price_df", "inflation_price_increase_factors", "plant_output_kg_per_year", "percnt_var", "start_time", "inflated_othervar"],
-      "lambda_map_arg_str": "year, sum(prices_from_df(utility_price_df, i)), sum(prices_from_df(nonenergy_material_price_df, i)), inflation_price_increase_factor, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar"
+      "lambda_map_arg_str": "year, sum_list(prices_from_df(utility_price_df, i)), sum_list(prices_from_df(nonenergy_material_price_df, i)), inflation_price_increase_factor, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar"
     }
   ]
 }

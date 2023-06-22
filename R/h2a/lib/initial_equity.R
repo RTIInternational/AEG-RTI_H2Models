@@ -22,5 +22,5 @@ calculate_initial_equity_depr_cap <- function(year, inflation_price_increase_fac
 }
 get_initial_equity_depr_cap <- function(analysis_index_range, inflation_price_increase_factors, depr_cap_infl, percentage_equity_financing, percent_cap1, percent_cap2, percent_cap3, percent_cap4) {
     #'Initial Equity Depreciable Capital
-    return(lapply(analysis_index_range, inflation_price_increase_factors, function(year, inflation_price_increase_factor) calculate_initial_equity_depr_cap(year, inflation_price_increase_factor, depr_cap_infl, percentage_equity_financing, percent_cap1, percent_cap2, percent_cap3, percent_cap4)))
+    return(mapply(function(year, inflation_price_increase_factor) list(calculate_initial_equity_depr_cap(year, inflation_price_increase_factor, depr_cap_infl, percentage_equity_financing, percent_cap1, percent_cap2, percent_cap3, percent_cap4)), analysis_index_range, inflation_price_increase_factors) )
 }
