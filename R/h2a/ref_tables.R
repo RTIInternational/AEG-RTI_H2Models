@@ -154,6 +154,7 @@ upstream_energy_and_emissions = read_upstream_energy_and_emissions()
 co2_emission_factors = read_co2_emissions_factors()
 labor_index = read_labor_index()
 get_macrs <- function(row, col) macrs_depreciation_table[row, as.character(col)]
+get_macrs_col <- function(col) macrs_depreciation_table[, as.character(col)]
 get_labor_index <- function(year, labor_file) {
   return(as.numeric(labor_index[[labor_file]][[as.character(year), "Value"]]))
 }

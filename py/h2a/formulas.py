@@ -24,7 +24,7 @@ from h2a.lib.other_raw_material_costs import get_other_raw_material_cost_column
 from h2a.lib.predepreciation_income import get_predepreciation_income_column
 from h2a.lib.production_process_ghg_emissions import get_production_process_ghg_emissions_for_feedstocks, get_production_process_total_ghg_emissions_for_feedstocks
 from h2a.lib.production_process_ghg_emissions_summary import get_co2_captured_kg_per_kg_h2, get_co2_captured_metric_tons_per_year, get_total_in_metric_tons_per_year, get_total_process_emissions_kg_per_kg_h2, get_total_process_emissions_metric_tons_per_year, get_total_well_to_pump_emissions_kg_per_kg_h2
-from h2a.ref_tables import chemical_price_index, conversion_factor, conversion_factors, get_cpi, get_labor_index, get_lhv, get_plant_cost_index, macrs_depreciation_table
+from h2a.ref_tables import chemical_price_index, conversion_factor, conversion_factors, get_cpi, get_labor_index, get_lhv, get_macrs_col, get_plant_cost_index
 from h2a.lib.replacement_costs import get_replacement_costs
 from h2a.lib.revenue_h2_sales import get_revenue_h2_sales_column
 from h2a.lib.salvage import get_salvage_column
@@ -603,10 +603,10 @@ def calculate(user_input):
   aftertax_nominal_capital_recovery_factor = (nominal_irr * (1 + nominal_irr) ** anal_period) / (((1 + nominal_irr) ** anal_period) - 1)
   print('aftertax_nominal_capital_recovery_factor: ', aftertax_nominal_capital_recovery_factor)
 
-  total_real_fixed_charge_rate = (aftertax_real_capital_recovery_factor * (1 - total_tax_rate * npv(real_irr, get(macrs_depreciation_table, depr_length))) ) / (1 - total_tax_rate)
+  total_real_fixed_charge_rate = (aftertax_real_capital_recovery_factor * (1 - total_tax_rate * npv(real_irr, get_macrs_col(depr_length))) ) / (1 - total_tax_rate)
   print('total_real_fixed_charge_rate: ', total_real_fixed_charge_rate)
 
-  total_nominal_fixed_charge_rate = (aftertax_nominal_capital_recovery_factor * (1 - total_tax_rate * npv(nominal_irr, get(macrs_depreciation_table, depr_length))) ) / (1 - total_tax_rate)
+  total_nominal_fixed_charge_rate = (aftertax_nominal_capital_recovery_factor * (1 - total_tax_rate * npv(nominal_irr, get_macrs_col(depr_length))) ) / (1 - total_tax_rate)
   print('total_nominal_fixed_charge_rate: ', total_nominal_fixed_charge_rate)
 
   after_tax_present_value_capital_related_costs = (pv_of_cashflow_initial_equity_depr_cap + pv_of_cashflow_replacement_costs + pv_of_cashflow_working_cap_reserve + pv_of_cashflow_other_non_depreciable_capital_cost + (pv_of_cashflow_total_salvage_value * (1 - total_tax_rate)) + (pv_of_cashflow_interest_payments * (1 - total_tax_rate)) + (pv_of_cashflow_depreciation_charges * (-total_tax_rate)) + pv_of_cashflow_principal_payments) / (1 - total_tax_rate)

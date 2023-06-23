@@ -1001,13 +1001,13 @@
     {
       "name": "total_real_fixed_charge_rate",
       "label": "Total Real Fixed Charge Rate",
-      "expression": "(aftertax_real_capital_recovery_factor * (1 - total_tax_rate * npv(real_irr, get(macrs_depreciation_table, depr_length))) ) / (1 - total_tax_rate)",
+      "expression": "(aftertax_real_capital_recovery_factor * (1 - total_tax_rate * npv(real_irr, get_macrs_col(depr_length))) ) / (1 - total_tax_rate)",
       "excel_loc": "Cash Flow Analysis, E24"
     },
     {
       "name": "total_nominal_fixed_charge_rate",
       "label": "Total Nominal Fixed Charge Rate",
-      "expression": "(aftertax_nominal_capital_recovery_factor * (1 - total_tax_rate * npv(nominal_irr, get(macrs_depreciation_table, depr_length))) ) / (1 - total_tax_rate)",
+      "expression": "(aftertax_nominal_capital_recovery_factor * (1 - total_tax_rate * npv(nominal_irr, get_macrs_col(depr_length))) ) / (1 - total_tax_rate)",
       "excel_loc": "Cash Flow Analysis, E25"
     },
     {

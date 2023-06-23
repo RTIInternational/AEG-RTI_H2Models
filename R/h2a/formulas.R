@@ -24,7 +24,7 @@ import::here(get_other_raw_material_cost_column, .from = "other_raw_material_cos
 import::here(get_predepreciation_income_column, .from = "predepreciation_income.R", .directory = here("h2a","lib"))
 import::here(get_production_process_ghg_emissions_for_feedstocks, get_production_process_total_ghg_emissions_for_feedstocks, .from = "production_process_ghg_emissions.R", .directory = here("h2a","lib"))
 import::here(get_co2_captured_kg_per_kg_h2, get_co2_captured_metric_tons_per_year, get_total_in_metric_tons_per_year, get_total_process_emissions_kg_per_kg_h2, get_total_process_emissions_metric_tons_per_year, get_total_well_to_pump_emissions_kg_per_kg_h2, .from = "production_process_ghg_emissions_summary.R", .directory = here("h2a","lib"))
-import::here(chemical_price_index, conversion_factor, conversion_factors, get_cpi, get_labor_index, get_lhv, get_plant_cost_index, macrs_depreciation_table, .from = "ref_tables.R", .directory = here("h2a"))
+import::here(chemical_price_index, conversion_factor, conversion_factors, get_cpi, get_labor_index, get_lhv, get_macrs_col, get_plant_cost_index, .from = "ref_tables.R", .directory = here("h2a"))
 import::here(get_replacement_costs, .from = "replacement_costs.R", .directory = here("h2a","lib"))
 import::here(get_revenue_h2_sales_column, .from = "revenue_h2_sales.R", .directory = here("h2a","lib"))
 import::here(get_salvage_column, .from = "salvage.R", .directory = here("h2a","lib"))
@@ -603,10 +603,10 @@ calculate <- function(user_input) {
   aftertax_nominal_capital_recovery_factor <- (nominal_irr * (1 + nominal_irr) ** anal_period) / (((1 + nominal_irr) ** anal_period) - 1)
   print(paste("aftertax_nominal_capital_recovery_factor", aftertax_nominal_capital_recovery_factor, sep = ": "))
 
-  total_real_fixed_charge_rate <- (aftertax_real_capital_recovery_factor * (1 - total_tax_rate * npv(real_irr, get(macrs_depreciation_table, depr_length))) ) / (1 - total_tax_rate)
+  total_real_fixed_charge_rate <- (aftertax_real_capital_recovery_factor * (1 - total_tax_rate * npv(real_irr, get_macrs_col(depr_length))) ) / (1 - total_tax_rate)
   print(paste("total_real_fixed_charge_rate", total_real_fixed_charge_rate, sep = ": "))
 
-  total_nominal_fixed_charge_rate <- (aftertax_nominal_capital_recovery_factor * (1 - total_tax_rate * npv(nominal_irr, get(macrs_depreciation_table, depr_length))) ) / (1 - total_tax_rate)
+  total_nominal_fixed_charge_rate <- (aftertax_nominal_capital_recovery_factor * (1 - total_tax_rate * npv(nominal_irr, get_macrs_col(depr_length))) ) / (1 - total_tax_rate)
   print(paste("total_nominal_fixed_charge_rate", total_nominal_fixed_charge_rate, sep = ": "))
 
   after_tax_present_value_capital_related_costs <- (pv_of_cashflow_initial_equity_depr_cap + pv_of_cashflow_replacement_costs + pv_of_cashflow_working_cap_reserve + pv_of_cashflow_other_non_depreciable_capital_cost + (pv_of_cashflow_total_salvage_value * (1 - total_tax_rate)) + (pv_of_cashflow_interest_payments * (1 - total_tax_rate)) + (pv_of_cashflow_depreciation_charges * (-total_tax_rate)) + pv_of_cashflow_principal_payments) / (1 - total_tax_rate)

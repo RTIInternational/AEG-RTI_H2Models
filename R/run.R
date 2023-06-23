@@ -12,4 +12,4 @@ import::from("formulas.R", calculate, .directory = here("h2a"))
 
 # Run the model
 results <- calculate(user_input)
-print(results)
+# print(results)
