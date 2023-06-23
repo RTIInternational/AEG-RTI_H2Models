@@ -68,6 +68,10 @@ evaluate <- function(expr) eval(parse(text = expr))
 
 args_to_list <- function(...) c(...)
 
+filter_list <- function(func, iterable, term) {
+    return(Filter(function(x) func(x, term), iterable))
+}
+
 YEAR_1 <- 1
 YEAR_2 <- 2
 YEAR_3 <- 3

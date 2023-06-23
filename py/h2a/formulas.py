@@ -21,6 +21,7 @@ from h2a.lib.initial_equity import get_initial_equity_depr_cap
 from h2a.lib.nonenergy_materials import get_nonenergy_material_price_df
 from h2a.lib.other_non_depreciable_capital_cost import get_other_non_depreciable_capital_cost_column
 from h2a.lib.other_raw_material_costs import get_other_raw_material_cost_column
+from h2a.lib.pick_feedstock import pick_feedstock
 from h2a.lib.predepreciation_income import get_predepreciation_income_column
 from h2a.lib.production_process_ghg_emissions import get_production_process_ghg_emissions_for_feedstocks, get_production_process_total_ghg_emissions_for_feedstocks
 from h2a.lib.production_process_ghg_emissions_summary import get_co2_captured_kg_per_kg_h2, get_co2_captured_metric_tons_per_year, get_total_in_metric_tons_per_year, get_total_process_emissions_kg_per_kg_h2, get_total_process_emissions_metric_tons_per_year, get_total_well_to_pump_emissions_kg_per_kg_h2
@@ -164,6 +165,18 @@ def calculate(user_input):
 
   total_feedstock_cost_column = get_total_feedstock_costs(operation_range, feedstock_price_df, inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
   print('total_feedstock_cost_column: ', total_feedstock_cost_column)
+
+  electricity_cost_column = get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(feedstocks, 'Industrial Electricity'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
+  print('electricity_cost_column: ', electricity_cost_column)
+
+  natural_gas_cost_column = get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(feedstocks, 'Industrial Natural Gas'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
+  print('natural_gas_cost_column: ', natural_gas_cost_column)
+
+  discounted_value_electricity_cost = get(electricity_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(electricity_cost_column, 1))
+  print('discounted_value_electricity_cost: ', discounted_value_electricity_cost)
+
+  discounted_value_natural_gas_cost = get(natural_gas_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(natural_gas_cost_column, 1))
+  print('discounted_value_natural_gas_cost: ', discounted_value_natural_gas_cost)
 
   discounted_value_feedstock_cost = get(total_feedstock_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(total_feedstock_cost_column, 1))
   print('discounted_value_feedstock_cost: ', discounted_value_feedstock_cost)
@@ -674,5 +687,11 @@ def calculate(user_input):
 
   dollars_per_kg_h2_variable_cost = H2_price_real * percentage_of_cost_variable_cost
   print('dollars_per_kg_h2_variable_cost: ', dollars_per_kg_h2_variable_cost)
+
+  electricity_cost_per_kg_h2 = -discounted_value_electricity_cost / discounted_value_total_h2_sales_kg * (1+inflation_rate) ** construct / INFLATION_FACTOR
+  print('electricity_cost_per_kg_h2: ', electricity_cost_per_kg_h2)
+
+  natural_gas_cost_per_kg_h2 = -discounted_value_natural_gas_cost / discounted_value_total_h2_sales_kg * (1+inflation_rate) ** construct / INFLATION_FACTOR
+  print('natural_gas_cost_per_kg_h2: ', natural_gas_cost_per_kg_h2)
 
   return locals()

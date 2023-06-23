@@ -72,6 +72,11 @@ evaluate = eval
 def args_to_list(*args):
     return list(args)
 
+def filter_list(func, iterable, term):
+    return list(filter(lambda it: func(it, term), iterable))
+
+TRUE = True
+FALSE = False
 YEAR_1 = 0
 YEAR_2 = 1
 YEAR_3 = 2

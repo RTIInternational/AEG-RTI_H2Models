@@ -129,6 +129,28 @@
       "expression": "get_total_feedstock_costs(operation_range, feedstock_price_df, inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)",
       "excel_loc": "Cash Flow Analysis, O65:O107"
     },
+
+    {
+      "name": "electricity_cost_column",
+      "label": "Electricity Cost Column",
+      "expression": "get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(feedstocks, 'Industrial Electricity'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)"
+    },
+    {
+      "name": "natural_gas_cost_column",
+      "label": "Natural Gas Cost Column",
+      "expression": "get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(feedstocks, 'Industrial Natural Gas'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)"
+    },
+    {
+      "name": "discounted_value_electricity_cost",
+      "label": "Discounted Value of Electricity Feedstock Cost",
+      "expression": "get(electricity_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(electricity_cost_column, 1))"
+    },
+    {
+      "name": "discounted_value_natural_gas_cost",
+      "label": "Discounted Value of Electricity Feedstock Cost",
+      "expression": "get(natural_gas_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(natural_gas_cost_column, 1))"
+    },
+
     {
       "name": "discounted_value_feedstock_cost",
       "label": "Discounted Value of Feedstock Cost",
@@ -1139,6 +1161,17 @@
       "label": "$/kg of H2: Other Variable Costs (including utilities)",
       "expression": "H2_price_real * percentage_of_cost_variable_cost",
       "excel_loc": "Cash Flow Analysis, D125"
+    },
+
+    {
+      "name": "electricity_cost_per_kg_h2",
+      "label": "Electricity Cost per kg H2",
+      "expression": "-discounted_value_electricity_cost / discounted_value_total_h2_sales_kg * (1+inflation_rate) ** construct / INFLATION_FACTOR"
+    },
+    {
+      "name": "natural_gas_cost_per_kg_h2",
+      "label": "Natural Gas Cost per kg H2",
+      "expression": "-discounted_value_natural_gas_cost / discounted_value_total_h2_sales_kg * (1+inflation_rate) ** construct / INFLATION_FACTOR"
     }
   ]
 }

@@ -84,14 +84,22 @@ helper_code = {
         "py": "def args_to_list(*args):\n    return list(args)\n\n",
         "R": "args_to_list <- function(...) c(...)\n\n",
     },
+    "filter_list": {
+        "py": "def filter_list(func, iterable, term):\n    return list(filter(lambda it: func(it, term), iterable))\n\n",
+        "R": "filter_list <- function(func, iterable, term) {\n    return(Filter(function(x) func(x, term), iterable))\n}\n\n",
+    },
     # "reduce": {
     #     "py": "import functools\n\ndef reduce(function, iterable, initializer=None):\n    return functools.reduce(function, iterable, initializer)\n\n",
     #     "R": "reduce <- Reduce\n\n",
     # },
-    # "TRUE": {
-    #     "py": "TRUE = True\n",
-    #     "R": "",
-    # },
+    "TRUE": {
+        "py": "TRUE = True\n",
+        "R": "",
+    },
+    "FALSE": {
+        "py": "FALSE = False\n",
+        "R": "",
+    },
     "assign_index": {
         "py": lambda name, val: f"{name} = {val}\n",
         "R": lambda name, val: f"{name} <- {val + 1}\n",
@@ -171,12 +179,16 @@ def helpers_to_lang(lang):
     # args_to_list() is a helper function to convert a list of arguments to a list
     file_str += code["args_to_list"][lang]
 
+    # filter() is a helper function to filter a list
+    file_str += code["filter_list"][lang]
+
     # reduce() is a helper function to reduce a list to a single value
     # file_str += code["reduce"][lang]
 
     # R note: helper: range <- seq
 
-    # file_str += code["TRUE"][lang]
+    file_str += code["TRUE"][lang]
+    file_str += code["FALSE"][lang]
 
     # H2A requires years of construction to be 1, 2, 3, or 4
     # These constants are used to compare against operation_range years

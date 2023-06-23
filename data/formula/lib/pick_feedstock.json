@@ -1,0 +1,25 @@
+{
+  "functions": [
+    {
+      "name": "select_feedstock_from_list",
+      "description": "Determine if the feedstock is a match or not",
+      "type": "switch",
+      "args": ["feedstock", "term"],
+      "cases": [
+        {
+          "condition": "get(feedstock, 'name') == term",
+          "body": "TRUE"
+        }, {
+          "condition": "TRUE",
+          "body": "FALSE"
+        }
+      ]
+    },
+    {
+      "name": "pick_feedstock",
+      "description": "Given a list of feedstocks, return the one with the matching name",
+      "body": "filter_list(select_feedstock_from_list, feedstocks, term)",
+      "args": ["feedstocks", "term"]
+    }
+  ]
+}

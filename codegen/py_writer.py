@@ -182,10 +182,13 @@ def edges_to_imports(edges, lib_exports):
         else:
             r_import_list_str = py_import_list_str
 
+        r_import = f'import::here({r_import_list_str}, .from = "{filename}.R", .directory = here({dir_path_to_import_str(dirs, "", "R")}))'
+        if r_import_list_str == "":
+            r_import = ""
         import_statements.append(
             {
                 "py": f"from {dir_path_to_import_str(dirs, filename, 'py')} import {py_import_list_str}",
-                "R": f'import::here({r_import_list_str}, .from = "{filename}.R", .directory = here({dir_path_to_import_str(dirs, "", "R")}))',
+                "R": r_import,
             }
         )
 

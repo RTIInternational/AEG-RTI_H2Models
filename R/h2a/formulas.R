@@ -21,6 +21,7 @@ import::here(get_initial_equity_depr_cap, .from = "initial_equity.R", .directory
 import::here(get_nonenergy_material_price_df, .from = "nonenergy_materials.R", .directory = here("h2a","lib"))
 import::here(get_other_non_depreciable_capital_cost_column, .from = "other_non_depreciable_capital_cost.R", .directory = here("h2a","lib"))
 import::here(get_other_raw_material_cost_column, .from = "other_raw_material_costs.R", .directory = here("h2a","lib"))
+import::here(pick_feedstock, .from = "pick_feedstock.R", .directory = here("h2a","lib"))
 import::here(get_predepreciation_income_column, .from = "predepreciation_income.R", .directory = here("h2a","lib"))
 import::here(get_production_process_ghg_emissions_for_feedstocks, get_production_process_total_ghg_emissions_for_feedstocks, .from = "production_process_ghg_emissions.R", .directory = here("h2a","lib"))
 import::here(get_co2_captured_kg_per_kg_h2, get_co2_captured_metric_tons_per_year, get_total_in_metric_tons_per_year, get_total_process_emissions_kg_per_kg_h2, get_total_process_emissions_metric_tons_per_year, get_total_well_to_pump_emissions_kg_per_kg_h2, .from = "production_process_ghg_emissions_summary.R", .directory = here("h2a","lib"))
@@ -164,6 +165,18 @@ calculate <- function(user_input) {
 
   total_feedstock_cost_column <- get_total_feedstock_costs(operation_range, feedstock_price_df, inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
   print(paste("total_feedstock_cost_column", total_feedstock_cost_column, sep = ": "))
+
+  electricity_cost_column <- get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(feedstocks, 'Industrial Electricity'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
+  print(paste("electricity_cost_column", electricity_cost_column, sep = ": "))
+
+  natural_gas_cost_column <- get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(feedstocks, 'Industrial Natural Gas'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
+  print(paste("natural_gas_cost_column", natural_gas_cost_column, sep = ": "))
+
+  discounted_value_electricity_cost <- get(electricity_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(electricity_cost_column, 1))
+  print(paste("discounted_value_electricity_cost", discounted_value_electricity_cost, sep = ": "))
+
+  discounted_value_natural_gas_cost <- get(natural_gas_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(natural_gas_cost_column, 1))
+  print(paste("discounted_value_natural_gas_cost", discounted_value_natural_gas_cost, sep = ": "))
 
   discounted_value_feedstock_cost <- get(total_feedstock_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(total_feedstock_cost_column, 1))
   print(paste("discounted_value_feedstock_cost", discounted_value_feedstock_cost, sep = ": "))
@@ -674,6 +687,12 @@ calculate <- function(user_input) {
 
   dollars_per_kg_h2_variable_cost <- H2_price_real * percentage_of_cost_variable_cost
   print(paste("dollars_per_kg_h2_variable_cost", dollars_per_kg_h2_variable_cost, sep = ": "))
+
+  electricity_cost_per_kg_h2 <- -discounted_value_electricity_cost / discounted_value_total_h2_sales_kg * (1+inflation_rate) ** construct / INFLATION_FACTOR
+  print(paste("electricity_cost_per_kg_h2", electricity_cost_per_kg_h2, sep = ": "))
+
+  natural_gas_cost_per_kg_h2 <- -discounted_value_natural_gas_cost / discounted_value_total_h2_sales_kg * (1+inflation_rate) ** construct / INFLATION_FACTOR
+  print(paste("natural_gas_cost_per_kg_h2", natural_gas_cost_per_kg_h2, sep = ": "))
 
   return(setNames(mget(ls()), ls()))
 }
