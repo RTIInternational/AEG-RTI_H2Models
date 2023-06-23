@@ -54,9 +54,9 @@ get_aeo <- function(price_table) {
 read_macrs_depreciation_table <- function() {
   # Read the column headers as integers
   csv_path <- here("..", "data", "macrs", "macrs-depreciation-table.csv")
-  df <- read.csv(csv_path, header = TRUE, row.names = 1)
-  colnames(df) <- c(3, 5, 7, 10, 15, 20)
+  df <- read.csv(csv_path, header = TRUE, check.names=FALSE, row.names = 1)
   df <- as.data.frame(lapply(df, as.numeric))
+  colnames(df) <- c("3", "5", "7", "10", "15", "20")
   return(df)
 }
 
@@ -153,6 +153,7 @@ macrs_depreciation_table = read_macrs_depreciation_table()
 upstream_energy_and_emissions = read_upstream_energy_and_emissions()
 co2_emission_factors = read_co2_emissions_factors()
 labor_index = read_labor_index()
+get_macrs <- function(row, col) macrs_depreciation_table[row, as.character(col)]
 get_labor_index <- function(year, labor_file) {
   return(as.numeric(labor_index[[labor_file]][[as.character(year), "Value"]]))
 }

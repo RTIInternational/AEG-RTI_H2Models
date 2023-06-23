@@ -11,7 +11,7 @@
     {
       "name": "get_cumulative_cashflow_column",
       "description": "Calculates the Cumulative Cash Flow Column",
-      "map_function": "sum",
+      "map_function": "sum_list",
       "map_iterables": ["analysis_index_range"],
       "map_item_names": "i",
       "lambda_map_arg_str": "slice(cashflow_column, YEAR_1, i+1)",

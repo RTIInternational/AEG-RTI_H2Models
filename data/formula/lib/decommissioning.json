@@ -6,7 +6,7 @@
       "type": "switch",
       "cases": [
         {
-          "condition": "year == plant_life + FIRST",
+          "condition": "year == plant_life",
           "body": "-inflation_price_increase_factor * decom"
         },
         {

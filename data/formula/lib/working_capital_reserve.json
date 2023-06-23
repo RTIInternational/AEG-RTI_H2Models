@@ -27,7 +27,7 @@
       "name": "get_working_cap_reserve_column",
       "description": "Get the column for the working capital reserve",
       "args": ["working_cap_reserve_rows"],
-      "body": "append(working_cap_reserve_rows, -sum(working_cap_reserve_rows))"
+      "body": "append(working_cap_reserve_rows, -sum_list(working_cap_reserve_rows))"
     }
   ]
 }

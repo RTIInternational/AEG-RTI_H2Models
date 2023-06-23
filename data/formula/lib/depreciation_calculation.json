@@ -11,7 +11,7 @@
           "body": "depreciable_capital / depr_length"
         }, {
           "condition": "depr_type == 'MACRS' and recovery_year <= depr_length + 1",
-          "body": "depreciable_capital * get(get(macrs_depreciation_table, depr_length), recovery_year)"
+          "body": "depreciable_capital * get_macrs(recovery_year, depr_length)"
         }, {
           "condition": "TRUE",
           "body": "0"

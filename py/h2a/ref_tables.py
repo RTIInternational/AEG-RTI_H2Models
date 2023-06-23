@@ -176,6 +176,7 @@ get_aeo = (
     else Exception(f"Price table '{price_table}' not supported.")
 )
 macrs_depreciation_table = read_macrs_depreciation_table()
+get_macrs = lambda year, depr_length: macrs_depreciation_table[depr_length][year]
 upstream_energy_and_emissions = read_upstream_energy_and_emissions()
 co2_emission_factors = read_co2_emissions_factors()
 # print(upstream_energy_and_emissions["Total Energy"]["Industrial Electricity"])

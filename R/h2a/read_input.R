@@ -1,3 +1,5 @@
+options(digits = 13)
+
 read_default_inputs_json <- function(json_filename) {
     input_filepath <- here::here("..", "data", "input", "default", json_filename)
     data <- jsonlite::fromJSON(input_filepath)

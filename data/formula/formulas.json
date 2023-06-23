@@ -809,7 +809,7 @@
     {
       "name": "total_initial_depreciable_capital",
       "label": "Total Initial Depreciable Capital",
-      "expression": "-(initial_capital_financed + sum(initial_equity_depr_cap))",
+      "expression": "-(initial_capital_financed + sum_list(initial_equity_depr_cap))",
       "excel_loc": "Depreciation, B44"
     },
     {
@@ -842,7 +842,7 @@
     },
     {
       "name": "remaining_depreciation_range",
-      "expression": "num_range(anal_period+construct, anal_period+construct+depr_length+1)"
+      "expression": "num_range(anal_period+construct + FIRST, anal_period+construct+depr_length+1 + FIRST)"
     },
     {
       "name": "remaining_depreciation_charges",
@@ -852,7 +852,7 @@
     },
     {
       "name": "total_remaining_depreciation_charges",
-      "expression": "sum(remaining_depreciation_charges)"
+      "expression": "sum_list(remaining_depreciation_charges)"
     },
     {
       "name": "depreciation_charges_column",

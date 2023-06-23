@@ -504,7 +504,7 @@ def calculate(user_input):
   LCOE_contribution_capital_costs = -(discounted_value_initial_equity_depr_cap + discounted_value_replacement_costs + discounted_value_working_cap_reserve + discounted_value_other_non_depreciable_capital_cost)
   print('LCOE_contribution_capital_costs: ', LCOE_contribution_capital_costs)
 
-  total_initial_depreciable_capital = -(initial_capital_financed + sum(initial_equity_depr_cap))
+  total_initial_depreciable_capital = -(initial_capital_financed + sum_list(initial_equity_depr_cap))
   print('total_initial_depreciable_capital: ', total_initial_depreciable_capital)
 
   annual_depreciable_capital = get_annual_depreciable_capital(operation_range, replacement_costs, total_initial_depreciable_capital)
@@ -522,13 +522,13 @@ def calculate(user_input):
   depreciation_charges = get_depreciation_charges(analysis_index_range, recovery_index_range, depreciation_calculation_table)
   print('depreciation_charges: ', depreciation_charges)
 
-  remaining_depreciation_range = num_range(anal_period+construct, anal_period+construct+depr_length+1)
+  remaining_depreciation_range = num_range(anal_period+construct + FIRST, anal_period+construct+depr_length+1 + FIRST)
   print('remaining_depreciation_range: ', remaining_depreciation_range)
 
   remaining_depreciation_charges = get_depreciation_charges(remaining_depreciation_range, recovery_index_range, depreciation_calculation_table)
   print('remaining_depreciation_charges: ', remaining_depreciation_charges)
 
-  total_remaining_depreciation_charges = sum(remaining_depreciation_charges)
+  total_remaining_depreciation_charges = sum_list(remaining_depreciation_charges)
   print('total_remaining_depreciation_charges: ', total_remaining_depreciation_charges)
 
   depreciation_charges_column = get_depreciation_charges_column(depreciation_charges, analysis_index_range, total_remaining_depreciation_charges, anal_period, construct)

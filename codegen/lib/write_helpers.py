@@ -5,7 +5,7 @@ from .util import R_ENABLED, HELPERS_FILENAME, util_code
 helper_code = {
     "irr": {
         "py": "from .helper_irr import IRR\n\ndef irr(cfList):\n    return IRR(cfList)\n\n",
-        "R": "library(FinancialMath)\n\nirr <- function(cfList) {\n    return(IRR(cfList))\n}\n\n",
+        "R": "irr <- function(cfList) {\n    return(tidyquant::IRR(cfList))\n}\n\n",
     },
     "npv": {
         "py": "def npv(r, cfList):\n    sum_pv = 0\n    for i, pmt in enumerate(cfList, start=1):\n        sum_pv += pmt / ((1 + r) ** i)\n    return sum_pv\n\n",

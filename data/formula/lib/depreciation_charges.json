@@ -7,8 +7,8 @@
       "type": "switch",
       "cases": [
         {
-          "condition": "row - i >= YEAR_1 and row - i < length(get(table, i))",
-          "body": "get(get(table, i), row - i)"
+          "condition": "FIRST + row - i >= YEAR_1 and FIRST + row - i < length(get(table, i)) + FIRST",
+          "body": "get(get(table, i), FIRST + row - i)"
         },
         {
           "condition": "TRUE",
@@ -28,7 +28,7 @@
       "name": "calculate_depreciation_charge",
       "description": "Calculate the depreciation charge for a given year by summing the diagonal",
       "args": ["year", "recovery_index_range", "depreciation_calculation_table"],
-      "body": "sum(diagonal(depreciation_calculation_table, year, recovery_index_range))"
+      "body": "sum_list(diagonal(depreciation_calculation_table, year, recovery_index_range))"
     },
     {
       "name": "get_depreciation_charges",
@@ -45,7 +45,7 @@
       "type": "switch",
       "cases": [
         {
-          "condition": "i == anal_period + construct - 1",
+          "condition": "i - FIRST == anal_period + construct - 1",
           "body": "-charge - total_remaining_depreciation_charges"
         },
         {
