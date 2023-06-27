@@ -6,3 +6,5 @@ renv/
 *.pdf
 __pycache__/
 .Rproj.user
+.Rhistory
+out

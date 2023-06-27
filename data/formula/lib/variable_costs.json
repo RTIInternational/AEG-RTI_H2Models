@@ -1,9 +1,24 @@
 {
   "functions": [
     {
+      "name": "calculate_tax_credit_for_year",
+      "description": "Calculate the tax credit amount for a given year",
+      "args": ["year", "dollars_per_kg_h2_10yr_credit", "plant_output_kg_per_year"],
+      "type": "switch",
+      "cases": [
+        {
+          "condition": "year >= 1 and year <= 10",
+          "body": "dollars_per_kg_h2_10yr_credit * plant_output_kg_per_year"
+        }, {
+          "condition": "TRUE",
+          "body": "0"
+        }
+      ]
+    },
+    {
       "name": "calculate_variable_cost_for_year",
       "description": "Calculate the variable cost for a given year",
-      "args": ["year", "utility_price", "material_price", "inflation_price_increase_factor", "plant_output_kg_per_year", "percnt_var", "start_time", "inflated_othervar"],
+      "args": ["year", "utility_price", "material_price", "inflation_price_increase_factor", "plant_output_kg_per_year", "percnt_var", "start_time", "inflated_othervar", "dollars_per_kg_h2_10yr_credit"],
       "type": "switch",
       "cases": [
         {
@@ -11,13 +26,13 @@
           "body": "0"
         }, {
           "condition": "year == 1 and start_time < 1",
-          "body": "-(( ((utility_price + material_price) * plant_output_kg_per_year + inflated_othervar) * inflation_price_increase_factor * percnt_var * start_time ) + ( (utility_price + material_price) * plant_output_kg_per_year * inflation_price_increase_factor * (1 - start_time) ))"
+          "body": "-(( ((utility_price + material_price) * plant_output_kg_per_year + inflated_othervar - calculate_tax_credit_for_year(year, dollars_per_kg_h2_10yr_credit, plant_output_kg_per_year)) * inflation_price_increase_factor * percnt_var * start_time ) + ( (utility_price + material_price) * plant_output_kg_per_year * inflation_price_increase_factor * (1 - start_time) ))"
         }, {
           "condition": "year <= start_time",
-          "body": "-((utility_price + material_price) * plant_output_kg_per_year + inflated_othervar) * inflation_price_increase_factor * percnt_var"
+          "body": "-((utility_price + material_price) * plant_output_kg_per_year + inflated_othervar - calculate_tax_credit_for_year(year, dollars_per_kg_h2_10yr_credit, plant_output_kg_per_year)) * inflation_price_increase_factor * percnt_var"
         }, {
           "condition": "TRUE",
-          "body": "-((utility_price + material_price) * plant_output_kg_per_year + inflated_othervar) * inflation_price_increase_factor"
+          "body": "-((utility_price + material_price) * plant_output_kg_per_year + inflated_othervar - calculate_tax_credit_for_year(year, dollars_per_kg_h2_10yr_credit, plant_output_kg_per_year)) * inflation_price_increase_factor"
         }
       ]
     },
@@ -35,8 +50,8 @@
       "map_function": "calculate_variable_cost_for_year",
       "map_iterables": ["operation_range", "analysis_index_range", "inflation_price_increase_factors"],
       "map_item_names": ["year", "i", "inflation_price_increase_factor"],
-      "args": ["operation_range", "analysis_index_range", "utility_price_df", "nonenergy_material_price_df", "inflation_price_increase_factors", "plant_output_kg_per_year", "percnt_var", "start_time", "inflated_othervar"],
-      "lambda_map_arg_str": "year, sum_list(prices_from_df(utility_price_df, i)), sum_list(prices_from_df(nonenergy_material_price_df, i)), inflation_price_increase_factor, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar"
+      "args": ["operation_range", "analysis_index_range", "utility_price_df", "nonenergy_material_price_df", "inflation_price_increase_factors", "plant_output_kg_per_year", "percnt_var", "start_time", "inflated_othervar", "dollars_per_kg_h2_10yr_credit"],
+      "lambda_map_arg_str": "year, sum_list(prices_from_df(utility_price_df, i)), sum_list(prices_from_df(nonenergy_material_price_df, i)), inflation_price_increase_factor, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar, dollars_per_kg_h2_10yr_credit"
     }
   ]
 }

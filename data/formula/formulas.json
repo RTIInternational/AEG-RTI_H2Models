@@ -708,6 +708,12 @@
       "translation_note": "TODO: there is an error in the original formula, offsetting the years by 1. I kept the error so my results would match"
     },
     {
+      "name": "cc_credit_basis_year_dollars_per_tonne_co2",
+      "label": "CCS Credit (basis year $/tonne CO2)",
+      "expression": "-CO2_credit * get_cpi(BasisYear, cpi_file) / get_cpi(ref_year, cpi_file)",
+      "excel_loc": "Carbon Sequestration, E38"
+    },
+    {
       "name": "cc_transport_cost_first_year_basis_year_dollars_per_year",
       "label": "Transport Cost first year (basis year $/tonne CO2)",
       "expression": "cc_transport_cost_basis_year_dollars_per_tonne_co2 * co2_mass_flowrate_million_metric_tonnes_per_year * 1000000",
@@ -720,9 +726,15 @@
       "excel_loc": "Carbon Sequestration, F37"
     },
     {
+      "name": "cc_credit_first_year_basis_year_dollars_per_year",
+      "label": "CCS Credit first year (basis year $/tonne CO2)",
+      "expression": "cc_credit_basis_year_dollars_per_tonne_co2 * co2_mass_flowrate_million_metric_tonnes_per_year * 1000000",
+      "excel_loc": "Carbon Sequestration, F38"
+    },
+    {
       "name": "total_cc_cost_first_year_per_tonne_co2",
       "label": "Total Cost first year (basis year $/tonne CO2)",
-      "expression": "cc_transport_cost_first_year_basis_year_dollars_per_year + cc_storage_cost_first_year_basis_year_dollars_per_year",
+      "expression": "cc_transport_cost_first_year_basis_year_dollars_per_year + cc_storage_cost_first_year_basis_year_dollars_per_year + cc_credit_first_year_basis_year_dollars_per_year",
       "excel_loc": "Carbon Sequestration, F39"
     },
     {
@@ -766,7 +778,7 @@
     {
       "name": "variable_cost_column",
       "label": "Other Variable Operating Costs",
-      "expression": "get_variable_cost_column(operation_range, analysis_index_range, utility_price_df, nonenergy_material_price_df, inflation_price_increase_factors, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar)",
+      "expression": "get_variable_cost_column(operation_range, analysis_index_range, utility_price_df, nonenergy_material_price_df, inflation_price_increase_factors, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar, dollars_per_kg_h2_10yr_credit)",
       "excel_loc": "Cash Flow Analysis, R65:R107"
     },
     {

@@ -94,6 +94,7 @@ def calculate(user_input):
   CO2_Capture_Efficiency = user_input['CO2_Capture_Efficiency']
   pipeline_length_km = user_input['pipeline_length_km']
   CO2_credit = user_input['CO2_credit']
+  dollars_per_kg_h2_10yr_credit = user_input['dollars_per_kg_h2_10yr_credit']
   cpi_file = user_input['cpi_file']
   labor_file = user_input['labor_file']
   feedstocks = user_input['feedstocks']
@@ -457,13 +458,19 @@ def calculate(user_input):
   cc_storage_cost_basis_year_dollars_per_tonne_co2 = cc_storage_cost_nominal_dollars_per_tonne_co2 * get_cpi(BasisYear - 1, cpi_file) / get_cpi(startup_year - 1, cpi_file)
   print('cc_storage_cost_basis_year_dollars_per_tonne_co2: ', cc_storage_cost_basis_year_dollars_per_tonne_co2)
 
+  cc_credit_basis_year_dollars_per_tonne_co2 = -CO2_credit * get_cpi(BasisYear, cpi_file) / get_cpi(ref_year, cpi_file)
+  print('cc_credit_basis_year_dollars_per_tonne_co2: ', cc_credit_basis_year_dollars_per_tonne_co2)
+
   cc_transport_cost_first_year_basis_year_dollars_per_year = cc_transport_cost_basis_year_dollars_per_tonne_co2 * co2_mass_flowrate_million_metric_tonnes_per_year * 1000000
   print('cc_transport_cost_first_year_basis_year_dollars_per_year: ', cc_transport_cost_first_year_basis_year_dollars_per_year)
 
   cc_storage_cost_first_year_basis_year_dollars_per_year = cc_storage_cost_basis_year_dollars_per_tonne_co2 * co2_mass_flowrate_million_metric_tonnes_per_year * 1000000
   print('cc_storage_cost_first_year_basis_year_dollars_per_year: ', cc_storage_cost_first_year_basis_year_dollars_per_year)
 
-  total_cc_cost_first_year_per_tonne_co2 = cc_transport_cost_first_year_basis_year_dollars_per_year + cc_storage_cost_first_year_basis_year_dollars_per_year
+  cc_credit_first_year_basis_year_dollars_per_year = cc_credit_basis_year_dollars_per_tonne_co2 * co2_mass_flowrate_million_metric_tonnes_per_year * 1000000
+  print('cc_credit_first_year_basis_year_dollars_per_year: ', cc_credit_first_year_basis_year_dollars_per_year)
+
+  total_cc_cost_first_year_per_tonne_co2 = cc_transport_cost_first_year_basis_year_dollars_per_year + cc_storage_cost_first_year_basis_year_dollars_per_year + cc_credit_first_year_basis_year_dollars_per_year
   print('total_cc_cost_first_year_per_tonne_co2: ', total_cc_cost_first_year_per_tonne_co2)
 
   cc_transport_cost_ref_year_dollars_per_tonne_co2 = cc_transport_cost_basis_year_dollars_per_tonne_co2 * get_cpi(ref_year, cpi_file) / get_cpi(BasisYear, cpi_file)
@@ -484,7 +491,7 @@ def calculate(user_input):
   inflated_othervar = INFLATION_FACTOR * (var_misc + royalties + operator_profit + CO2_OandMcost + waste_treat + solidwaste_treat)
   print('inflated_othervar: ', inflated_othervar)
 
-  variable_cost_column = get_variable_cost_column(operation_range, analysis_index_range, utility_price_df, nonenergy_material_price_df, inflation_price_increase_factors, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar)
+  variable_cost_column = get_variable_cost_column(operation_range, analysis_index_range, utility_price_df, nonenergy_material_price_df, inflation_price_increase_factors, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar, dollars_per_kg_h2_10yr_credit)
   print('variable_cost_column: ', variable_cost_column)
 
   discounted_value_variable_cost = get(variable_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(variable_cost_column, 1))

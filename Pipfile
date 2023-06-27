@@ -8,6 +8,7 @@ simpleeval = "*"
 pandas = "*"
 numpy = "*"
 openpyxl = "*"
+typer = {extras = ["all"], version = "*"}
 
 [dev-packages]
 

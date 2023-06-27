@@ -238,7 +238,7 @@ def main():
     formulas_to_code(FORMULAS_FILENAME, formulas, imports_for_formulas)
 
     # Use subprocess to run `python run.py`
-    subprocess.run(["python", "run.py"], cwd=os.path.join(py_dir))
+    subprocess.run(["python", "run.py", "default-smr-natural-gas-no-cc.json"], cwd=os.path.join(py_dir))
     print("✅ Run complete")
 
     # Use subprocess to run black on the generated Python files

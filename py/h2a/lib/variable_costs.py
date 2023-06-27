@@ -4,6 +4,16 @@
 from h2a.helpers import TRUE, get, sum_list
 
 
+def calculate_tax_credit_for_year(
+    year, dollars_per_kg_h2_10yr_credit, plant_output_kg_per_year
+):
+    """Calculate the tax credit amount for a given year"""
+    if year >= 1 and year <= 10:
+        return dollars_per_kg_h2_10yr_credit * plant_output_kg_per_year
+    else:
+        return 0
+
+
 def calculate_variable_cost_for_year(
     year,
     utility_price,
@@ -13,6 +23,7 @@ def calculate_variable_cost_for_year(
     percnt_var,
     start_time,
     inflated_othervar,
+    dollars_per_kg_h2_10yr_credit,
 ):
     """Calculate the variable cost for a given year"""
     if year < 0:
@@ -23,6 +34,9 @@ def calculate_variable_cost_for_year(
                 (
                     (utility_price + material_price) * plant_output_kg_per_year
                     + inflated_othervar
+                    - calculate_tax_credit_for_year(
+                        year, dollars_per_kg_h2_10yr_credit, plant_output_kg_per_year
+                    )
                 )
                 * inflation_price_increase_factor
                 * percnt_var
@@ -40,6 +54,9 @@ def calculate_variable_cost_for_year(
             -(
                 (utility_price + material_price) * plant_output_kg_per_year
                 + inflated_othervar
+                - calculate_tax_credit_for_year(
+                    year, dollars_per_kg_h2_10yr_credit, plant_output_kg_per_year
+                )
             )
             * inflation_price_increase_factor
             * percnt_var
@@ -49,6 +66,9 @@ def calculate_variable_cost_for_year(
             -(
                 (utility_price + material_price) * plant_output_kg_per_year
                 + inflated_othervar
+                - calculate_tax_credit_for_year(
+                    year, dollars_per_kg_h2_10yr_credit, plant_output_kg_per_year
+                )
             )
             * inflation_price_increase_factor
         )
@@ -69,6 +89,7 @@ def get_variable_cost_column(
     percnt_var,
     start_time,
     inflated_othervar,
+    dollars_per_kg_h2_10yr_credit,
 ):
     """Other Variable Operating Costs column"""
     return list(
@@ -82,6 +103,7 @@ def get_variable_cost_column(
                 percnt_var,
                 start_time,
                 inflated_othervar,
+                dollars_per_kg_h2_10yr_credit,
             ),
             operation_range,
             analysis_index_range,
