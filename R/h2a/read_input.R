@@ -11,6 +11,3 @@ read_default_inputs_json <- function(json_filename) {
     data[["nonenergy_materials"]] <- asplit(data["nonenergy_materials"][[1]], 1)
     return(data)
 }
-
-json_filename <- "default-smr-natural-gas-no-cc.json"
-user_input <- read_default_inputs_json(json_filename)
