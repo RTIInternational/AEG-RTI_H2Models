@@ -8,6 +8,12 @@ H2A can be run in Python or R. See instructions below for each.
 
 Pre-req: pipenv
 
+```bash
+python -m pip install pipenv
+```
+
+You may also need to set PATH via Control Panel in Windows.
+
 Installing dependencies:
 
 ```bash
