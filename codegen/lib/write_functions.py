@@ -1,4 +1,5 @@
 import os
+import re
 from .util import R_ENABLED, util_code
 
 
@@ -10,6 +11,59 @@ def process_condition(cond, lang):
         return (
             cond.replace(" and ", " && ").replace(" or ", " || ").replace("not ", "!")
         )
+
+# Accepts an input_str and returns a string with all instances of evaluate() replaced with eval(parse(text = expr))
+# Example input: "-inflation_price_increase_factor * (evaluate(to_str(get(replacement_costs_for_years, to_str(year), 0))) + (replace_factor * depr_cap)) * ((1 + inflation_rate) ** (startup_year - ref_year))"
+# Example output: "-inflation_price_increase_factor * (eval(parse(text = to_str(get(replacement_costs_for_years, to_str(year), 0)))) + (replace_factor * depr_cap)) * ((1 + inflation_rate) ** (startup_year - ref_year))"
+def replace_evaluate(input_str):
+    # If the input string does not contain evaluate(), return the input string
+    if "evaluate(" not in input_str:
+        return input_str
+
+    # If the input string contains evaluate(), replace all instances of evaluate() with eval(parse(text = expr))
+    # Also consider the expr may contain parentheses
+    else:
+        parts = input_str.split("evaluate(")
+        # Verify that length of parts is 2
+        if len(parts) != 2:
+            raise ValueError(
+                "Input string contains more than one instance of evaluate()"
+            )
+        output_str = parts[0]
+        rest = parts[1]
+
+        def find_closing_paren(rest):
+            # Initialize a counter to keep track of the number of opening parentheses
+            counter = 0
+            for i, char in enumerate(rest):
+                if char == "(":
+                    counter += 1
+                elif char == ")":
+                    counter -= 1
+                # If counter is 0, return the index of the closing parenthesis
+                if counter == 0 and char == ")":
+                    return i
+            # If the closing parenthesis is not found, return -1
+            return -1
+
+        # Find the index of the closing parenthesis of the evaluate() function
+        closing_paren_index = find_closing_paren(rest)
+        # Verify that closing_paren_index is not -1
+        if closing_paren_index == -1:
+            raise ValueError("Input string contains an unmatched opening parenthesis")
+        
+        # Extract the expression from the evaluate() function
+        expr = rest[:closing_paren_index]
+        # Remove the expression from the evaluate() function
+        rest = rest[closing_paren_index + 1:]
+        # Replace the evaluate() function with eval(parse(text = expr))
+        output_str += f"eval(parse(text = {expr}))"
+        # Add the rest of the input string
+        output_str += rest
+        return output_str
+        
+
+
 
 
 def functions_to_lang(filename, functions, import_statements, lang):
@@ -65,14 +119,24 @@ def functions_to_lang(filename, functions, import_statements, lang):
             if func["type"] == "switch":
                 cond1 = process_condition(func["cases"][0]["condition"], lang)
                 body1 = func["cases"][0]["body"]
+
+                if lang == "R":
+                    body1 = replace_evaluate(body1)
+
                 func_def_str += code["if"][lang](cond1, body1)
                 # Iterate after the first case to the second-to-last case
                 for case in func["cases"][1:-1]:
                     cond = process_condition(case["condition"], lang)
                     body = case["body"]
+                    if lang == "R":
+                        body = replace_evaluate(body)
                     func_def_str += code["elif"][lang](cond, body)
                 # Add the last case
                 bodyn = func["cases"][-1]["body"]
+
+                if lang == "R":
+                    bodyn = replace_evaluate(bodyn)
+
                 func_def_str += code["else"][lang](bodyn)
 
         elif "reduce_function" in func:

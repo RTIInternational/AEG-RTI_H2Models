@@ -7,7 +7,7 @@ calculate_replacement_cost <- function(year, inflation_price_increase_factor, re
         return(0)
     }
     else {
-        return(-inflation_price_increase_factor * (evaluate(to_str(get(replacement_costs_for_years, to_str(year), 0))) + (replace_factor * depr_cap)) * ((1 + inflation_rate) ** (startup_year - ref_year)))
+        return(-inflation_price_increase_factor * (eval(parse(text = to_str(get(replacement_costs_for_years, to_str(year), 0)))) + (replace_factor * depr_cap)) * ((1 + inflation_rate) ** (startup_year - ref_year)))
     }
 }
 get_replacement_costs <- function(operation_range, inflation_price_increase_factors, replacement_costs_for_years, replace_factor, direct_cap, depr_cap, ref_year, startup_year, inflation_rate) {

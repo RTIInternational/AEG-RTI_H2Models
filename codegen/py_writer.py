@@ -24,7 +24,15 @@ FORMULAS_FILENAME = "formulas"
 HELPER_CODE_KEYS = list(helper_code.keys())
 
 # Some extra helper constants not defined in helper_code
-HELPER_CODE_EXTRA_KEYS = ["YEAR_1", "YEAR_2", "YEAR_3", "YEAR_4", "FIRST", "SECOND", "THIRD"]
+HELPER_CODE_EXTRA_KEYS = [
+    "YEAR_1",
+    "YEAR_2",
+    "YEAR_3",
+    "YEAR_4",
+    "FIRST",
+    "SECOND",
+    "THIRD",
+]
 
 # All helper functions and constants
 HELPERS_EXPORTS = HELPER_CODE_KEYS + HELPER_CODE_EXTRA_KEYS
@@ -139,9 +147,9 @@ def dir_path_to_import_str(dirs, filename, lang):
         return py_import_path
     elif lang == "R":
         # R_import_path is "h2a" joined with dirs if any exist, separated by commas
-        R_import_path = "\"h2a\""
+        R_import_path = '"h2a"'
         if dirs:
-            dirs = ["\"" + dir + "\"" for dir in dirs]
+            dirs = ['"' + dir + '"' for dir in dirs]
             R_import_path += "," + ",".join(dirs)
         return R_import_path
 
