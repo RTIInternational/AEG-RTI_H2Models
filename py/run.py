@@ -27,8 +27,8 @@ def main(input_files: List[str], clean: bool = False):
 
         results_list.append(results)
 
+    # Write data for graph1 in index-data.js, which is used by index.html
     series, categories = transform_for_graph1(input_files, results_list)
-    # Replace var SERIES_DATA=[] in index.html
     with open(os.path.join(root_dir, "index-data.js"), "w") as f:
         f.write(f"window.SERIES_DATA={series};\n")
         f.write(f"window.CATEGORIES={categories};\n")
