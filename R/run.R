@@ -6,6 +6,12 @@ import::from(here, here)
 # Parse CLI args as a list of files
 args <- commandArgs(trailingOnly = TRUE)
 
+args = c('default-smr-natural-gas-no-cc.json') # runs
+# args = c('default-smr-natural-gas-with-cc.json') # runs
+# args = c('default-pem-electrolysis.json') # does not run
+# args = c('default-solid-oxide-electrolysis.json') # does not run
+# args = c('default-autothermal-reforming-natural-gas-with-cc.json') # runs
+
 # Import the user input
 import::from("read_input.R", read_default_inputs_json, .directory = here("h2a"))
 # Import the H2A model
