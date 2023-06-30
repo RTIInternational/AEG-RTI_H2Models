@@ -29,21 +29,21 @@ pipenv run python py/run.py
 The Python version updates index.html after running. To view the results, open index.html in a browser.
 
 ### R
-
-Pre-req: renv
-
-Installing dependencies:
-
-```R
-cd R/
-renv::restore()
-```
-
-Running:
-  
-```bash
-Rscript R/run.R
-```
+1. Clone code from this repository to your local machine. Make sure you're on the "main" branch.
+2. Install the `renv` package in R: `install.packages("renv")`
+3. Set your working directory to the R directory within the main repository
+     * If you're on the command line, use the `cd` command: `cd path_to_repository\R\`
+     * If you're using RStudio, use the R console to change the directory. The function `getwd()` shows your current directory and `setwd()` allows you to change directories: `setwd("path_to_repository/R/")`
+4. Run `renv::restore()` from the R console to set up packages. If prompted, type 'Y' to activate the project. This will set up your local R environment (packages, versioning, etc.) to match the development environment.
+5. If this doesn't work, you can always manually install the following packages:
+     * renv
+     * here
+     * import
+     * jsonlite [`install.packages('jsonlite', repos = c('https://jeroen.r-universe.dev', 'https://cloud.r-project.org'))`]
+     * dplyr
+6. Now you're ready to run! This can be done in several ways:
+     * **From the command line.** Pick your favorite application for using the terminal. Some options are command prompt (can be accessed via VS Code), gitbash, or the built-in R Terminal. From the R directory, type `Rscript run.R default-smr-natural-gas-no-cc.json` You can input the name of any json in the data\default directory or a sequence of jsons separated by spaces.
+     * **From the RStudio editor. Just click 'Source' to run or select lines of code and run with 'ctrl+Enter' Note, you'll need to re-define the variable args, which is set up by default to accept input from the command line. Set args to equal a vector of one or more json names: `args = c('default-autothermal-reforming-natural-gas-with-cc.json')` 
 
 ## Tax Credits
 
