@@ -26,6 +26,8 @@ Running:
 pipenv run python py/run.py
 ```
 
+The Python version updates index.html after running. To view the results, open index.html in a browser.
+
 ### R
 
 Pre-req: renv
