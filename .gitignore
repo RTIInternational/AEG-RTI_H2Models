@@ -8,3 +8,6 @@ __pycache__/
 .Rhistory
 out
 index-data.js
+R/output/plots/*.png
+R/output/*.csv
+R/output/*.json
