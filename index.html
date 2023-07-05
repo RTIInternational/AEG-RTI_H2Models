@@ -36,6 +36,12 @@
             }
           }
         }],
+        dataLabels: {
+          enabled: true,
+          formatter: function(val, opt) {
+            return Math.round(val * 100) / 100 // round to 2 decimal places
+          },
+        },
         plotOptions: {
           bar: {
             horizontal: false,
@@ -46,14 +52,25 @@
                 style: {
                   fontSize: '13px',
                   fontWeight: 900
-                }
-              }
+                },
+                formatter: function(val, opt) {
+                  return Math.round(val * 100) / 100 // round to 2 decimal places
+                },
+              },
             }
           },
         },
         xaxis: {
           type: 'category',
           categories: window.CATEGORIES,
+        },
+        yaxis: {
+          labels: {
+            formatter: function (value) {
+              // round to 2 decimal places
+              return Math.round(value * 100) / 100
+            }
+          },
         },
         legend: {
           position: 'right',
