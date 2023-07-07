@@ -34,7 +34,7 @@ to_num <- function(str) {
 }
 
 get <- function(obj, key, default_val = 0) {
-    if (is.null(obj[[key]])) {
+    if (is.null(obj) || (is.list(obj) && length(obj) == 0) || is.null(obj[[key]])) {
         return(default_val)
     } else {
         return(obj[[key]])
