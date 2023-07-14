@@ -12,10 +12,11 @@ args <- commandArgs(trailingOnly = TRUE)
 # args = c('default-solid-oxide-electrolysis.json') # runs
 # args = c('default-autothermal-reforming-natural-gas-with-cc.json') # runs
 args = c(
-  #'default-smr-natural-gas-no-cc.json', 
-  'default-smr-natural-gas-with-cc.json'
-  #'default-autothermal-reforming-natural-gas-with-cc.json',
-  #'default-solid-oxide-electrolysis.json'
+  'default-smr-natural-gas-no-cc.json',
+  'default-smr-natural-gas-with-cc.json',
+  'default-autothermal-reforming-natural-gas-with-cc.json',
+  'default-solid-oxide-electrolysis.json',
+  'default-pem-electrolysis.json'
 )
 output_filename = "sample_results.csv" # should include ".csv"
 
@@ -51,11 +52,14 @@ results_df = data.frame()
 for (json_filename in args) {
     results = run(json_filename)
     
+
     df_row = json_to_df(results$list, json_filename)
+
     results_df = bind_rows(results_df, df_row)
+
     write.csv(results_df, paste0("./output/",output_filename), row.names = FALSE)
 }
 
-#make_plots(output_filename)
+make_plots(output_filename)
 
 
