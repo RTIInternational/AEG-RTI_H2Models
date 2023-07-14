@@ -168,7 +168,7 @@ lifecycle_barplot = function(results_filename) {
     geom_text(data = sums, aes(x = model, y = value, label = round(value,2)), vjust = -0.4, fontface = "bold") +
     scale_fill_manual(values = c("Direct" = "#00008B", "Upstream" = "#DAEDF4")) +
     labs(y = "CO2 Emissions (kg CO2 /kg H2)", title = "H2 Emissions Comparison", fill = "Emissions") +
-    scale_y_continuous(expand = expansion(add = c(0,.5))) +
+    scale_y_continuous(expand = expansion(add = c(0,2))) +
     theme_classic() + 
     theme(axis.ticks = element_blank(), plot.title = element_text(hjust = 0.5),
           axis.title.x = element_blank())

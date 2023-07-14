@@ -9,12 +9,13 @@ args <- commandArgs(trailingOnly = TRUE)
 # args = c('default-smr-natural-gas-no-cc.json') # runs
 # args = c('default-smr-natural-gas-with-cc.json') # runs
 # args = c('default-pem-electrolysis.json') # does not run
-# args = c('default-solid-oxide-electrolysis.json') # does not run
+# args = c('default-solid-oxide-electrolysis.json') # runs
 # args = c('default-autothermal-reforming-natural-gas-with-cc.json') # runs
 args = c(
-  'default-smr-natural-gas-no-cc.json', 
-  'default-smr-natural-gas-with-cc.json',
-  'default-autothermal-reforming-natural-gas-with-cc.json'
+  #'default-smr-natural-gas-no-cc.json', 
+  'default-smr-natural-gas-with-cc.json'
+  #'default-autothermal-reforming-natural-gas-with-cc.json',
+  #'default-solid-oxide-electrolysis.json'
 )
 output_filename = "sample_results.csv" # should include ".csv"
 
@@ -39,6 +40,7 @@ run <- function(json_filename) {
     write_json(results_json,paste0("./Output/",json_filename))
     
     return(list(
+      "input" = user_input,
       "list" = results_list,
       "json" = results_json
     ))
@@ -54,6 +56,6 @@ for (json_filename in args) {
     write.csv(results_df, paste0("./output/",output_filename), row.names = FALSE)
 }
 
-make_plots(output_filename)
+#make_plots(output_filename)
 
 
