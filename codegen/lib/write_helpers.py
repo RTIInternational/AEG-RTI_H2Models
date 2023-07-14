@@ -25,7 +25,7 @@ helper_code = {
     },
     "get": {
         "py": "def get(obj, key, default_val=0):\n    return obj.get(key, default_val) if isinstance(obj, dict) else (obj[key] if key in obj or (isinstance(key, int) and len(obj) > key) else default_val)\n\n",
-        "R": "get <- function(obj, key, default_val = 0) {\n    if (is.null(obj[[key]])) {\n        return(default_val)\n    } else {\n        return(obj[[key]])\n    }\n}\n\n",
+        "R": "get <- function(obj, key, default_val = 0) {\n    if (is.null(obj) || (is.list(obj) && length(obj) == 0) || is.null(obj[[key]])) {\n        return(default_val)\n    } else {\n        return(obj[[key]])\n    }\n}\n\n",
     },
     "get_cell": {
         "py": "def get_cell(df, row, col):\n    return get(get(df, col), row) \n\n",
