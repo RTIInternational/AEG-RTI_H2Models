@@ -4,12 +4,19 @@ json_to_df = function(output_list, model_name) {
   for (i in 1:length(output_list)) {
     if (typeof(output_list[[i]]) == "list") {
       if (values[i] == "total_process_emissions_kg_per_kg_h2") {
-        columns = data.frame("CO2_process_emissions_kg_per_kg_h2" = c(output_list[[i]]$CO2), 
-                             "CH4_process_emissions_kg_per_kg_h2" = c(output_list[[i]]$CH4),
-                             "N2O_process_emissions_kg_per_kg_h2" = c(output_list[[i]]$N2O))
+        if(length(output_list[[i]]) > 0) {
+          columns = data.frame("CO2_process_emissions_kg_per_kg_h2" = c(output_list[[i]]$CO2), 
+                               "CH4_process_emissions_kg_per_kg_h2" = c(output_list[[i]]$CH4),
+                               "N2O_process_emissions_kg_per_kg_h2" = c(output_list[[i]]$N2O))
+        } else {
+          columns = data.frame("CO2_process_emissions_kg_per_kg_h2" = c(0), 
+                               "CH4_process_emissions_kg_per_kg_h2" = c(0),
+                               "N2O_process_emissions_kg_per_kg_h2" = c(0))
+        }
         df_full = cbind(df_full,columns)
       } else if (values[i] == "total_upstream_emissions_kg_per_kg_h2") {
         x = 43
+        print("!00")
         columns = data.frame("CO2_upstream_emissions_kg_per_kg_h2" = c(output_list[[i]]$CO2), 
                              "CH4_upstream_emissions_kg_per_kg_h2" = c(output_list[[i]]$CH4),
                              "N2O_upstream_emissions_kg_per_kg_h2" = c(output_list[[i]]$N2O))
@@ -21,13 +28,20 @@ json_to_df = function(output_list, model_name) {
       colnames(column) = c(values[i])
       df_full = cbind(df_full,column)
     } else if (values[i] == "total_upstream_emissions_kg_per_kg_h2") {
-      x = 44
-      columns = data.frame("CO2_upstream_emissions_kg_per_kg_h2" = c(output_list[[i]][[1]]), 
-                           "CH4_upstream_emissions_kg_per_kg_h2" = c(output_list[[i]][[2]]),
-                           "N2O_upstream_emissions_kg_per_kg_h2" = c(output_list[[i]][[3]]))
+      if (length(output_list[[i]]) > 0) {
+        columns = data.frame("CO2_upstream_emissions_kg_per_kg_h2" = c(output_list[[i]][[1]]), 
+                             "CH4_upstream_emissions_kg_per_kg_h2" = c(output_list[[i]][[2]]),
+                             "N2O_upstream_emissions_kg_per_kg_h2" = c(output_list[[i]][[3]]))
+      } else {
+        columns = data.frame("CO2_upstream_emissions_kg_per_kg_h2" = c(0), 
+                             "CH4_upstream_emissions_kg_per_kg_h2" = c(0),
+                             "N2O_upstream_emissions_kg_per_kg_h2" = c(0))
+      }
       df_full = cbind(df_full,columns)
     } else {
-      print(typeof(output_list[[i]]))
+      #print(typeof(output_list[[i]]))
+      t = 4
+      # grapes
     }
     
     #print(values[i])
@@ -168,7 +182,7 @@ lifecycle_barplot = function(results_filename) {
     geom_text(data = sums, aes(x = model, y = value, label = round(value,2)), vjust = -0.4, fontface = "bold") +
     scale_fill_manual(values = c("Direct" = "#00008B", "Upstream" = "#DAEDF4")) +
     labs(y = "CO2 Emissions (kg CO2 /kg H2)", title = "H2 Emissions Comparison", fill = "Emissions") +
-    scale_y_continuous(expand = expansion(add = c(0,.5))) +
+    scale_y_continuous(expand = expansion(add = c(0,2))) +
     theme_classic() + 
     theme(axis.ticks = element_blank(), plot.title = element_text(hjust = 0.5),
           axis.title.x = element_blank())
