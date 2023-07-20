@@ -1,4 +1,4 @@
-json_to_df = function(output_list, model_name) {
+json_to_df <- function(output_list, model_name) {
   values = names(output_list)
   df_full = data.frame("model" = c(model_name))
   for (i in 1:length(output_list)) {
@@ -51,7 +51,6 @@ json_to_df = function(output_list, model_name) {
   return(df_full)
 }
 
-t = json_to_df(results$list,'test')
 
 cost_map = data.frame("long" = c(
   'dollars_per_kg_h2_capital_related_costs',
@@ -114,7 +113,7 @@ cost_barplot = function(results_filename) {
   return(p)
 }
 
-emissions_barplot = function(results_filename) {
+emissions_barplot <- function(results_filename) {
   columns = c(
     'model',
     'CO2_process_emissions_kg_per_kg_h2',
@@ -152,7 +151,7 @@ emissions_barplot = function(results_filename) {
   return(p)
 }
 
-lifecycle_barplot = function(results_filename) {
+lifecycle_barplot <- function(results_filename) {
   columns = c(
     'model',
     'CO2_process_emissions_kg_per_kg_h2',
@@ -191,7 +190,7 @@ lifecycle_barplot = function(results_filename) {
   return(p)
 }
 
-make_plots = function(results_filename) {
+make_plots <- function(results_filename) {
   p = cost_barplot(results_filename)
   print(p)
   p = emissions_barplot(results_filename)
@@ -199,9 +198,3 @@ make_plots = function(results_filename) {
   p = lifecycle_barplot(results_filename)
   print(p)
 }
-
-
-p = cost_barplot("test.csv")
-p = emissions_barplot("test.csv")
-p = lifecycle_barplot("test.csv")
-print(p)

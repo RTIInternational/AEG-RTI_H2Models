@@ -5,7 +5,7 @@ from .util import R_ENABLED, HELPERS_FILENAME, util_code
 helper_code = {
     "irr": {
         "py": "from .helper_irr import IRR\n\ndef irr(cfList):\n    return IRR(cfList)\n\n",
-        "R": "source(\"helper_irr.R\")\n\nirr <- function(cfList) {\n    return(IRR(cfList))\n}\n\n",
+        "R": "import::here(IRR, .from = \"helper_irr.R\", .directory = here(\"h2a\"))\n\nirr <- function(cfList) {\n    return(IRR(cfList))\n}\n\n",
     },
     "npv": {
         "py": "def npv(r, cfList):\n    sum_pv = 0\n    for i, pmt in enumerate(cfList, start=1):\n        sum_pv += pmt / ((1 + r) ** i)\n    return sum_pv\n\n",
