@@ -2,6 +2,7 @@
 # Subsequent calls to here() will be relative to this directory
 here::i_am("run.R")
 import::from(here, here)
+library(tidyverse)
 
 # Parse CLI args as a list of files
 args <- commandArgs(trailingOnly = TRUE)
@@ -25,10 +26,7 @@ import::from("read_input.R", read_default_inputs_json, .directory = here("h2a"))
 # Import the H2A model
 import::from("formulas.R", calculate, .directory = here("h2a"))
 # Import output processing
-import::from("output_processing.R", json_to_df, .directory = here("h2a"))
-import::from("output_processing.R", cost_barplot, .directory = here("h2a"))
-import::from("output_processing.R", emissions_barplot, .directory = here("h2a"))
-import::from("output_processing.R", lifecycle_barplot, .directory = here("h2a"))
+import::here(json_to_df, .from = "output_processing.R", .directory = here("h2a"))
 import::from("output_processing.R", make_plots, .directory = here("h2a"))
 
 
@@ -37,8 +35,8 @@ run <- function(json_filename) {
 
     # Run the model
     results_list = calculate(user_input)
-    results_json = toJSON(results_list)
-    write_json(results_json,paste0("./Output/",json_filename))
+    results_json = jsonlite::toJSON(results_list)
+    jsonlite::write_json(results_json,paste0("./Output/",json_filename))
     
     return(list(
       "input" = user_input,
@@ -55,7 +53,7 @@ for (json_filename in args) {
 
     df_row = json_to_df(results$list, json_filename)
 
-    results_df = bind_rows(results_df, df_row)
+    results_df = dplyr::bind_rows(results_df, df_row)
 
     write.csv(results_df, paste0("./output/",output_filename), row.names = FALSE)
 }
