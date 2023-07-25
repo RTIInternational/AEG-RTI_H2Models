@@ -131,9 +131,14 @@
     },
 
     {
-      "name": "electricity_cost_column",
-      "label": "Electricity Cost Column",
+      "name": "electricity_feedstock_cost_column",
+      "label": "Electricity Feedstock Cost Column",
       "expression": "get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(feedstocks, 'Industrial Electricity'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)"
+    },
+    {
+      "name": "electricity_utility_cost_column",
+      "label": "Electricity Utility Cost Column",
+      "expression": "get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(utilities, 'Industrial Electricity'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)"
     },
     {
       "name": "natural_gas_cost_column",
@@ -141,9 +146,14 @@
       "expression": "get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(feedstocks, 'Industrial Natural Gas'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)"
     },
     {
-      "name": "discounted_value_electricity_cost",
+      "name": "discounted_value_electricity_feedstock_cost",
       "label": "Discounted Value of Electricity Feedstock Cost",
-      "expression": "get(electricity_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(electricity_cost_column, 1))"
+      "expression": "get(electricity_feedstock_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(electricity_feedstock_cost_column, 1))"
+    },
+    {
+      "name": "discounted_value_electricity_utility_cost",
+      "label": "Discounted Value of Electricity Utility Cost",
+      "expression": "get(electricity_utility_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(electricity_utility_cost_column, 1))"
     },
     {
       "name": "discounted_value_natural_gas_cost",
@@ -1176,9 +1186,14 @@
     },
 
     {
+      "name": "combined_discounted_value_electricity_cost",
+      "label": "Combined Discounted Value of Electricity Cost",
+      "expression": "discounted_value_electricity_feedstock_cost + discounted_value_electricity_utility_cost"
+    },
+    {
       "name": "electricity_cost_per_kg_h2",
       "label": "Electricity Cost per kg H2",
-      "expression": "-discounted_value_electricity_cost / discounted_value_total_h2_sales_kg * (1+inflation_rate) ** construct / INFLATION_FACTOR"
+      "expression": "-combined_discounted_value_electricity_cost / discounted_value_total_h2_sales_kg * (1+inflation_rate) ** construct / INFLATION_FACTOR"
     },
     {
       "name": "natural_gas_cost_per_kg_h2",

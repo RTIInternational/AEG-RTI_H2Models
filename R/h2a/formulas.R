@@ -167,14 +167,20 @@ calculate <- function(user_input) {
   total_feedstock_cost_column <- get_total_feedstock_costs(operation_range, feedstock_price_df, inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
   print(paste("total_feedstock_cost_column", total_feedstock_cost_column, sep = ": "))
 
-  electricity_cost_column <- get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(feedstocks, 'Industrial Electricity'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
-  print(paste("electricity_cost_column", electricity_cost_column, sep = ": "))
+  electricity_feedstock_cost_column <- get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(feedstocks, 'Industrial Electricity'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
+  print(paste("electricity_feedstock_cost_column", electricity_feedstock_cost_column, sep = ": "))
+
+  electricity_utility_cost_column <- get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(utilities, 'Industrial Electricity'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
+  print(paste("electricity_utility_cost_column", electricity_utility_cost_column, sep = ": "))
 
   natural_gas_cost_column <- get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(feedstocks, 'Industrial Natural Gas'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
   print(paste("natural_gas_cost_column", natural_gas_cost_column, sep = ": "))
 
-  discounted_value_electricity_cost <- get(electricity_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(electricity_cost_column, 1))
-  print(paste("discounted_value_electricity_cost", discounted_value_electricity_cost, sep = ": "))
+  discounted_value_electricity_feedstock_cost <- get(electricity_feedstock_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(electricity_feedstock_cost_column, 1))
+  print(paste("discounted_value_electricity_feedstock_cost", discounted_value_electricity_feedstock_cost, sep = ": "))
+
+  discounted_value_electricity_utility_cost <- get(electricity_utility_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(electricity_utility_cost_column, 1))
+  print(paste("discounted_value_electricity_utility_cost", discounted_value_electricity_utility_cost, sep = ": "))
 
   discounted_value_natural_gas_cost <- get(natural_gas_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(natural_gas_cost_column, 1))
   print(paste("discounted_value_natural_gas_cost", discounted_value_natural_gas_cost, sep = ": "))
@@ -695,7 +701,10 @@ calculate <- function(user_input) {
   dollars_per_kg_h2_variable_cost <- H2_price_real * percentage_of_cost_variable_cost
   print(paste("dollars_per_kg_h2_variable_cost", dollars_per_kg_h2_variable_cost, sep = ": "))
 
-  electricity_cost_per_kg_h2 <- -discounted_value_electricity_cost / discounted_value_total_h2_sales_kg * (1+inflation_rate) ** construct / INFLATION_FACTOR
+  combined_discounted_value_electricity_cost <- discounted_value_electricity_feedstock_cost + discounted_value_electricity_utility_cost
+  print(paste("combined_discounted_value_electricity_cost", combined_discounted_value_electricity_cost, sep = ": "))
+
+  electricity_cost_per_kg_h2 <- -combined_discounted_value_electricity_cost / discounted_value_total_h2_sales_kg * (1+inflation_rate) ** construct / INFLATION_FACTOR
   print(paste("electricity_cost_per_kg_h2", electricity_cost_per_kg_h2, sep = ": "))
 
   natural_gas_cost_per_kg_h2 <- -discounted_value_natural_gas_cost / discounted_value_total_h2_sales_kg * (1+inflation_rate) ** construct / INFLATION_FACTOR
