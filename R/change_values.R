@@ -31,23 +31,22 @@ change_values <- function(json_file, field_names, list_of_values) {
 }
 
 #list of field names to modify
-field_names_to_modify <- c("CO2_Capture_Efficiency", "plant_life", "real_irr")
+field_names_to_modify <- c("CO2_Capture_Efficiency" , "real_irr")
 
 #list of lists of values, one for each field name
 values_lists <- list(
-  list_of_values1 = c(90:95),
-  list_of_values2 = c(35, 40, 45),
-  list_of_values3 = c(0.06, 0.08, 0.1)
+  list_of_values1 = c(.90,.95),
+  list_of_values2 = c(0.06,0.1)
 )
 
 #provide the path of the JSON file you want to modify
-json_file_path <- 'C:/Users/matth/Downloads/default-smr-natural-gas-no-cc.json'
+json_file_path <- '../data/input/default/default-smr-natural-gas-with-cc.json'
 
 results <- change_values(json_file_path, field_names_to_modify, values_lists)
-View(results)
+#View(results)
 
 #specify the target directory
-output_directory <- "C:/Users/matth/OneDrive/Documents/AEG-RTI_H2Models/R"
+output_directory <- "../data/input/default/"
 
 #save each modified JSON object as a .json file in the target directory
 for (i in seq_along(field_names_to_modify)) {
