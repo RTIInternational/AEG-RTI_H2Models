@@ -94,6 +94,11 @@ cost_barplot = function(results_filename) {
     mutate(model = str_replace(model,"-","\n")) %>%
     mutate(model = str_replace(model,"-","\n")) %>%
     mutate(model = str_replace(model,"-","\n")) %>%
+    mutate(model = str_replace(model,"_","\n")) %>%
+    mutate(model = str_replace(model,"_","\n")) %>%
+    mutate(model = str_replace(model,"_","\n")) %>%
+    mutate(model = str_replace(model,"_","\n")) %>%
+    mutate(model = str_replace(model,"_","\n")) %>%
     mutate(cost_segment = factor(cost_segment, 
                                  levels = c("Other", "Natural Gas", "Electricity", "Variable", "Fixed", "Capital")))
   
@@ -136,7 +141,12 @@ emissions_barplot <- function(results_filename) {
     mutate(model = str_replace(model,"-","\n")) %>%
     mutate(model = str_replace(model,"-","\n")) %>%
     mutate(model = str_replace(model,"-","\n")) %>%
-    mutate(model = str_replace(model,"-","\n"))
+    mutate(model = str_replace(model,"-","\n")) %>%
+    mutate(model = str_replace(model,"_","\n")) %>%
+    mutate(model = str_replace(model,"_","\n")) %>%
+    mutate(model = str_replace(model,"_","\n")) %>%
+    mutate(model = str_replace(model,"_","\n")) %>%
+    mutate(model = str_replace(model,"_","\n"))
   
   sums = df %>% group_by(model) %>% summarize(value = sum(value, na.rm = TRUE))
   
@@ -180,6 +190,11 @@ lifecycle_barplot <- function(results_filename) {
     mutate(model = str_replace(model,"-","\n")) %>%
     mutate(model = str_replace(model,"-","\n")) %>%
     mutate(model = str_replace(model,"-","\n")) %>%
+    mutate(model = str_replace(model,"_","\n")) %>%
+    mutate(model = str_replace(model,"_","\n")) %>%
+    mutate(model = str_replace(model,"_","\n")) %>%
+    mutate(model = str_replace(model,"_","\n")) %>%
+    mutate(model = str_replace(model,"_","\n")) %>%
     mutate(emissions = factor(emissions, levels = c("Upstream", "Direct")))
   
   sums = df %>% group_by(model) %>% summarize(value = sum(value, na.rm = TRUE))
