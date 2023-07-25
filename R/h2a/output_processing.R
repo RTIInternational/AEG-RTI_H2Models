@@ -90,6 +90,10 @@ cost_barplot = function(results_filename) {
     mutate(model = str_replace(model,".json","")) %>%
     mutate(model = str_replace(model,"default-","")) %>%
     mutate(model = str_replace(model,"-","\n")) %>%
+    mutate(model = str_replace(model,"-","\n")) %>%
+    mutate(model = str_replace(model,"-","\n")) %>%
+    mutate(model = str_replace(model,"-","\n")) %>%
+    mutate(model = str_replace(model,"-","\n")) %>%
     mutate(cost_segment = factor(cost_segment, 
                                  levels = c("Other", "Natural Gas", "Electricity", "Variable", "Fixed", "Capital")))
   
@@ -128,6 +132,10 @@ emissions_barplot <- function(results_filename) {
     pivot_longer(cols = 2:3, names_to = "emissions", values_to = "value") %>%
     mutate(model = str_replace(model,".json","")) %>%
     mutate(model = str_replace(model,"default-","")) %>%
+    mutate(model = str_replace(model,"-","\n")) %>%
+    mutate(model = str_replace(model,"-","\n")) %>%
+    mutate(model = str_replace(model,"-","\n")) %>%
+    mutate(model = str_replace(model,"-","\n")) %>%
     mutate(model = str_replace(model,"-","\n"))
   
   sums = df %>% group_by(model) %>% summarize(value = sum(value, na.rm = TRUE))
@@ -167,6 +175,10 @@ lifecycle_barplot <- function(results_filename) {
     pivot_longer(cols = 2:3, names_to = "emissions", values_to = "value") %>%
     mutate(model = str_replace(model,".json","")) %>%
     mutate(model = str_replace(model,"default-","")) %>%
+    mutate(model = str_replace(model,"-","\n")) %>%
+    mutate(model = str_replace(model,"-","\n")) %>%
+    mutate(model = str_replace(model,"-","\n")) %>%
+    mutate(model = str_replace(model,"-","\n")) %>%
     mutate(model = str_replace(model,"-","\n")) %>%
     mutate(emissions = factor(emissions, levels = c("Upstream", "Direct")))
   
