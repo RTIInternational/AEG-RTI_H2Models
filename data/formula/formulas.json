@@ -656,7 +656,7 @@
     {
       "label": "Total upstream emissions (kg/kg H2)",
       "name": "total_upstream_emissions_kg_per_kg_h2",
-      "expression": "sum_columns(feedstock_upstream_ghg_emissions_kg_per_kg_h2)",
+      "expression": "sum_columns(feedstock_upstream_ghg_emissions_kg_per_kg_h2) + sum_columns(utility_upstream_ghg_emissions_kg_per_kg_h2)",
       "excel_loc": "Results, D77:F77"
     },
     {

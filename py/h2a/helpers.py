@@ -56,7 +56,7 @@ def sum_list(a):
 def num_range(start, end):
     return range(start, end)
 
-def sum_columns(rows):
+def sum_columns(rows, ignore=None):
     columns = zip(*rows)
     return list(map(sum, columns))
 
