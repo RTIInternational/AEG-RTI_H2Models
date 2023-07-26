@@ -434,7 +434,7 @@ calculate <- function(user_input) {
   total_process_emissions_metric_tons_per_year <- get_total_process_emissions_metric_tons_per_year(total_process_emissions_kg_per_kg_h2, plant_output_kg_per_year)
   print(paste("total_process_emissions_metric_tons_per_year", total_process_emissions_metric_tons_per_year, sep = ": "))
 
-  total_upstream_emissions_kg_per_kg_h2 <- sum_columns(feedstock_upstream_ghg_emissions_kg_per_kg_h2)
+  total_upstream_emissions_kg_per_kg_h2 <- sum_columns(feedstock_upstream_ghg_emissions_kg_per_kg_h2) + sum_columns(utility_upstream_ghg_emissions_kg_per_kg_h2)
   print(paste("total_upstream_emissions_kg_per_kg_h2", total_upstream_emissions_kg_per_kg_h2, sep = ": "))
 
   total_upstream_emissions_all_ghg_kg_per_kg_h2 <- sum_list(feedstock_upstream_ghg_emissions_kg_per_kg_h2_total) + sum_list(utility_upstream_ghg_emissions_kg_per_kg_h2_total)

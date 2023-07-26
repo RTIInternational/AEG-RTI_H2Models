@@ -57,7 +57,10 @@ sum_list <- function(a) sum(unlist(a))
 
 num_range <- function(start, end) seq(start, end - 1)
 
-sum_columns <- function(rows) {
+sum_columns <- function(rows, default_num_cols=3) {
+    if (length(rows) == 0) {
+        return(rep(0, default_num_cols))
+    }
     columns <- t(rows)
     df <- as.data.frame(do.call(rbind, columns))
     numeric_df <- dplyr::mutate_all(df, function(x) as.numeric(as.character(x)))
