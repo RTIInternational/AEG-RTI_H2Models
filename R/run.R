@@ -51,9 +51,8 @@ results_df = data.frame()
 for (json_filename in args) {
     results = run(json_filename)
     
-
     df_row = json_to_df(results$list, json_filename)
-
+    
     results_df = dplyr::bind_rows(results_df, df_row)
 
     write.csv(results_df, paste0("./output/",output_filename), row.names = FALSE)

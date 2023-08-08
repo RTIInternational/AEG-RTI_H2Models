@@ -5,9 +5,9 @@ json_to_df <- function(output_list, model_name) {
     if (typeof(output_list[[i]]) == "list") {
       if (values[i] == "total_process_emissions_kg_per_kg_h2") {
         if(length(output_list[[i]]) > 0) {
-          columns = data.frame("CO2_process_emissions_kg_per_kg_h2" = c(output_list[[i]]$CO2), 
-                               "CH4_process_emissions_kg_per_kg_h2" = c(output_list[[i]]$CH4),
-                               "N2O_process_emissions_kg_per_kg_h2" = c(output_list[[i]]$N2O))
+          columns = data.frame("CO2_process_emissions_kg_per_kg_h2" = c(output_list[[i]][[1]]), #CO2 
+                               "CH4_process_emissions_kg_per_kg_h2" = c(output_list[[i]][[2]]), #CH4
+                               "N2O_process_emissions_kg_per_kg_h2" = c(output_list[[i]][[3]])) # N2O
         } else {
           columns = data.frame("CO2_process_emissions_kg_per_kg_h2" = c(0), 
                                "CH4_process_emissions_kg_per_kg_h2" = c(0),
@@ -96,6 +96,7 @@ cost_barplot = function(results_filename) {
     'double_count'
   )
   
+  df = read.csv(paste0("./output/",results_filename))
   df = df %>% select(all_of(columns)) %>%
     # subtract electricity cost from variable cost if necessary
     mutate(dollars_per_kg_h2_variable_cost = dollars_per_kg_h2_variable_cost - (double_count * electricity_cost_per_kg_h2)) %>%
@@ -208,6 +209,24 @@ lifecycle_barplot <- function(results_filename) {
 }
 
 make_plots <- function(results_filename) {
+  cost_map = data.frame("long" = c(
+    'dollars_per_kg_h2_capital_related_costs',
+    'dollars_per_kg_h2_fixed_cost',
+    'electricity_cost_per_kg_h2',
+    'natural_gas_cost_per_kg_h2',
+    'dollars_per_kg_h2_variable_cost',
+    'dollars_per_kg_h2_other_raw_material_cost',
+    'dollars_per_kg_h2_decommissioning_costs'), 
+    "cost_segment" = c(
+      'Capital',
+      'Fixed',
+      'Electricity',
+      'Natural Gas',
+      'Variable',
+      'Other',
+      'Other'
+    ))
+  
   p = cost_barplot(results_filename)
   print(p)
   p = emissions_barplot(results_filename)
