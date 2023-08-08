@@ -49,7 +49,7 @@ run <- function(json_filename) {
 # Loop over files
 results_df = data.frame()
 for (json_filename in args) {
-    results = run(json_filename)
+    suppressWarnings({results = run(json_filename)})
     
     df_row = json_to_df(results$list, json_filename)
     
