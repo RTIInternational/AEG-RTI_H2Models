@@ -68,8 +68,8 @@ helper_code = {
         "R": "num_range <- function(start, end) seq(start, end - 1)\n\n",
     },
     "sum_columns": {
-        "py": "def sum_columns(rows):\n    columns = zip(*rows)\n    return list(map(sum, columns))\n\n",
-        "R": "sum_columns <- function(rows) {\n    columns <- t(rows)\n    df <- as.data.frame(do.call(rbind, columns))\n    numeric_df <- dplyr::mutate_all(df, function(x) as.numeric(as.character(x)))\n    return(colSums(numeric_df))\n}\n\n",
+        "py": "def sum_columns(rows, ignore=None):\n    columns = zip(*rows)\n    return list(map(sum, columns))\n\n",
+        "R": "sum_columns <- function(rows, default_num_cols=3) {\n    if (length(rows) == 0) {\n        return(rep(0, default_num_cols))\n    }\n    columns <- t(rows)\n    df <- as.data.frame(do.call(rbind, columns))\n    numeric_df <- dplyr::mutate_all(df, function(x) as.numeric(as.character(x)))\n    return(colSums(numeric_df))\n}\n\n",
     },
     "seq_along": {"py": "def seq_along(a):\n    return range(len(a))\n\n", "R": ""},
     "append": {

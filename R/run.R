@@ -31,8 +31,9 @@ import::from("read_input.R", read_default_inputs_json, .directory = here("h2a"))
 # Import the H2A model
 import::from("formulas.R", calculate, .directory = here("h2a"))
 # Import output processing
-import::here(json_to_df, .from = "output_processing.R", .directory = here("h2a"))
+# import::here(json_to_df, .from = "output_processing.R", .directory = here("h2a"))
 import::from("output_processing.R", make_plots, .directory = here("h2a"))
+import::from("output_processing.R", json_to_df, .directory = here("h2a"))
 
 
 run <- function(json_filename) {
@@ -53,16 +54,17 @@ run <- function(json_filename) {
 # Loop over files
 results_df = data.frame()
 for (json_filename in args) {
-    results = run(json_filename)
+    suppressWarnings({results = run(json_filename)})
     
-
     df_row = json_to_df(results$list, json_filename)
-
+    
     results_df = dplyr::bind_rows(results_df, df_row)
 
     write.csv(results_df, paste0("./output/",output_filename), row.names = FALSE)
 }
 
 make_plots(output_filename)
+
+
 
 

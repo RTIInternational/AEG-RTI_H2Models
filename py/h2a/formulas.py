@@ -167,14 +167,20 @@ def calculate(user_input):
   total_feedstock_cost_column = get_total_feedstock_costs(operation_range, feedstock_price_df, inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
   print('total_feedstock_cost_column: ', total_feedstock_cost_column)
 
-  electricity_cost_column = get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(feedstocks, 'Industrial Electricity'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
-  print('electricity_cost_column: ', electricity_cost_column)
+  electricity_feedstock_cost_column = get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(feedstocks, 'Industrial Electricity'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
+  print('electricity_feedstock_cost_column: ', electricity_feedstock_cost_column)
+
+  electricity_utility_cost_column = get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(utilities, 'Industrial Electricity'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
+  print('electricity_utility_cost_column: ', electricity_utility_cost_column)
 
   natural_gas_cost_column = get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(feedstocks, 'Industrial Natural Gas'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
   print('natural_gas_cost_column: ', natural_gas_cost_column)
 
-  discounted_value_electricity_cost = get(electricity_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(electricity_cost_column, 1))
-  print('discounted_value_electricity_cost: ', discounted_value_electricity_cost)
+  discounted_value_electricity_feedstock_cost = get(electricity_feedstock_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(electricity_feedstock_cost_column, 1))
+  print('discounted_value_electricity_feedstock_cost: ', discounted_value_electricity_feedstock_cost)
+
+  discounted_value_electricity_utility_cost = get(electricity_utility_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(electricity_utility_cost_column, 1))
+  print('discounted_value_electricity_utility_cost: ', discounted_value_electricity_utility_cost)
 
   discounted_value_natural_gas_cost = get(natural_gas_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(natural_gas_cost_column, 1))
   print('discounted_value_natural_gas_cost: ', discounted_value_natural_gas_cost)
@@ -428,7 +434,7 @@ def calculate(user_input):
   total_process_emissions_metric_tons_per_year = get_total_process_emissions_metric_tons_per_year(total_process_emissions_kg_per_kg_h2, plant_output_kg_per_year)
   print('total_process_emissions_metric_tons_per_year: ', total_process_emissions_metric_tons_per_year)
 
-  total_upstream_emissions_kg_per_kg_h2 = sum_columns(feedstock_upstream_ghg_emissions_kg_per_kg_h2)
+  total_upstream_emissions_kg_per_kg_h2 = sum_columns(feedstock_upstream_ghg_emissions_kg_per_kg_h2) + sum_columns(utility_upstream_ghg_emissions_kg_per_kg_h2)
   print('total_upstream_emissions_kg_per_kg_h2: ', total_upstream_emissions_kg_per_kg_h2)
 
   total_upstream_emissions_all_ghg_kg_per_kg_h2 = sum_list(feedstock_upstream_ghg_emissions_kg_per_kg_h2_total) + sum_list(utility_upstream_ghg_emissions_kg_per_kg_h2_total)
@@ -695,7 +701,10 @@ def calculate(user_input):
   dollars_per_kg_h2_variable_cost = H2_price_real * percentage_of_cost_variable_cost
   print('dollars_per_kg_h2_variable_cost: ', dollars_per_kg_h2_variable_cost)
 
-  electricity_cost_per_kg_h2 = -discounted_value_electricity_cost / discounted_value_total_h2_sales_kg * (1+inflation_rate) ** construct / INFLATION_FACTOR
+  combined_discounted_value_electricity_cost = discounted_value_electricity_feedstock_cost + discounted_value_electricity_utility_cost
+  print('combined_discounted_value_electricity_cost: ', combined_discounted_value_electricity_cost)
+
+  electricity_cost_per_kg_h2 = -combined_discounted_value_electricity_cost / discounted_value_total_h2_sales_kg * (1+inflation_rate) ** construct / INFLATION_FACTOR
   print('electricity_cost_per_kg_h2: ', electricity_cost_per_kg_h2)
 
   natural_gas_cost_per_kg_h2 = -discounted_value_natural_gas_cost / discounted_value_total_h2_sales_kg * (1+inflation_rate) ** construct / INFLATION_FACTOR
