@@ -17,8 +17,9 @@ import::from("error_checks.R", error_check4, .directory = here("h2a"))
 library(tidyverse)
 
 # Parse CLI args as a list of files
-# args <- commandArgs(trailingOnly = TRUE)
-# 
+args <- commandArgs(trailingOnly = TRUE)
+
+# Do not use!
 # args = c(
 #   'default-smr-natural-gas-no-cc.json',
 #   'default-smr-natural-gas-with-cc.json',
@@ -42,19 +43,23 @@ error_check1(input_filename)
 inputs = read.csv(input_filename)
 error_check2(output_filename)
 
-# which default model to start with
-args = inputs$baseline
-# add the .json suffix everywhere
-for (i in 1:length(args)) {
-  # error check on model names
-  error_check3(args[i])
-  args[i] = paste0(args[i],".json")
-}
-num_vars = ncol(inputs) - 1
+# only do this if we're not running from the command line
+if (length(args) == 0) {
+  # which default model to start with
+  args = inputs$baseline
+  # add the .json suffix everywhere
+  for (i in 1:length(args)) {
+    # error check on model names
+    error_check3(args[i])
+    args[i] = paste0(args[i],".json")
+  }
+  num_vars = ncol(inputs) - 1
 
-# error check on variable names
-vars = colnames(inputs)[2:ncol(inputs)]
-error_check4(vars)
+
+  # error check on variable names
+  vars = colnames(inputs)[2:ncol(inputs)]
+  error_check4(vars)
+}
 
 run <- function(json_filename, change_vars = c(), change_vals = c(), label = NA) {
     print(change_vars)
