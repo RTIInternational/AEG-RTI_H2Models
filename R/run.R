@@ -32,7 +32,7 @@ args <- commandArgs(trailingOnly = TRUE)
 ## USER INPUTS ################################################
 ###############################################################
 ###############################################################
-input_filename = "./parameters/parameters.csv" # please include ".csv"
+input_filename = "./parameters/parameters_example.csv" # please include ".csv"
 # input_filename "./parameters/parameters_baseline.csv"
 output_filename = "sample_results.csv" # please include ".csv"
 ###############################################################
