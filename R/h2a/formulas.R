@@ -105,610 +105,610 @@ calculate <- function(user_input) {
 
 
   plant_output_kg_per_day <- plant_design_capacity * capacity_factor
-  print(paste("plant_output_kg_per_day", plant_output_kg_per_day, sep = ": "))
+  #print(paste("plant_output_kg_per_day", plant_output_kg_per_day, sep = ": "))
 
   plant_output_kg_per_year <- plant_output_kg_per_day * 365
-  print(paste("plant_output_kg_per_year", plant_output_kg_per_year, sep = ": "))
+  #print(paste("plant_output_kg_per_year", plant_output_kg_per_year, sep = ": "))
 
   full_analysis_period <- construct + anal_period
-  print(paste("full_analysis_period", full_analysis_period, sep = ": "))
+  #print(paste("full_analysis_period", full_analysis_period, sep = ": "))
 
   analysis_period_start <- startup_year - construct
-  print(paste("analysis_period_start", analysis_period_start, sep = ": "))
+  #print(paste("analysis_period_start", analysis_period_start, sep = ": "))
 
   analysis_period_end <- analysis_period_start + full_analysis_period
-  print(paste("analysis_period_end", analysis_period_end, sep = ": "))
+  #print(paste("analysis_period_end", analysis_period_end, sep = ": "))
 
   CEPCIinflator <- get_plant_cost_index(CurrentYear) / get_plant_cost_index(BasisYear)
-  print(paste("CEPCIinflator", CEPCIinflator, sep = ": "))
+  #print(paste("CEPCIinflator", CEPCIinflator, sep = ": "))
 
   CPIinflator <- get_cpi(ref_year, cpi_file) / get_cpi(CurrentYear, cpi_file)
-  print(paste("CPIinflator", CPIinflator, sep = ": "))
+  #print(paste("CPIinflator", CPIinflator, sep = ": "))
 
   INFLATION_FACTOR <- (1 + inflation_rate) ** (startup_year - ref_year)
-  print(paste("INFLATION_FACTOR", INFLATION_FACTOR, sep = ": "))
+  #print(paste("INFLATION_FACTOR", INFLATION_FACTOR, sep = ": "))
 
   H2_LHV_MJ_p_kg <- get_lhv("Hydrogen")
-  print(paste("H2_LHV_MJ_p_kg", H2_LHV_MJ_p_kg, sep = ": "))
+  #print(paste("H2_LHV_MJ_p_kg", H2_LHV_MJ_p_kg, sep = ": "))
 
   output_energy_MMBtu_per_year <- plant_output_kg_per_year * H2_LHV_MJ_p_kg / 1000 / conversion_factor("mmBTU_to_GJ")
-  print(paste("output_energy_MMBtu_per_year", output_energy_MMBtu_per_year, sep = ": "))
+  #print(paste("output_energy_MMBtu_per_year", output_energy_MMBtu_per_year, sep = ": "))
 
   output_energy_MJ_per_year <- plant_output_kg_per_year * H2_LHV_MJ_p_kg
-  print(paste("output_energy_MJ_per_year", output_energy_MJ_per_year, sep = ": "))
+  #print(paste("output_energy_MJ_per_year", output_energy_MJ_per_year, sep = ": "))
 
   nominal_irr <- ((1 + real_irr) * (1 + inflation_rate)) - 1
-  print(paste("nominal_irr", nominal_irr, sep = ": "))
+  #print(paste("nominal_irr", nominal_irr, sep = ": "))
 
   percentage_debt_financing <- 1 - percentage_equity_financing
-  print(paste("percentage_debt_financing", percentage_debt_financing, sep = ": "))
+  #print(paste("percentage_debt_financing", percentage_debt_financing, sep = ": "))
 
   target_after_tax_nominal_irr <- (1 + real_irr)*(1 + inflation_rate) - 1
-  print(paste("target_after_tax_nominal_irr", target_after_tax_nominal_irr, sep = ": "))
+  #print(paste("target_after_tax_nominal_irr", target_after_tax_nominal_irr, sep = ": "))
 
   analysis_range <- num_range(analysis_period_start, analysis_period_end)
-  print(paste("analysis_range", analysis_range, sep = ": "))
+  #print(paste("analysis_range", analysis_range, sep = ": "))
 
   analysis_index_range <- seq_along(analysis_range)
-  print(paste("analysis_index_range", analysis_index_range, sep = ": "))
+  #print(paste("analysis_index_range", analysis_index_range, sep = ": "))
 
   feedstock_price_df <- get_feedstock_price_df(feedstocks, analysis_range, startup_year, INFLATION_FACTOR)
-  print(paste("feedstock_price_df", feedstock_price_df, sep = ": "))
+  #print(paste("feedstock_price_df", feedstock_price_df, sep = ": "))
 
   utility_price_df <- get_feedstock_price_df(utilities, analysis_range, startup_year, INFLATION_FACTOR)
-  print(paste("utility_price_df", utility_price_df, sep = ": "))
+  #print(paste("utility_price_df", utility_price_df, sep = ": "))
 
   operation_range <- get_operation_range(analysis_index_range, construct)
-  print(paste("operation_range", operation_range, sep = ": "))
+  #print(paste("operation_range", operation_range, sep = ": "))
 
   inflation_price_increase_factors <- get_inflation_price_increase_factors(analysis_range, inflation_rate, startup_year)
-  print(paste("inflation_price_increase_factors", inflation_price_increase_factors, sep = ": "))
+  #print(paste("inflation_price_increase_factors", inflation_price_increase_factors, sep = ": "))
 
   total_feedstock_cost_column <- get_total_feedstock_costs(operation_range, feedstock_price_df, inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
-  print(paste("total_feedstock_cost_column", total_feedstock_cost_column, sep = ": "))
+  #print(paste("total_feedstock_cost_column", total_feedstock_cost_column, sep = ": "))
 
   electricity_feedstock_cost_column <- get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(feedstocks, 'Industrial Electricity'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
-  print(paste("electricity_feedstock_cost_column", electricity_feedstock_cost_column, sep = ": "))
+  #print(paste("electricity_feedstock_cost_column", electricity_feedstock_cost_column, sep = ": "))
 
   electricity_utility_cost_column <- get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(utilities, 'Industrial Electricity'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
-  print(paste("electricity_utility_cost_column", electricity_utility_cost_column, sep = ": "))
+  #print(paste("electricity_utility_cost_column", electricity_utility_cost_column, sep = ": "))
 
   natural_gas_cost_column <- get_total_feedstock_costs(operation_range, get_feedstock_price_df(pick_feedstock(feedstocks, 'Industrial Natural Gas'), analysis_range, startup_year, INFLATION_FACTOR), inflation_price_increase_factors, start_time, plant_output_kg_per_year, percnt_var)
-  print(paste("natural_gas_cost_column", natural_gas_cost_column, sep = ": "))
+  #print(paste("natural_gas_cost_column", natural_gas_cost_column, sep = ": "))
 
   discounted_value_electricity_feedstock_cost <- get(electricity_feedstock_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(electricity_feedstock_cost_column, 1))
-  print(paste("discounted_value_electricity_feedstock_cost", discounted_value_electricity_feedstock_cost, sep = ": "))
+  #print(paste("discounted_value_electricity_feedstock_cost", discounted_value_electricity_feedstock_cost, sep = ": "))
 
   discounted_value_electricity_utility_cost <- get(electricity_utility_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(electricity_utility_cost_column, 1))
-  print(paste("discounted_value_electricity_utility_cost", discounted_value_electricity_utility_cost, sep = ": "))
+  #print(paste("discounted_value_electricity_utility_cost", discounted_value_electricity_utility_cost, sep = ": "))
 
   discounted_value_natural_gas_cost <- get(natural_gas_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(natural_gas_cost_column, 1))
-  print(paste("discounted_value_natural_gas_cost", discounted_value_natural_gas_cost, sep = ": "))
+  #print(paste("discounted_value_natural_gas_cost", discounted_value_natural_gas_cost, sep = ": "))
 
   discounted_value_feedstock_cost <- get(total_feedstock_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(total_feedstock_cost_column, 1))
-  print(paste("discounted_value_feedstock_cost", discounted_value_feedstock_cost, sep = ": "))
+  #print(paste("discounted_value_feedstock_cost", discounted_value_feedstock_cost, sep = ": "))
 
   direct_cap <- sum_list(capital_investment_costs(capital_investments, CEPCIinflator, CPIinflator))
-  print(paste("direct_cap", direct_cap, sep = ": "))
+  #print(paste("direct_cap", direct_cap, sep = ": "))
 
   CO2_seq <- 0
-  print(paste("CO2_seq", CO2_seq, sep = ": "))
+  #print(paste("CO2_seq", CO2_seq, sep = ": "))
 
   site_preparation_cost <- eval(parse(text = site_preparation))
-  print(paste("site_preparation_cost", site_preparation_cost, sep = ": "))
+  #print(paste("site_preparation_cost", site_preparation_cost, sep = ": "))
 
   engineering_and_design_cost <- eval(parse(text = engineering_and_design))
-  print(paste("engineering_and_design_cost", engineering_and_design_cost, sep = ": "))
+  #print(paste("engineering_and_design_cost", engineering_and_design_cost, sep = ": "))
 
   process_contingency_cost <- eval(parse(text = process_contingency))
-  print(paste("process_contingency_cost", process_contingency_cost, sep = ": "))
+  #print(paste("process_contingency_cost", process_contingency_cost, sep = ": "))
 
   project_contingency_cost <- eval(parse(text = project_contingency))
-  print(paste("project_contingency_cost", project_contingency_cost, sep = ": "))
+  #print(paste("project_contingency_cost", project_contingency_cost, sep = ": "))
 
   upfront_permitting_costs <- eval(parse(text = upfront_permitting))
-  print(paste("upfront_permitting_costs", upfront_permitting_costs, sep = ": "))
+  #print(paste("upfront_permitting_costs", upfront_permitting_costs, sep = ": "))
 
   material_cost_maintenance_and_repairs_cost <- eval(parse(text = material_cost_maintenance_and_repairs))
-  print(paste("material_cost_maintenance_and_repairs_cost", material_cost_maintenance_and_repairs_cost, sep = ": "))
+  #print(paste("material_cost_maintenance_and_repairs_cost", material_cost_maintenance_and_repairs_cost, sep = ": "))
 
   production_cost_maintenance_and_repairs_cost <- eval(parse(text = production_cost_maintenance_and_repairs))
-  print(paste("production_cost_maintenance_and_repairs_cost", production_cost_maintenance_and_repairs_cost, sep = ": "))
+  #print(paste("production_cost_maintenance_and_repairs_cost", production_cost_maintenance_and_repairs_cost, sep = ": "))
 
   depr_cap <- direct_cap + CO2_seq + (CEPCIinflator * CPIinflator) * (site_preparation_cost + engineering_and_design_cost + process_contingency_cost + project_contingency_cost + other_depreciable_capital_cost + upfront_permitting_costs)
-  print(paste("depr_cap", depr_cap, sep = ": "))
+  #print(paste("depr_cap", depr_cap, sep = ": "))
 
   replacement_costs <- get_replacement_costs(operation_range, inflation_price_increase_factors, replacement_costs_for_years, replace_factor, direct_cap, depr_cap, ref_year, startup_year, inflation_rate)
-  print(paste("replacement_costs", replacement_costs, sep = ": "))
+  #print(paste("replacement_costs", replacement_costs, sep = ": "))
 
   discounted_value_replacement_costs <- get(replacement_costs, YEAR_1) + npv(nominal_irr, skip(replacement_costs, 1))
-  print(paste("discounted_value_replacement_costs", discounted_value_replacement_costs, sep = ": "))
+  #print(paste("discounted_value_replacement_costs", discounted_value_replacement_costs, sep = ": "))
 
   pv_of_cashflow_replacement_costs <- npv(nominal_irr, replacement_costs)
-  print(paste("pv_of_cashflow_replacement_costs", pv_of_cashflow_replacement_costs, sep = ": "))
+  #print(paste("pv_of_cashflow_replacement_costs", pv_of_cashflow_replacement_costs, sep = ": "))
 
   land_cost <- acres_required * cost_per_acre * CPIinflator
-  print(paste("land_cost", land_cost, sep = ": "))
+  #print(paste("land_cost", land_cost, sep = ": "))
 
   other_non_depreciable_capital_cost <- 0
-  print(paste("other_non_depreciable_capital_cost", other_non_depreciable_capital_cost, sep = ": "))
+  #print(paste("other_non_depreciable_capital_cost", other_non_depreciable_capital_cost, sep = ": "))
 
   non_dep_cap <- land_cost + other_non_depreciable_capital_cost
-  print(paste("non_dep_cap", non_dep_cap, sep = ": "))
+  #print(paste("non_dep_cap", non_dep_cap, sep = ": "))
 
   total_cap <- depr_cap + non_dep_cap
-  print(paste("total_cap", total_cap, sep = ": "))
+  #print(paste("total_cap", total_cap, sep = ": "))
 
   depr_cap_infl <- (total_cap - non_dep_cap) * INFLATION_FACTOR
-  print(paste("depr_cap_infl", depr_cap_infl, sep = ": "))
+  #print(paste("depr_cap_infl", depr_cap_infl, sep = ": "))
 
   non_dep_infl <- non_dep_cap * INFLATION_FACTOR
-  print(paste("non_dep_infl", non_dep_infl, sep = ": "))
+  #print(paste("non_dep_infl", non_dep_infl, sep = ": "))
 
   total_capital_investment <- depr_cap_infl + non_dep_infl
-  print(paste("total_capital_investment", total_capital_investment, sep = ": "))
+  #print(paste("total_capital_investment", total_capital_investment, sep = ": "))
 
   initial_equity_depr_cap <- get_initial_equity_depr_cap(analysis_index_range, inflation_price_increase_factors, depr_cap_infl, percentage_equity_financing, percent_cap1, percent_cap2, percent_cap3, percent_cap4)
-  print(paste("initial_equity_depr_cap", initial_equity_depr_cap, sep = ": "))
+  #print(paste("initial_equity_depr_cap", initial_equity_depr_cap, sep = ": "))
 
   discounted_value_initial_equity_depr_cap <- get(initial_equity_depr_cap, YEAR_1) + npv(nominal_irr, skip(initial_equity_depr_cap, 1))
-  print(paste("discounted_value_initial_equity_depr_cap", discounted_value_initial_equity_depr_cap, sep = ": "))
+  #print(paste("discounted_value_initial_equity_depr_cap", discounted_value_initial_equity_depr_cap, sep = ": "))
 
   pv_of_cashflow_initial_equity_depr_cap <- npv(nominal_irr, initial_equity_depr_cap)
-  print(paste("pv_of_cashflow_initial_equity_depr_cap", pv_of_cashflow_initial_equity_depr_cap, sep = ": "))
+  #print(paste("pv_of_cashflow_initial_equity_depr_cap", pv_of_cashflow_initial_equity_depr_cap, sep = ": "))
 
   other_non_depreciable_capital_cost_column <- get_other_non_depreciable_capital_cost_column(analysis_index_range, inflation_price_increase_factors, non_dep_infl)
-  print(paste("other_non_depreciable_capital_cost_column", other_non_depreciable_capital_cost_column, sep = ": "))
+  #print(paste("other_non_depreciable_capital_cost_column", other_non_depreciable_capital_cost_column, sep = ": "))
 
   discounted_value_other_non_depreciable_capital_cost <- get(other_non_depreciable_capital_cost_column, YEAR_1) + npv(nominal_irr, skip(other_non_depreciable_capital_cost_column, 1))
-  print(paste("discounted_value_other_non_depreciable_capital_cost", discounted_value_other_non_depreciable_capital_cost, sep = ": "))
+  #print(paste("discounted_value_other_non_depreciable_capital_cost", discounted_value_other_non_depreciable_capital_cost, sep = ": "))
 
   pv_of_cashflow_other_non_depreciable_capital_cost <- npv(nominal_irr, other_non_depreciable_capital_cost_column)
-  print(paste("pv_of_cashflow_other_non_depreciable_capital_cost", pv_of_cashflow_other_non_depreciable_capital_cost, sep = ": "))
+  #print(paste("pv_of_cashflow_other_non_depreciable_capital_cost", pv_of_cashflow_other_non_depreciable_capital_cost, sep = ": "))
 
   decom <- decom_percent * depr_cap_infl
-  print(paste("decom", decom, sep = ": "))
+  #print(paste("decom", decom, sep = ": "))
 
   decom_costs_column <- get_decom_costs_column(operation_range, inflation_price_increase_factors, decom, plant_life)
-  print(paste("decom_costs_column", decom_costs_column, sep = ": "))
+  #print(paste("decom_costs_column", decom_costs_column, sep = ": "))
 
   discounted_value_decom_costs <- get(decom_costs_column, YEAR_1) + npv(nominal_irr, skip(decom_costs_column, 1))
-  print(paste("discounted_value_decom_costs", discounted_value_decom_costs, sep = ": "))
+  #print(paste("discounted_value_decom_costs", discounted_value_decom_costs, sep = ": "))
 
   salvage <- salvage_perct * total_capital_investment
-  print(paste("salvage", salvage, sep = ": "))
+  #print(paste("salvage", salvage, sep = ": "))
 
   salvage_column <- get_salvage_column(operation_range, inflation_price_increase_factors, salvage, plant_life)
-  print(paste("salvage_column", salvage_column, sep = ": "))
+  #print(paste("salvage_column", salvage_column, sep = ": "))
 
   FTE_HOURS_PER_YEAR <- 2080
-  print(paste("FTE_HOURS_PER_YEAR", FTE_HOURS_PER_YEAR, sep = ": "))
+  #print(paste("FTE_HOURS_PER_YEAR", FTE_HOURS_PER_YEAR, sep = ": "))
 
   labor_cost_inflator <- get_labor_index(ref_year, labor_file) / get_labor_index(BasisYear, labor_file)
-  print(paste("labor_cost_inflator", labor_cost_inflator, sep = ": "))
+  #print(paste("labor_cost_inflator", labor_cost_inflator, sep = ": "))
 
   labor_cost <- total_plant_staff * (labor_cost_per_hour * labor_cost_inflator) * FTE_HOURS_PER_YEAR
-  print(paste("labor_cost", labor_cost, sep = ": "))
+  #print(paste("labor_cost", labor_cost, sep = ": "))
 
   overhead_GA <- labor_cost * overhead_rate
-  print(paste("overhead_GA", overhead_GA, sep = ": "))
+  #print(paste("overhead_GA", overhead_GA, sep = ": "))
 
   tax_insurance <- tax_ins_rate * total_cap
-  print(paste("tax_insurance", tax_insurance, sep = ": "))
+  #print(paste("tax_insurance", tax_insurance, sep = ": "))
 
   total_fixed_cost <- labor_cost + overhead_GA + tax_insurance + (CEPCIinflator*CPIinflator) * (licensing + rent + material_cost_maintenance_and_repairs_cost + production_cost_maintenance_and_repairs_cost + other_fees + other_fixed)
-  print(paste("total_fixed_cost", total_fixed_cost, sep = ": "))
+  #print(paste("total_fixed_cost", total_fixed_cost, sep = ": "))
 
   inflated_fixed <- total_fixed_cost * INFLATION_FACTOR
-  print(paste("inflated_fixed", inflated_fixed, sep = ": "))
+  #print(paste("inflated_fixed", inflated_fixed, sep = ": "))
 
   fixed_cost_column <- get_fixed_cost_column(operation_range, inflation_price_increase_factors, inflated_fixed, percnt_fixed, start_time)
-  print(paste("fixed_cost_column", fixed_cost_column, sep = ": "))
+  #print(paste("fixed_cost_column", fixed_cost_column, sep = ": "))
 
   discounted_value_fixed_cost <- get(fixed_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(fixed_cost_column, 1))
-  print(paste("discounted_value_fixed_cost", discounted_value_fixed_cost, sep = ": "))
+  #print(paste("discounted_value_fixed_cost", discounted_value_fixed_cost, sep = ": "))
 
   total_tax_rate <- fed_tax_rate + state_tax_rate * (1 - fed_tax_rate)
-  print(paste("total_tax_rate", total_tax_rate, sep = ": "))
+  #print(paste("total_tax_rate", total_tax_rate, sep = ": "))
 
   percentage_debt_financing <- 1 - percentage_equity_financing
-  print(paste("percentage_debt_financing", percentage_debt_financing, sep = ": "))
+  #print(paste("percentage_debt_financing", percentage_debt_financing, sep = ": "))
 
   initial_capital_financed <- -depr_cap_infl * percentage_debt_financing * get(inflation_price_increase_factors, YEAR_1)
-  print(paste("initial_capital_financed", initial_capital_financed, sep = ": "))
+  #print(paste("initial_capital_financed", initial_capital_financed, sep = ": "))
 
   LAST_ANALYSIS_YEAR <- FIRST + anal_period + construct - 1
-  print(paste("LAST_ANALYSIS_YEAR", LAST_ANALYSIS_YEAR, sep = ": "))
+  #print(paste("LAST_ANALYSIS_YEAR", LAST_ANALYSIS_YEAR, sep = ": "))
 
   principal_payments_column <- determine_principal_payment(debt_period, analysis_index_range, LAST_ANALYSIS_YEAR, initial_capital_financed)
-  print(paste("principal_payments_column", principal_payments_column, sep = ": "))
+  #print(paste("principal_payments_column", principal_payments_column, sep = ": "))
 
   interest_payments_column <- determine_interest_payment(debt_period, analysis_index_range, initial_capital_financed, debt_interest)
-  print(paste("interest_payments_column", interest_payments_column, sep = ": "))
+  #print(paste("interest_payments_column", interest_payments_column, sep = ": "))
 
   discounted_value_interest_payments <- get(interest_payments_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(interest_payments_column, 1))
-  print(paste("discounted_value_interest_payments", discounted_value_interest_payments, sep = ": "))
+  #print(paste("discounted_value_interest_payments", discounted_value_interest_payments, sep = ": "))
 
   pv_of_cashflow_interest_payments <- npv(nominal_irr, interest_payments_column)
-  print(paste("pv_of_cashflow_interest_payments", pv_of_cashflow_interest_payments, sep = ": "))
+  #print(paste("pv_of_cashflow_interest_payments", pv_of_cashflow_interest_payments, sep = ": "))
 
   h2_sales_kg_per_year <- get_h2_sales_kg_per_year(operation_range, plant_output_kg_per_year, percnt_revs, start_time)
-  print(paste("h2_sales_kg_per_year", h2_sales_kg_per_year, sep = ": "))
+  #print(paste("h2_sales_kg_per_year", h2_sales_kg_per_year, sep = ": "))
 
   discounted_value_total_h2_sales_kg <- get(h2_sales_kg_per_year, YEAR_1) + npv(real_irr, skip(h2_sales_kg_per_year, 1))
-  print(paste("discounted_value_total_h2_sales_kg", discounted_value_total_h2_sales_kg, sep = ": "))
+  #print(paste("discounted_value_total_h2_sales_kg", discounted_value_total_h2_sales_kg, sep = ": "))
 
   LCOE_contribution_h2_sales_kg <- discounted_value_total_h2_sales_kg * (1 - total_tax_rate)
-  print(paste("LCOE_contribution_h2_sales_kg", LCOE_contribution_h2_sales_kg, sep = ": "))
+  #print(paste("LCOE_contribution_h2_sales_kg", LCOE_contribution_h2_sales_kg, sep = ": "))
 
   discounted_value_total_salvage_value <- get(salvage_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(salvage_column, 1))
-  print(paste("discounted_value_total_salvage_value", discounted_value_total_salvage_value, sep = ": "))
+  #print(paste("discounted_value_total_salvage_value", discounted_value_total_salvage_value, sep = ": "))
 
   pv_of_cashflow_total_salvage_value <- npv(nominal_irr, salvage_column)
-  print(paste("pv_of_cashflow_total_salvage_value", pv_of_cashflow_total_salvage_value, sep = ": "))
+  #print(paste("pv_of_cashflow_total_salvage_value", pv_of_cashflow_total_salvage_value, sep = ": "))
 
   nonenergy_material_price_df <- get_nonenergy_material_price_df(nonenergy_materials, analysis_range, INFLATION_FACTOR, ref_year)
-  print(paste("nonenergy_material_price_df", nonenergy_material_price_df, sep = ": "))
+  #print(paste("nonenergy_material_price_df", nonenergy_material_price_df, sep = ": "))
 
   var_misc <- other_variable_operating_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)
-  print(paste("var_misc", var_misc, sep = ": "))
+  #print(paste("var_misc", var_misc, sep = ": "))
 
   waste_treat <- waste_treatment_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)
-  print(paste("waste_treat", waste_treat, sep = ": "))
+  #print(paste("waste_treat", waste_treat, sep = ": "))
 
   solidwaste_treat <- solid_waste_disposal_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)
-  print(paste("solidwaste_treat", solidwaste_treat, sep = ": "))
+  #print(paste("solidwaste_treat", solidwaste_treat, sep = ": "))
 
   feedstock_energy_input_GJ_per_kg_h2 <- get_energy_input_for_feedstocks(feedstocks)
-  print(paste("feedstock_energy_input_GJ_per_kg_h2", feedstock_energy_input_GJ_per_kg_h2, sep = ": "))
+  #print(paste("feedstock_energy_input_GJ_per_kg_h2", feedstock_energy_input_GJ_per_kg_h2, sep = ": "))
 
   utility_energy_input_GJ_per_kg_h2 <- get_energy_input_for_feedstocks(utilities)
-  print(paste("utility_energy_input_GJ_per_kg_h2", utility_energy_input_GJ_per_kg_h2, sep = ": "))
+  #print(paste("utility_energy_input_GJ_per_kg_h2", utility_energy_input_GJ_per_kg_h2, sep = ": "))
 
   production_process_energy_efficiency <- get(conversion_factors, 'kg_H2_LHV_to_GJ') / (sum_list(feedstock_energy_input_GJ_per_kg_h2) + sum_list(utility_energy_input_GJ_per_kg_h2))
-  print(paste("production_process_energy_efficiency", production_process_energy_efficiency, sep = ": "))
+  #print(paste("production_process_energy_efficiency", production_process_energy_efficiency, sep = ": "))
 
   upstream_energy_usage_column_names <- args_to_list('Total Energy', 'Fossil Fuels', 'Petroleum')
-  print(paste("upstream_energy_usage_column_names", upstream_energy_usage_column_names, sep = ": "))
+  #print(paste("upstream_energy_usage_column_names", upstream_energy_usage_column_names, sep = ": "))
 
   upstream_energy_usage_GJ_per_kg_h2 <- get_upstream_energy_usage_for_feedstocks(feedstocks, feedstock_energy_input_GJ_per_kg_h2, upstream_energy_usage_column_names)
-  print(paste("upstream_energy_usage_GJ_per_kg_h2", upstream_energy_usage_GJ_per_kg_h2, sep = ": "))
+  #print(paste("upstream_energy_usage_GJ_per_kg_h2", upstream_energy_usage_GJ_per_kg_h2, sep = ": "))
 
   greenhouse_gas_column_names <- args_to_list('CO2', 'CH4', 'N2O')
-  print(paste("greenhouse_gas_column_names", greenhouse_gas_column_names, sep = ": "))
+  #print(paste("greenhouse_gas_column_names", greenhouse_gas_column_names, sep = ": "))
 
   feedstock_upstream_ghg_emissions_kg_per_kg_h2 <- get_upstream_ghg_emissions_for_feedstocks(feedstocks, feedstock_energy_input_GJ_per_kg_h2, greenhouse_gas_column_names)
-  print(paste("feedstock_upstream_ghg_emissions_kg_per_kg_h2", feedstock_upstream_ghg_emissions_kg_per_kg_h2, sep = ": "))
+  #print(paste("feedstock_upstream_ghg_emissions_kg_per_kg_h2", feedstock_upstream_ghg_emissions_kg_per_kg_h2, sep = ": "))
 
   feedstock_upstream_ghg_emissions_kg_per_kg_h2_total <- get_total_ghg_emissions(feedstock_upstream_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
-  print(paste("feedstock_upstream_ghg_emissions_kg_per_kg_h2_total", feedstock_upstream_ghg_emissions_kg_per_kg_h2_total, sep = ": "))
+  #print(paste("feedstock_upstream_ghg_emissions_kg_per_kg_h2_total", feedstock_upstream_ghg_emissions_kg_per_kg_h2_total, sep = ": "))
 
   utility_upstream_ghg_emissions_kg_per_kg_h2 <- get_upstream_ghg_emissions_for_feedstocks(utilities, utility_energy_input_GJ_per_kg_h2, greenhouse_gas_column_names)
-  print(paste("utility_upstream_ghg_emissions_kg_per_kg_h2", utility_upstream_ghg_emissions_kg_per_kg_h2, sep = ": "))
+  #print(paste("utility_upstream_ghg_emissions_kg_per_kg_h2", utility_upstream_ghg_emissions_kg_per_kg_h2, sep = ": "))
 
   utility_upstream_ghg_emissions_kg_per_kg_h2_total <- get_total_ghg_emissions(utility_upstream_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
-  print(paste("utility_upstream_ghg_emissions_kg_per_kg_h2_total", utility_upstream_ghg_emissions_kg_per_kg_h2_total, sep = ": "))
+  #print(paste("utility_upstream_ghg_emissions_kg_per_kg_h2_total", utility_upstream_ghg_emissions_kg_per_kg_h2_total, sep = ": "))
 
   production_process_ghg_emissions_kg_per_kg_h2 <- get_production_process_ghg_emissions_for_feedstocks(feedstocks, greenhouse_gas_column_names)
-  print(paste("production_process_ghg_emissions_kg_per_kg_h2", production_process_ghg_emissions_kg_per_kg_h2, sep = ": "))
+  #print(paste("production_process_ghg_emissions_kg_per_kg_h2", production_process_ghg_emissions_kg_per_kg_h2, sep = ": "))
 
   production_process_ghg_emissions_kg_per_kg_h2_total <- get_production_process_total_ghg_emissions_for_feedstocks(production_process_ghg_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
-  print(paste("production_process_ghg_emissions_kg_per_kg_h2_total", production_process_ghg_emissions_kg_per_kg_h2_total, sep = ": "))
+  #print(paste("production_process_ghg_emissions_kg_per_kg_h2_total", production_process_ghg_emissions_kg_per_kg_h2_total, sep = ": "))
 
   total_process_pollutants_produced_kg_per_kg_h2 <- sum_columns(production_process_ghg_emissions_kg_per_kg_h2)
-  print(paste("total_process_pollutants_produced_kg_per_kg_h2", total_process_pollutants_produced_kg_per_kg_h2, sep = ": "))
+  #print(paste("total_process_pollutants_produced_kg_per_kg_h2", total_process_pollutants_produced_kg_per_kg_h2, sep = ": "))
 
   total_process_pollutants_produced_all_ghg_kg_per_kg_h2 <- sum_list(production_process_ghg_emissions_kg_per_kg_h2_total)
-  print(paste("total_process_pollutants_produced_all_ghg_kg_per_kg_h2", total_process_pollutants_produced_all_ghg_kg_per_kg_h2, sep = ": "))
+  #print(paste("total_process_pollutants_produced_all_ghg_kg_per_kg_h2", total_process_pollutants_produced_all_ghg_kg_per_kg_h2, sep = ": "))
 
   total_process_pollutants_produced_metric_tons_per_year <- get_total_in_metric_tons_per_year(total_process_pollutants_produced_kg_per_kg_h2, plant_output_kg_per_year)
-  print(paste("total_process_pollutants_produced_metric_tons_per_year", total_process_pollutants_produced_metric_tons_per_year, sep = ": "))
+  #print(paste("total_process_pollutants_produced_metric_tons_per_year", total_process_pollutants_produced_metric_tons_per_year, sep = ": "))
 
   total_process_pollutants_produced_all_ghg_metric_tons_per_year <- round_num(total_process_pollutants_produced_all_ghg_kg_per_kg_h2 * plant_output_kg_per_year / 1000, -2)
-  print(paste("total_process_pollutants_produced_all_ghg_metric_tons_per_year", total_process_pollutants_produced_all_ghg_metric_tons_per_year, sep = ": "))
+  #print(paste("total_process_pollutants_produced_all_ghg_metric_tons_per_year", total_process_pollutants_produced_all_ghg_metric_tons_per_year, sep = ": "))
 
   total_feedstock_pollutants_produced_kg_per_kg_h2 <- sum_columns(production_process_ghg_emissions_kg_per_kg_h2)
-  print(paste("total_feedstock_pollutants_produced_kg_per_kg_h2", total_feedstock_pollutants_produced_kg_per_kg_h2, sep = ": "))
+  #print(paste("total_feedstock_pollutants_produced_kg_per_kg_h2", total_feedstock_pollutants_produced_kg_per_kg_h2, sep = ": "))
 
   total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2 <- sum_list(production_process_ghg_emissions_kg_per_kg_h2_total)
-  print(paste("total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2", total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2, sep = ": "))
+  #print(paste("total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2", total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2, sep = ": "))
 
   total_feedstock_pollutants_produced_metric_tons_per_year <- get_total_in_metric_tons_per_year(total_feedstock_pollutants_produced_kg_per_kg_h2, plant_output_kg_per_year)
-  print(paste("total_feedstock_pollutants_produced_metric_tons_per_year", total_feedstock_pollutants_produced_metric_tons_per_year, sep = ": "))
+  #print(paste("total_feedstock_pollutants_produced_metric_tons_per_year", total_feedstock_pollutants_produced_metric_tons_per_year, sep = ": "))
 
   total_feedstock_pollutants_produced_all_ghg_metric_tons_per_year <- round_num(total_feedstock_pollutants_produced_all_ghg_kg_per_kg_h2 * plant_output_kg_per_year / 1000, -2)
-  print(paste("total_feedstock_pollutants_produced_all_ghg_metric_tons_per_year", total_feedstock_pollutants_produced_all_ghg_metric_tons_per_year, sep = ": "))
+  #print(paste("total_feedstock_pollutants_produced_all_ghg_metric_tons_per_year", total_feedstock_pollutants_produced_all_ghg_metric_tons_per_year, sep = ": "))
 
   co2_captured_kg_per_kg_h2 <- get_co2_captured_kg_per_kg_h2(total_feedstock_pollutants_produced_kg_per_kg_h2, CO2_Capture_Efficiency)
-  print(paste("co2_captured_kg_per_kg_h2", co2_captured_kg_per_kg_h2, sep = ": "))
+  #print(paste("co2_captured_kg_per_kg_h2", co2_captured_kg_per_kg_h2, sep = ": "))
 
   co2_captured_metric_tons_per_year <- get_co2_captured_metric_tons_per_year(co2_captured_kg_per_kg_h2, plant_output_kg_per_year)
-  print(paste("co2_captured_metric_tons_per_year", co2_captured_metric_tons_per_year, sep = ": "))
+  #print(paste("co2_captured_metric_tons_per_year", co2_captured_metric_tons_per_year, sep = ": "))
 
   total_process_emissions_kg_per_kg_h2 <- get_total_process_emissions_kg_per_kg_h2(total_process_pollutants_produced_kg_per_kg_h2, co2_captured_kg_per_kg_h2)
-  print(paste("total_process_emissions_kg_per_kg_h2", total_process_emissions_kg_per_kg_h2, sep = ": "))
+  #print(paste("total_process_emissions_kg_per_kg_h2", total_process_emissions_kg_per_kg_h2, sep = ": "))
 
   total_process_emissions_all_ghg_kg_per_kg_h2 <- calculate_total_ghg_emission(total_process_emissions_kg_per_kg_h2, get(conversion_factors, 'CO2'), get(conversion_factors, 'CH4'), get(conversion_factors, 'N2O'))
-  print(paste("total_process_emissions_all_ghg_kg_per_kg_h2", total_process_emissions_all_ghg_kg_per_kg_h2, sep = ": "))
+  #print(paste("total_process_emissions_all_ghg_kg_per_kg_h2", total_process_emissions_all_ghg_kg_per_kg_h2, sep = ": "))
 
   total_process_emissions_metric_tons_per_year <- get_total_process_emissions_metric_tons_per_year(total_process_emissions_kg_per_kg_h2, plant_output_kg_per_year)
-  print(paste("total_process_emissions_metric_tons_per_year", total_process_emissions_metric_tons_per_year, sep = ": "))
+  #print(paste("total_process_emissions_metric_tons_per_year", total_process_emissions_metric_tons_per_year, sep = ": "))
 
   total_upstream_emissions_kg_per_kg_h2 <- sum_columns(feedstock_upstream_ghg_emissions_kg_per_kg_h2) + sum_columns(utility_upstream_ghg_emissions_kg_per_kg_h2)
-  print(paste("total_upstream_emissions_kg_per_kg_h2", total_upstream_emissions_kg_per_kg_h2, sep = ": "))
+  #print(paste("total_upstream_emissions_kg_per_kg_h2", total_upstream_emissions_kg_per_kg_h2, sep = ": "))
 
   total_upstream_emissions_all_ghg_kg_per_kg_h2 <- sum_list(feedstock_upstream_ghg_emissions_kg_per_kg_h2_total) + sum_list(utility_upstream_ghg_emissions_kg_per_kg_h2_total)
-  print(paste("total_upstream_emissions_all_ghg_kg_per_kg_h2", total_upstream_emissions_all_ghg_kg_per_kg_h2, sep = ": "))
+  #print(paste("total_upstream_emissions_all_ghg_kg_per_kg_h2", total_upstream_emissions_all_ghg_kg_per_kg_h2, sep = ": "))
 
   total_well_to_pump_emissions_kg_per_kg_h2 <- get_total_well_to_pump_emissions_kg_per_kg_h2(total_upstream_emissions_kg_per_kg_h2, total_process_emissions_kg_per_kg_h2)
-  print(paste("total_well_to_pump_emissions_kg_per_kg_h2", total_well_to_pump_emissions_kg_per_kg_h2, sep = ": "))
+  #print(paste("total_well_to_pump_emissions_kg_per_kg_h2", total_well_to_pump_emissions_kg_per_kg_h2, sep = ": "))
 
   total_well_to_pump_emissions_all_ghg_kg_per_kg_h2 <- total_upstream_emissions_all_ghg_kg_per_kg_h2 + total_process_emissions_all_ghg_kg_per_kg_h2
-  print(paste("total_well_to_pump_emissions_all_ghg_kg_per_kg_h2", total_well_to_pump_emissions_all_ghg_kg_per_kg_h2, sep = ": "))
+  #print(paste("total_well_to_pump_emissions_all_ghg_kg_per_kg_h2", total_well_to_pump_emissions_all_ghg_kg_per_kg_h2, sep = ": "))
 
   co2_mass_flowrate_metric_tonnes_per_day <- get(total_process_pollutants_produced_metric_tons_per_year, FIRST) / 365 * CO2_Capture_Efficiency
-  print(paste("co2_mass_flowrate_metric_tonnes_per_day", co2_mass_flowrate_metric_tonnes_per_day, sep = ": "))
+  #print(paste("co2_mass_flowrate_metric_tonnes_per_day", co2_mass_flowrate_metric_tonnes_per_day, sep = ": "))
 
   co2_mass_flowrate_million_metric_tonnes_per_year <- co2_mass_flowrate_metric_tonnes_per_day * 365 / 1000000
-  print(paste("co2_mass_flowrate_million_metric_tonnes_per_year", co2_mass_flowrate_million_metric_tonnes_per_year, sep = ": "))
+  #print(paste("co2_mass_flowrate_million_metric_tonnes_per_year", co2_mass_flowrate_million_metric_tonnes_per_year, sep = ": "))
 
   cc_transport_cost_nominal_dollars_per_tonne_co2 <- get_cc_transport_cost(CO2_Capture_Efficiency, co2_mass_flowrate_million_metric_tonnes_per_year, capacity_factor, pipeline_length_km)
-  print(paste("cc_transport_cost_nominal_dollars_per_tonne_co2", cc_transport_cost_nominal_dollars_per_tonne_co2, sep = ": "))
+  #print(paste("cc_transport_cost_nominal_dollars_per_tonne_co2", cc_transport_cost_nominal_dollars_per_tonne_co2, sep = ": "))
 
   cc_storage_cost_nominal_dollars_per_tonne_co2 <- get_cc_storage_cost(CO2_Capture_Efficiency, co2_mass_flowrate_million_metric_tonnes_per_year, capacity_factor)
-  print(paste("cc_storage_cost_nominal_dollars_per_tonne_co2", cc_storage_cost_nominal_dollars_per_tonne_co2, sep = ": "))
+  #print(paste("cc_storage_cost_nominal_dollars_per_tonne_co2", cc_storage_cost_nominal_dollars_per_tonne_co2, sep = ": "))
 
   cc_transport_cost_basis_year_dollars_per_tonne_co2 <- cc_transport_cost_nominal_dollars_per_tonne_co2 * get_cpi(BasisYear, cpi_file) / get_cpi(startup_year, cpi_file)
-  print(paste("cc_transport_cost_basis_year_dollars_per_tonne_co2", cc_transport_cost_basis_year_dollars_per_tonne_co2, sep = ": "))
+  #print(paste("cc_transport_cost_basis_year_dollars_per_tonne_co2", cc_transport_cost_basis_year_dollars_per_tonne_co2, sep = ": "))
 
   cc_storage_cost_basis_year_dollars_per_tonne_co2 <- cc_storage_cost_nominal_dollars_per_tonne_co2 * get_cpi(BasisYear - 1, cpi_file) / get_cpi(startup_year - 1, cpi_file)
-  print(paste("cc_storage_cost_basis_year_dollars_per_tonne_co2", cc_storage_cost_basis_year_dollars_per_tonne_co2, sep = ": "))
+  #print(paste("cc_storage_cost_basis_year_dollars_per_tonne_co2", cc_storage_cost_basis_year_dollars_per_tonne_co2, sep = ": "))
 
   cc_credit_basis_year_dollars_per_tonne_co2 <- -CO2_credit * get_cpi(BasisYear, cpi_file) / get_cpi(ref_year, cpi_file)
-  print(paste("cc_credit_basis_year_dollars_per_tonne_co2", cc_credit_basis_year_dollars_per_tonne_co2, sep = ": "))
+  #print(paste("cc_credit_basis_year_dollars_per_tonne_co2", cc_credit_basis_year_dollars_per_tonne_co2, sep = ": "))
 
   cc_transport_cost_first_year_basis_year_dollars_per_year <- cc_transport_cost_basis_year_dollars_per_tonne_co2 * co2_mass_flowrate_million_metric_tonnes_per_year * 1000000
-  print(paste("cc_transport_cost_first_year_basis_year_dollars_per_year", cc_transport_cost_first_year_basis_year_dollars_per_year, sep = ": "))
+  #print(paste("cc_transport_cost_first_year_basis_year_dollars_per_year", cc_transport_cost_first_year_basis_year_dollars_per_year, sep = ": "))
 
   cc_storage_cost_first_year_basis_year_dollars_per_year <- cc_storage_cost_basis_year_dollars_per_tonne_co2 * co2_mass_flowrate_million_metric_tonnes_per_year * 1000000
-  print(paste("cc_storage_cost_first_year_basis_year_dollars_per_year", cc_storage_cost_first_year_basis_year_dollars_per_year, sep = ": "))
+  #print(paste("cc_storage_cost_first_year_basis_year_dollars_per_year", cc_storage_cost_first_year_basis_year_dollars_per_year, sep = ": "))
 
   cc_credit_first_year_basis_year_dollars_per_year <- cc_credit_basis_year_dollars_per_tonne_co2 * co2_mass_flowrate_million_metric_tonnes_per_year * 1000000
-  print(paste("cc_credit_first_year_basis_year_dollars_per_year", cc_credit_first_year_basis_year_dollars_per_year, sep = ": "))
+  #print(paste("cc_credit_first_year_basis_year_dollars_per_year", cc_credit_first_year_basis_year_dollars_per_year, sep = ": "))
 
   total_cc_cost_first_year_per_tonne_co2 <- cc_transport_cost_first_year_basis_year_dollars_per_year + cc_storage_cost_first_year_basis_year_dollars_per_year + cc_credit_first_year_basis_year_dollars_per_year
-  print(paste("total_cc_cost_first_year_per_tonne_co2", total_cc_cost_first_year_per_tonne_co2, sep = ": "))
+  #print(paste("total_cc_cost_first_year_per_tonne_co2", total_cc_cost_first_year_per_tonne_co2, sep = ": "))
 
   cc_transport_cost_ref_year_dollars_per_tonne_co2 <- cc_transport_cost_basis_year_dollars_per_tonne_co2 * get_cpi(ref_year, cpi_file) / get_cpi(BasisYear, cpi_file)
-  print(paste("cc_transport_cost_ref_year_dollars_per_tonne_co2", cc_transport_cost_ref_year_dollars_per_tonne_co2, sep = ": "))
+  #print(paste("cc_transport_cost_ref_year_dollars_per_tonne_co2", cc_transport_cost_ref_year_dollars_per_tonne_co2, sep = ": "))
 
   cc_storage_cost_ref_year_dollars_per_tonne_co2 <- cc_storage_cost_basis_year_dollars_per_tonne_co2 * get_cpi(ref_year, cpi_file) / get_cpi(BasisYear, cpi_file)
-  print(paste("cc_storage_cost_ref_year_dollars_per_tonne_co2", cc_storage_cost_ref_year_dollars_per_tonne_co2, sep = ": "))
+  #print(paste("cc_storage_cost_ref_year_dollars_per_tonne_co2", cc_storage_cost_ref_year_dollars_per_tonne_co2, sep = ": "))
 
   cc_transport_cost_ref_year_dollars_per_kg_H2 <- (cc_transport_cost_first_year_basis_year_dollars_per_year / plant_output_kg_per_year) * get_cpi(ref_year, cpi_file) / get_cpi(BasisYear, cpi_file)
-  print(paste("cc_transport_cost_ref_year_dollars_per_kg_H2", cc_transport_cost_ref_year_dollars_per_kg_H2, sep = ": "))
+  #print(paste("cc_transport_cost_ref_year_dollars_per_kg_H2", cc_transport_cost_ref_year_dollars_per_kg_H2, sep = ": "))
 
   cc_storage_cost_ref_year_dollars_per_kg_H2 <- (cc_storage_cost_first_year_basis_year_dollars_per_year / plant_output_kg_per_year) * get_cpi(ref_year - 1, cpi_file) / get_cpi(BasisYear - 1, cpi_file)
-  print(paste("cc_storage_cost_ref_year_dollars_per_kg_H2", cc_storage_cost_ref_year_dollars_per_kg_H2, sep = ": "))
+  #print(paste("cc_storage_cost_ref_year_dollars_per_kg_H2", cc_storage_cost_ref_year_dollars_per_kg_H2, sep = ": "))
 
   CO2_OandMcost <- total_cc_cost_first_year_per_tonne_co2
-  print(paste("CO2_OandMcost", CO2_OandMcost, sep = ": "))
+  #print(paste("CO2_OandMcost", CO2_OandMcost, sep = ": "))
 
   inflated_othervar <- INFLATION_FACTOR * (var_misc + royalties + operator_profit + CO2_OandMcost + waste_treat + solidwaste_treat)
-  print(paste("inflated_othervar", inflated_othervar, sep = ": "))
+  #print(paste("inflated_othervar", inflated_othervar, sep = ": "))
 
   variable_cost_column <- get_variable_cost_column(operation_range, analysis_index_range, utility_price_df, nonenergy_material_price_df, inflation_price_increase_factors, plant_output_kg_per_year, percnt_var, start_time, inflated_othervar, dollars_per_kg_h2_10yr_credit)
-  print(paste("variable_cost_column", variable_cost_column, sep = ": "))
+  #print(paste("variable_cost_column", variable_cost_column, sep = ": "))
 
   discounted_value_variable_cost <- get(variable_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(variable_cost_column, 1))
-  print(paste("discounted_value_variable_cost", discounted_value_variable_cost, sep = ": "))
+  #print(paste("discounted_value_variable_cost", discounted_value_variable_cost, sep = ": "))
 
   total_other_raw <- other_material_costs * get(chemical_price_index, ref_year) / get(chemical_price_index, BasisYear)
-  print(paste("total_other_raw", total_other_raw, sep = ": "))
+  #print(paste("total_other_raw", total_other_raw, sep = ": "))
 
   inflated_otherraw <- total_other_raw * INFLATION_FACTOR
-  print(paste("inflated_otherraw", inflated_otherraw, sep = ": "))
+  #print(paste("inflated_otherraw", inflated_otherraw, sep = ": "))
 
   other_raw_material_cost_column <- get_other_raw_material_cost_column(operation_range, inflation_price_increase_factors, inflated_otherraw, percnt_var, start_time)
-  print(paste("other_raw_material_cost_column", other_raw_material_cost_column, sep = ": "))
+  #print(paste("other_raw_material_cost_column", other_raw_material_cost_column, sep = ": "))
 
   discounted_value_other_raw_material_cost <- get(other_raw_material_cost_column, YEAR_1) + npv(target_after_tax_nominal_irr, skip(other_raw_material_cost_column, 1))
-  print(paste("discounted_value_other_raw_material_cost", discounted_value_other_raw_material_cost, sep = ": "))
+  #print(paste("discounted_value_other_raw_material_cost", discounted_value_other_raw_material_cost, sep = ": "))
 
   working_cap_reserve_rows <- get_working_cap_reserve_rows(slice(operation_range, end = length(operation_range) - 1), slice(analysis_index_range, end = length(analysis_index_range) - 1), WorkingCap, fixed_cost_column, total_feedstock_cost_column, other_raw_material_cost_column, variable_cost_column)
-  print(paste("working_cap_reserve_rows", working_cap_reserve_rows, sep = ": "))
+  #print(paste("working_cap_reserve_rows", working_cap_reserve_rows, sep = ": "))
 
   working_cap_reserve_column <- get_working_cap_reserve_column(working_cap_reserve_rows)
-  print(paste("working_cap_reserve_column", working_cap_reserve_column, sep = ": "))
+  #print(paste("working_cap_reserve_column", working_cap_reserve_column, sep = ": "))
 
   discounted_value_working_cap_reserve <- get(working_cap_reserve_column, YEAR_1) + npv(nominal_irr, skip(working_cap_reserve_column, 1))
-  print(paste("discounted_value_working_cap_reserve", discounted_value_working_cap_reserve, sep = ": "))
+  #print(paste("discounted_value_working_cap_reserve", discounted_value_working_cap_reserve, sep = ": "))
 
   pv_of_cashflow_working_cap_reserve <- npv(nominal_irr, working_cap_reserve_column)
-  print(paste("pv_of_cashflow_working_cap_reserve", pv_of_cashflow_working_cap_reserve, sep = ": "))
+  #print(paste("pv_of_cashflow_working_cap_reserve", pv_of_cashflow_working_cap_reserve, sep = ": "))
 
   LCOE_contribution_capital_costs <- -(discounted_value_initial_equity_depr_cap + discounted_value_replacement_costs + discounted_value_working_cap_reserve + discounted_value_other_non_depreciable_capital_cost)
-  print(paste("LCOE_contribution_capital_costs", LCOE_contribution_capital_costs, sep = ": "))
+  #print(paste("LCOE_contribution_capital_costs", LCOE_contribution_capital_costs, sep = ": "))
 
   total_initial_depreciable_capital <- -(initial_capital_financed + sum_list(initial_equity_depr_cap))
-  print(paste("total_initial_depreciable_capital", total_initial_depreciable_capital, sep = ": "))
+  #print(paste("total_initial_depreciable_capital", total_initial_depreciable_capital, sep = ": "))
 
   annual_depreciable_capital <- get_annual_depreciable_capital(operation_range, replacement_costs, total_initial_depreciable_capital)
-  print(paste("annual_depreciable_capital", annual_depreciable_capital, sep = ": "))
+  #print(paste("annual_depreciable_capital", annual_depreciable_capital, sep = ": "))
 
   recovery_range <- num_range(1, 22)
-  print(paste("recovery_range", recovery_range, sep = ": "))
+  #print(paste("recovery_range", recovery_range, sep = ": "))
 
   depreciation_calculation_table <- get_depreciation_calculation_table(recovery_range, operation_range, depr_type, depr_length, annual_depreciable_capital)
-  print(paste("depreciation_calculation_table", depreciation_calculation_table, sep = ": "))
+  #print(paste("depreciation_calculation_table", depreciation_calculation_table, sep = ": "))
 
   recovery_index_range <- seq_along(recovery_range)
-  print(paste("recovery_index_range", recovery_index_range, sep = ": "))
+  #print(paste("recovery_index_range", recovery_index_range, sep = ": "))
 
   depreciation_charges <- get_depreciation_charges(analysis_index_range, recovery_index_range, depreciation_calculation_table)
-  print(paste("depreciation_charges", depreciation_charges, sep = ": "))
+  #print(paste("depreciation_charges", depreciation_charges, sep = ": "))
 
   remaining_depreciation_range <- num_range(anal_period+construct + FIRST, anal_period+construct+depr_length+1 + FIRST)
-  print(paste("remaining_depreciation_range", remaining_depreciation_range, sep = ": "))
+  #print(paste("remaining_depreciation_range", remaining_depreciation_range, sep = ": "))
 
   remaining_depreciation_charges <- get_depreciation_charges(remaining_depreciation_range, recovery_index_range, depreciation_calculation_table)
-  print(paste("remaining_depreciation_charges", remaining_depreciation_charges, sep = ": "))
+  #print(paste("remaining_depreciation_charges", remaining_depreciation_charges, sep = ": "))
 
   total_remaining_depreciation_charges <- sum_list(remaining_depreciation_charges)
-  print(paste("total_remaining_depreciation_charges", total_remaining_depreciation_charges, sep = ": "))
+  #print(paste("total_remaining_depreciation_charges", total_remaining_depreciation_charges, sep = ": "))
 
   depreciation_charges_column <- get_depreciation_charges_column(depreciation_charges, analysis_index_range, total_remaining_depreciation_charges, anal_period, construct)
-  print(paste("depreciation_charges_column", depreciation_charges_column, sep = ": "))
+  #print(paste("depreciation_charges_column", depreciation_charges_column, sep = ": "))
 
   discounted_value_depreciation_charges <- get(depreciation_charges_column, YEAR_1) + npv(nominal_irr, skip(depreciation_charges_column, 1))
-  print(paste("discounted_value_depreciation_charges", discounted_value_depreciation_charges, sep = ": "))
+  #print(paste("discounted_value_depreciation_charges", discounted_value_depreciation_charges, sep = ": "))
 
   pv_of_cashflow_depreciation_charges <- npv(nominal_irr, depreciation_charges_column)
-  print(paste("pv_of_cashflow_depreciation_charges", pv_of_cashflow_depreciation_charges, sep = ": "))
+  #print(paste("pv_of_cashflow_depreciation_charges", pv_of_cashflow_depreciation_charges, sep = ": "))
 
   LCOE_contribution_depreciation <- discounted_value_depreciation_charges * total_tax_rate
-  print(paste("LCOE_contribution_depreciation", LCOE_contribution_depreciation, sep = ": "))
+  #print(paste("LCOE_contribution_depreciation", LCOE_contribution_depreciation, sep = ": "))
 
   LCOE_contribution_principal_payments <- -(get(principal_payments_column, YEAR_1) + npv(nominal_irr, skip(principal_payments_column, 1)))
-  print(paste("LCOE_contribution_principal_payments", LCOE_contribution_principal_payments, sep = ": "))
+  #print(paste("LCOE_contribution_principal_payments", LCOE_contribution_principal_payments, sep = ": "))
 
   pv_of_cashflow_principal_payments <- npv(nominal_irr, principal_payments_column)
-  print(paste("pv_of_cashflow_principal_payments", pv_of_cashflow_principal_payments, sep = ": "))
+  #print(paste("pv_of_cashflow_principal_payments", pv_of_cashflow_principal_payments, sep = ": "))
 
   LCOE_contribution_operation_costs <- -(discounted_value_total_salvage_value + discounted_value_decom_costs + discounted_value_fixed_cost + discounted_value_feedstock_cost + discounted_value_other_raw_material_cost + discounted_value_variable_cost + discounted_value_interest_payments) * (1-total_tax_rate)
-  print(paste("LCOE_contribution_operation_costs", LCOE_contribution_operation_costs, sep = ": "))
+  #print(paste("LCOE_contribution_operation_costs", LCOE_contribution_operation_costs, sep = ": "))
 
   H2_price_nominal <- ((LCOE_contribution_capital_costs + LCOE_contribution_depreciation + LCOE_contribution_principal_payments + LCOE_contribution_operation_costs) / LCOE_contribution_h2_sales_kg) * (1 + inflation_rate) ** construct
-  print(paste("H2_price_nominal", H2_price_nominal, sep = ": "))
+  #print(paste("H2_price_nominal", H2_price_nominal, sep = ": "))
 
   H2_price_real <- H2_price_nominal / INFLATION_FACTOR
-  print(paste("H2_price_real", H2_price_real, sep = ": "))
+  #print(paste("H2_price_real", H2_price_real, sep = ": "))
 
   revenue_h2_sales <- get_revenue_h2_sales_column(operation_range, inflation_price_increase_factors, H2_price_nominal, plant_output_kg_per_year, percnt_revs, start_time)
-  print(paste("revenue_h2_sales", revenue_h2_sales, sep = ": "))
+  #print(paste("revenue_h2_sales", revenue_h2_sales, sep = ": "))
 
   predepreciation_income_column <- get_predepreciation_income_column(revenue_h2_sales, salvage_column, decom_costs_column, fixed_cost_column, total_feedstock_cost_column, other_raw_material_cost_column, variable_cost_column, interest_payments_column)
-  print(paste("predepreciation_income_column", predepreciation_income_column, sep = ": "))
+  #print(paste("predepreciation_income_column", predepreciation_income_column, sep = ": "))
 
   taxable_income_column <- get_taxable_income_column(predepreciation_income_column, depreciation_charges_column)
-  print(paste("taxable_income_column", taxable_income_column, sep = ": "))
+  #print(paste("taxable_income_column", taxable_income_column, sep = ": "))
 
   tax_credit <- tax_credit_per_year * CPIinflator
-  print(paste("tax_credit", tax_credit, sep = ": "))
+  #print(paste("tax_credit", tax_credit, sep = ": "))
 
   Upstream_CO2_taxpYear <- 0
-  print(paste("Upstream_CO2_taxpYear", Upstream_CO2_taxpYear, sep = ": "))
+  #print(paste("Upstream_CO2_taxpYear", Upstream_CO2_taxpYear, sep = ": "))
 
   Proc_CO2_taxpYear <- 0
-  print(paste("Proc_CO2_taxpYear", Proc_CO2_taxpYear, sep = ": "))
+  #print(paste("Proc_CO2_taxpYear", Proc_CO2_taxpYear, sep = ": "))
 
   total_taxes_column <- get_total_taxes_column(taxable_income_column, total_tax_rate, tax_credit, Upstream_CO2_taxpYear, Proc_CO2_taxpYear)
-  print(paste("total_taxes_column", total_taxes_column, sep = ": "))
+  #print(paste("total_taxes_column", total_taxes_column, sep = ": "))
 
   after_tax_income_column <- get_after_tax_income_column(predepreciation_income_column, total_taxes_column)
-  print(paste("after_tax_income_column", after_tax_income_column, sep = ": "))
+  #print(paste("after_tax_income_column", after_tax_income_column, sep = ": "))
 
   aftertax_post_depreciation_cashflow_column <- get_aftertax_post_depreciation_cashflow(initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, total_taxes_column, principal_payments_column)
-  print(paste("aftertax_post_depreciation_cashflow_column", aftertax_post_depreciation_cashflow_column, sep = ": "))
+  #print(paste("aftertax_post_depreciation_cashflow_column", aftertax_post_depreciation_cashflow_column, sep = ": "))
 
   cumulative_cashflow_column <- get_cumulative_cashflow_column(aftertax_post_depreciation_cashflow_column, analysis_index_range)
-  print(paste("cumulative_cashflow_column", cumulative_cashflow_column, sep = ": "))
+  #print(paste("cumulative_cashflow_column", cumulative_cashflow_column, sep = ": "))
 
   pretax_cashflow <- get_pretax_cashflow_column(initial_equity_depr_cap, replacement_costs, working_cap_reserve_column, other_non_depreciable_capital_cost_column, predepreciation_income_column, principal_payments_column)
-  print(paste("pretax_cashflow", pretax_cashflow, sep = ": "))
+  #print(paste("pretax_cashflow", pretax_cashflow, sep = ": "))
 
   after_tax_nominal_IRR <- irr(aftertax_post_depreciation_cashflow_column)
-  print(paste("after_tax_nominal_IRR", after_tax_nominal_IRR, sep = ": "))
+  #print(paste("after_tax_nominal_IRR", after_tax_nominal_IRR, sep = ": "))
 
   pre_tax_nominal_IRR <- irr(pretax_cashflow)
-  print(paste("pre_tax_nominal_IRR", pre_tax_nominal_IRR, sep = ": "))
+  #print(paste("pre_tax_nominal_IRR", pre_tax_nominal_IRR, sep = ": "))
 
   aftertax_real_capital_recovery_factor <- (real_irr * (1 + real_irr) ** anal_period) / (((1 + real_irr) ** anal_period) - 1)
-  print(paste("aftertax_real_capital_recovery_factor", aftertax_real_capital_recovery_factor, sep = ": "))
+  #print(paste("aftertax_real_capital_recovery_factor", aftertax_real_capital_recovery_factor, sep = ": "))
 
   aftertax_nominal_capital_recovery_factor <- (nominal_irr * (1 + nominal_irr) ** anal_period) / (((1 + nominal_irr) ** anal_period) - 1)
-  print(paste("aftertax_nominal_capital_recovery_factor", aftertax_nominal_capital_recovery_factor, sep = ": "))
+  #print(paste("aftertax_nominal_capital_recovery_factor", aftertax_nominal_capital_recovery_factor, sep = ": "))
 
   total_real_fixed_charge_rate <- (aftertax_real_capital_recovery_factor * (1 - total_tax_rate * npv(real_irr, get_macrs_col(depr_length))) ) / (1 - total_tax_rate)
-  print(paste("total_real_fixed_charge_rate", total_real_fixed_charge_rate, sep = ": "))
+  #print(paste("total_real_fixed_charge_rate", total_real_fixed_charge_rate, sep = ": "))
 
   total_nominal_fixed_charge_rate <- (aftertax_nominal_capital_recovery_factor * (1 - total_tax_rate * npv(nominal_irr, get_macrs_col(depr_length))) ) / (1 - total_tax_rate)
-  print(paste("total_nominal_fixed_charge_rate", total_nominal_fixed_charge_rate, sep = ": "))
+  #print(paste("total_nominal_fixed_charge_rate", total_nominal_fixed_charge_rate, sep = ": "))
 
   after_tax_present_value_capital_related_costs <- (pv_of_cashflow_initial_equity_depr_cap + pv_of_cashflow_replacement_costs + pv_of_cashflow_working_cap_reserve + pv_of_cashflow_other_non_depreciable_capital_cost + (pv_of_cashflow_total_salvage_value * (1 - total_tax_rate)) + (pv_of_cashflow_interest_payments * (1 - total_tax_rate)) + (pv_of_cashflow_depreciation_charges * (-total_tax_rate)) + pv_of_cashflow_principal_payments) / (1 - total_tax_rate)
-  print(paste("after_tax_present_value_capital_related_costs", after_tax_present_value_capital_related_costs, sep = ": "))
+  #print(paste("after_tax_present_value_capital_related_costs", after_tax_present_value_capital_related_costs, sep = ": "))
 
   after_tax_present_value_decommissioning_costs <- npv(nominal_irr, decom_costs_column)
-  print(paste("after_tax_present_value_decommissioning_costs", after_tax_present_value_decommissioning_costs, sep = ": "))
+  #print(paste("after_tax_present_value_decommissioning_costs", after_tax_present_value_decommissioning_costs, sep = ": "))
 
   after_tax_present_value_fixed_cost <- npv(nominal_irr, fixed_cost_column)
-  print(paste("after_tax_present_value_fixed_cost", after_tax_present_value_fixed_cost, sep = ": "))
+  #print(paste("after_tax_present_value_fixed_cost", after_tax_present_value_fixed_cost, sep = ": "))
 
   after_tax_present_value_total_feedstock_cost <- npv(nominal_irr, total_feedstock_cost_column)
-  print(paste("after_tax_present_value_total_feedstock_cost", after_tax_present_value_total_feedstock_cost, sep = ": "))
+  #print(paste("after_tax_present_value_total_feedstock_cost", after_tax_present_value_total_feedstock_cost, sep = ": "))
 
   after_tax_present_value_other_raw_material_cost <- npv(nominal_irr, other_raw_material_cost_column)
-  print(paste("after_tax_present_value_other_raw_material_cost", after_tax_present_value_other_raw_material_cost, sep = ": "))
+  #print(paste("after_tax_present_value_other_raw_material_cost", after_tax_present_value_other_raw_material_cost, sep = ": "))
 
   after_tax_present_value_byproduct_credits <- 0
-  print(paste("after_tax_present_value_byproduct_credits", after_tax_present_value_byproduct_credits, sep = ": "))
+  #print(paste("after_tax_present_value_byproduct_credits", after_tax_present_value_byproduct_credits, sep = ": "))
 
   after_tax_present_value_variable_cost <- npv(nominal_irr, variable_cost_column)
-  print(paste("after_tax_present_value_variable_cost", after_tax_present_value_variable_cost, sep = ": "))
+  #print(paste("after_tax_present_value_variable_cost", after_tax_present_value_variable_cost, sep = ": "))
 
   summed_cost_components <- sum_args(after_tax_present_value_capital_related_costs, after_tax_present_value_decommissioning_costs, after_tax_present_value_fixed_cost, after_tax_present_value_total_feedstock_cost, after_tax_present_value_other_raw_material_cost, after_tax_present_value_byproduct_credits, after_tax_present_value_variable_cost)
-  print(paste("summed_cost_components", summed_cost_components, sep = ": "))
+  #print(paste("summed_cost_components", summed_cost_components, sep = ": "))
 
   percentage_of_cost_capital_related_costs <- after_tax_present_value_capital_related_costs / summed_cost_components
-  print(paste("percentage_of_cost_capital_related_costs", percentage_of_cost_capital_related_costs, sep = ": "))
+  #print(paste("percentage_of_cost_capital_related_costs", percentage_of_cost_capital_related_costs, sep = ": "))
 
   percentage_of_cost_decommissioning_costs <- after_tax_present_value_decommissioning_costs / summed_cost_components
-  print(paste("percentage_of_cost_decommissioning_costs", percentage_of_cost_decommissioning_costs, sep = ": "))
+  #print(paste("percentage_of_cost_decommissioning_costs", percentage_of_cost_decommissioning_costs, sep = ": "))
 
   percentage_of_cost_fixed_cost <- after_tax_present_value_fixed_cost / summed_cost_components
-  print(paste("percentage_of_cost_fixed_cost", percentage_of_cost_fixed_cost, sep = ": "))
+  #print(paste("percentage_of_cost_fixed_cost", percentage_of_cost_fixed_cost, sep = ": "))
 
   percentage_of_cost_total_feedstock_cost <- after_tax_present_value_total_feedstock_cost / summed_cost_components
-  print(paste("percentage_of_cost_total_feedstock_cost", percentage_of_cost_total_feedstock_cost, sep = ": "))
+  #print(paste("percentage_of_cost_total_feedstock_cost", percentage_of_cost_total_feedstock_cost, sep = ": "))
 
   percentage_of_cost_other_raw_material_cost <- after_tax_present_value_other_raw_material_cost / summed_cost_components
-  print(paste("percentage_of_cost_other_raw_material_cost", percentage_of_cost_other_raw_material_cost, sep = ": "))
+  #print(paste("percentage_of_cost_other_raw_material_cost", percentage_of_cost_other_raw_material_cost, sep = ": "))
 
   percentage_of_cost_byproduct_credits <- after_tax_present_value_byproduct_credits / summed_cost_components
-  print(paste("percentage_of_cost_byproduct_credits", percentage_of_cost_byproduct_credits, sep = ": "))
+  #print(paste("percentage_of_cost_byproduct_credits", percentage_of_cost_byproduct_credits, sep = ": "))
 
   percentage_of_cost_variable_cost <- after_tax_present_value_variable_cost / summed_cost_components
-  print(paste("percentage_of_cost_variable_cost", percentage_of_cost_variable_cost, sep = ": "))
+  #print(paste("percentage_of_cost_variable_cost", percentage_of_cost_variable_cost, sep = ": "))
 
   dollars_per_kg_h2_capital_related_costs <- H2_price_real * percentage_of_cost_capital_related_costs
-  print(paste("dollars_per_kg_h2_capital_related_costs", dollars_per_kg_h2_capital_related_costs, sep = ": "))
+  #print(paste("dollars_per_kg_h2_capital_related_costs", dollars_per_kg_h2_capital_related_costs, sep = ": "))
 
   dollars_per_kg_h2_decommissioning_costs <- H2_price_real * percentage_of_cost_decommissioning_costs
-  print(paste("dollars_per_kg_h2_decommissioning_costs", dollars_per_kg_h2_decommissioning_costs, sep = ": "))
+  #print(paste("dollars_per_kg_h2_decommissioning_costs", dollars_per_kg_h2_decommissioning_costs, sep = ": "))
 
   dollars_per_kg_h2_fixed_cost <- H2_price_real * percentage_of_cost_fixed_cost
-  print(paste("dollars_per_kg_h2_fixed_cost", dollars_per_kg_h2_fixed_cost, sep = ": "))
+  #print(paste("dollars_per_kg_h2_fixed_cost", dollars_per_kg_h2_fixed_cost, sep = ": "))
 
   dollars_per_kg_h2_total_feedstock_cost <- H2_price_real * percentage_of_cost_total_feedstock_cost
-  print(paste("dollars_per_kg_h2_total_feedstock_cost", dollars_per_kg_h2_total_feedstock_cost, sep = ": "))
+  #print(paste("dollars_per_kg_h2_total_feedstock_cost", dollars_per_kg_h2_total_feedstock_cost, sep = ": "))
 
   dollars_per_kg_h2_other_raw_material_cost <- H2_price_real * percentage_of_cost_other_raw_material_cost
-  print(paste("dollars_per_kg_h2_other_raw_material_cost", dollars_per_kg_h2_other_raw_material_cost, sep = ": "))
+  #print(paste("dollars_per_kg_h2_other_raw_material_cost", dollars_per_kg_h2_other_raw_material_cost, sep = ": "))
 
   dollars_per_kg_h2_byproduct_credits <- H2_price_real * percentage_of_cost_byproduct_credits
-  print(paste("dollars_per_kg_h2_byproduct_credits", dollars_per_kg_h2_byproduct_credits, sep = ": "))
+  #print(paste("dollars_per_kg_h2_byproduct_credits", dollars_per_kg_h2_byproduct_credits, sep = ": "))
 
   dollars_per_kg_h2_variable_cost <- H2_price_real * percentage_of_cost_variable_cost
-  print(paste("dollars_per_kg_h2_variable_cost", dollars_per_kg_h2_variable_cost, sep = ": "))
+  #print(paste("dollars_per_kg_h2_variable_cost", dollars_per_kg_h2_variable_cost, sep = ": "))
 
   combined_discounted_value_electricity_cost <- discounted_value_electricity_feedstock_cost + discounted_value_electricity_utility_cost
-  print(paste("combined_discounted_value_electricity_cost", combined_discounted_value_electricity_cost, sep = ": "))
+  #print(paste("combined_discounted_value_electricity_cost", combined_discounted_value_electricity_cost, sep = ": "))
 
   electricity_cost_per_kg_h2 <- -combined_discounted_value_electricity_cost / discounted_value_total_h2_sales_kg * (1+inflation_rate) ** construct / INFLATION_FACTOR
-  print(paste("electricity_cost_per_kg_h2", electricity_cost_per_kg_h2, sep = ": "))
+  #print(paste("electricity_cost_per_kg_h2", electricity_cost_per_kg_h2, sep = ": "))
 
   natural_gas_cost_per_kg_h2 <- -discounted_value_natural_gas_cost / discounted_value_total_h2_sales_kg * (1+inflation_rate) ** construct / INFLATION_FACTOR
-  print(paste("natural_gas_cost_per_kg_h2", natural_gas_cost_per_kg_h2, sep = ": "))
+  #print(paste("natural_gas_cost_per_kg_h2", natural_gas_cost_per_kg_h2, sep = ": "))
 
   return(setNames(mget(ls()), ls()))
 }

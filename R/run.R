@@ -17,7 +17,7 @@ library(tidyverse)
 
 ###############################################################
 ###############################################################
-inputs = read.csv("./parameters/parameters_default.csv")
+inputs = read.csv("./parameters/parameters.csv")
 output_filename = "sample_results.csv" # should include ".csv"
 ###############################################################
 ###############################################################
@@ -40,6 +40,8 @@ import::from("output_processing.R", make_plots, .directory = here("h2a"))
 import::from("output_processing.R", json_to_df, .directory = here("h2a"))
 
 run <- function(json_filename, change_vars = c(), change_vals = c(), label = NA) {
+    print(change_vars)
+    print(change_vals)
     # read the default inputs for whichever model we're given  
     user_input <- read_default_inputs_json(json_filename)
     
@@ -49,11 +51,15 @@ run <- function(json_filename, change_vars = c(), change_vals = c(), label = NA)
       fields = names(user_input)
       # loop through each parameter we want to change
       for (j in 1:length(change_vars)) {
+        print(change_vars[j])
         # identify where in the json we're looking
         location = which(fields == change_vars[j])
         
         # replace the input value with the one given by the user
-        user_input[[location]] = change_vals[j]
+        if (!(is.na(change_vals[j]))) {
+          print(change_vals[j])
+          user_input[[location]] = change_vals[j]
+        }
       }
       # now proceed
       model_name = paste0(str_replace(json_filename,".json",""),"-",label,".json")
@@ -82,10 +88,7 @@ for (json_filename in args) {
     model_name = json_filename
   } else {
     vars = colnames(inputs)[2:ncol(inputs)]
-    vals = unlist(inputs[i,2:ncol(inputs)], use.names = FALSE)
-    print(vars)
-    print(vals)
-    print("---")
+    vals = suppressWarnings({as.numeric(unlist(inputs[i,2:ncol(inputs)], use.names = FALSE))}) # note: this will coerce strings such as "default" into NAs, we'll check for this later
     suppressWarnings({results = run(json_filename, change_vars = vars, change_vals = vals, label = i)})
     #results = r
     model_name = paste0(str_replace(json_filename,".json",""),"-",i,".json")
