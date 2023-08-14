@@ -2,6 +2,18 @@
 # Subsequent calls to here() will be relative to this directory
 here::i_am("run.R")
 import::from(here, here)
+# Import the user input
+import::from("read_input.R", read_default_inputs_json, .directory = here("h2a"))
+# Import the H2A model
+import::from("formulas.R", calculate, .directory = here("h2a"))
+# Import output processing
+# import::here(json_to_df, .from = "output_processing.R", .directory = here("h2a"))
+import::from("output_processing.R", make_plots, .directory = here("h2a"))
+import::from("output_processing.R", json_to_df, .directory = here("h2a"))
+import::from("error_checks.R", error_check1, .directory = here("h2a"))
+import::from("error_checks.R", error_check2, .directory = here("h2a"))
+import::from("error_checks.R", error_check3, .directory = here("h2a"))
+import::from("error_checks.R", error_check4, .directory = here("h2a"))
 library(tidyverse)
 
 # Parse CLI args as a list of files
@@ -16,28 +28,33 @@ library(tidyverse)
 # )
 
 ###############################################################
-###############################################################
-inputs = read.csv("./parameters/parameters.csv")
-output_filename = "sample_results.csv" # should include ".csv"
+## USER INPUTS ################################################
 ###############################################################
 ###############################################################
+input_filename = "./parameters/parameters.csv" # please include ".csv"
+# input_filename "./parameters/parameters_baseline.csv"
+output_filename = "sample_results.csv" # please include ".csv"
+###############################################################
+###############################################################
+
+# quick error checks on file names
+error_check1(input_filename)
+inputs = read.csv(input_filename)
+error_check2(output_filename)
 
 # which default model to start with
 args = inputs$baseline
 # add the .json suffix everywhere
 for (i in 1:length(args)) {
+  # error check on model names
+  error_check3(args[i])
   args[i] = paste0(args[i],".json")
 }
 num_vars = ncol(inputs) - 1
 
-# Import the user input
-import::from("read_input.R", read_default_inputs_json, .directory = here("h2a"))
-# Import the H2A model
-import::from("formulas.R", calculate, .directory = here("h2a"))
-# Import output processing
-# import::here(json_to_df, .from = "output_processing.R", .directory = here("h2a"))
-import::from("output_processing.R", make_plots, .directory = here("h2a"))
-import::from("output_processing.R", json_to_df, .directory = here("h2a"))
+# error check on variable names
+vars = colnames(inputs)[2:ncol(inputs)]
+error_check4(vars)
 
 run <- function(json_filename, change_vars = c(), change_vals = c(), label = NA) {
     print(change_vars)

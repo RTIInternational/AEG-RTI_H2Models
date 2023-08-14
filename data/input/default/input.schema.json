@@ -10,6 +10,12 @@
       "minimum": 0,
       "maximum": 1
     },
+   "dollars_per_kg_h2_10yr_credit": {
+      "type": "number",
+      "title": "H2 10-year credit",
+      "minimum": 0,
+      "maximum": 10
+    },
     "plant_design_capacity": {
       "type": "number",
       "title": "Plant Design Capacity (kg of H2/day)"
