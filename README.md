@@ -43,7 +43,26 @@ The Python version updates index.html after running. To view the results, open i
      * dplyr
 6. Now you're ready to run! This can be done in several ways:
      * **From the command line.** Pick your favorite application for using the terminal. Some options are command prompt (can be accessed via VS Code), gitbash, or the built-in R Terminal. From the R directory, type `Rscript run.R default-smr-natural-gas-no-cc.json` You can input the name of any json in the data\default directory or a sequence of jsons separated by spaces.
-     * **From the RStudio editor. Just click 'Source' to run or select lines of code and run with 'ctrl+Enter' Note, you'll need to re-define the variable args, which is set up by default to accept input from the command line. Set args to equal a vector of one or more json names: `args = c('default-autothermal-reforming-natural-gas-with-cc.json')` 
+     * **From the RStudio editor.** Just click 'Source' to run or select lines of code and run with 'ctrl+Enter'. To run, you'll have to set 2 variables manually in the flagged section of code (look for USER INPUTS and a bunch of ###s). The user should point the code to the inputs sheet (described below) and set a name for the file that will contain the output data. These pointers should include directory structures and file-type suffixes, as in the example below:
+
+       `input_filename = "./parameters/parameters_example.csv"`
+       
+       `output_filename = "sample_results.csv"`
+
+     Sample parameters sheets are included in the repository
+* **Editing the parameters sheet.** Two example parameter sheets are included in the repository by default.
+    * `R/parameters/parameters_default.csv` - This sheet will just run the default versions of each of the five models with no modifications.
+    * `R/parameters/parameters_example.csv` (see image below) - This is an example showing how to make changes to parameters. Using this sheet will run the SMR-with-CC model 6 times with several combinations of parameters.
+Column A in the spreadsheet, titled 'baseline' will indicate the default model configuration to use, i.e. the model starting point. This should be one of the 5 default model types (without .json extension):
+      * 'default-autothermal-reforming-natural-gas-with-cc'
+      * 'default-pem-electrolysis'
+      * 'default-smr-natural-gas-no-cc'
+      * 'default-smr-natural-gas-with-cc'
+      * 'default-solid-oxide-electrolysis'
+
+![example input sheet](https://i.imgur.com/3IpWTch.png)
+
+Each additional column will give the user the option to modify an additional input parameter. For example, in the example shown above, the user chooses to test several different combinations of the variables `dollars_per_kg_h2_10yr_credit` and `CO2_Capture_Efficiency.` In each row, enter the new parameter value that will overwrite the model default. For example, the first row indicates that the SMR-CCS model should be run with a tax credit of 10 cents per kilogram and a capture efficiency of 90%. Note that the user can enter "default" or "Default" in any cell to revert to the default value given for the model.
 
 ## Tax Credits
 
